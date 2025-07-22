@@ -4,24 +4,114 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Unibox"
+        xmlns:vm="clr-namespace:Unibox.ViewModels"
+        xmlns:views="clr-namespace:Unibox.Views"
+        xmlns:converters="clr-namespace:Unibox.Converters"
+        xmlns:adonis="clr-namespace:AdonisUI.Controls;assembly=AdonisUI"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
+        Title="Unibox" Height="450" Width="800" 
+        WindowStartupLocation="CenterScreen" Closing="Window_Closing">
+
+    <Window.DataContext>
+        <vm:MainViewModel/>
+    </Window.DataContext>
+
+    <Window.Style>
+        <Style TargetType="Window" BasedOn="{StaticResource {x:Type Window}}"/>
+    </Window.Style>
+
     <Window.Resources>
+        <ResourceDictionary>
+            <converters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
+            <converters:BoolToWidthConverter x:Key="BoolToWidthConverter"/>
+
+            <Style x:Key="SlideMenuMuttons" TargetType="Button">
+                <Setter Property="BorderThickness" Value="0"/>
+                <Setter Property="Padding" Value="10,5"/>
+            </Style>
+
+            <Style TargetType="Image">
+                <Setter Property="RenderOptions.BitmapScalingMode" Value="HighQuality" />
+            </Style>
+
+
+        </ResourceDictionary>
     </Window.Resources>
-    <Grid Background="{DynamicResource WindowBackground}">
-        
-        <StackPanel>
-            <Menu Background="{DynamicResource MenuBackground}" Foreground="{DynamicResource TextForeground}">
-                <MenuItem Header="File"></MenuItem>
-                <MenuItem Header="View">
-                    <MenuItem x:Name="DarkModeMI" Header="Dark Mode" IsCheckable="True" Click="ThemeToggle_Click"></MenuItem>
-                </MenuItem>
-            </Menu>
-        </StackPanel>
-        
-        <StackPanel Height="200" Width="140" Background="{DynamicResource ListItemBackground}">
-            <TextBlock Text="Unibox" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="20,0,0,0" FontSize="24" Foreground="{DynamicResource Heading1}"/>
-            <TextBlock Text="Theme Test" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="20,0,0,0" FontSize="12" Foreground="{DynamicResource TextForeground}" />
+
+
+    <Grid Margin="4">
+        <StackPanel Orientation="Vertical">
+            <!-- TITLE BAR -->
+            <Grid HorizontalAlignment="Left">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="45"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                
+                <!-- Hamburger Icon -->
+                <Button Grid.Column="0" Width="40" Height="40" VerticalAlignment="Top" Margin="2" Command="{Binding ToggleMenuCommand}">
+                    <Image Source="/Resources/Images/menu-burger.png" Width="24"/>
+                </Button>
+
+                <Image Grid.Column="1" Source="/Resources/Images/LaunchboxLogoB+W.png" Width="28" Margin="2"></Image>
+
+                <ComboBox Grid.Column="2" Margin="2">
+
+                </ComboBox>
+
+                <Image Grid.Column="3" Source="/Resources/Images/platform.png" Width="28" Margin="2"></Image>
+
+                <ComboBox Grid.Column="4" Margin="2">
+
+                </ComboBox>
+
+            </Grid>
+            <!-- MAIN GRID -->
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="{Binding IsMenuOpen, Converter={StaticResource BoolToWidthConverter}}" />
+                    <ColumnDefinition Width="2"/>
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+
+                <!-- Collapsible Menu -->
+                <StackPanel Grid.Column="0"
+                 Grid.ColumnSpan="2">
+
+                    <!-- Menu Buttons -->
+
+                    <Button  Padding="5" Margin="2,3,2,2" Command="{Binding NavigateToGamesCommand}" HorizontalContentAlignment="Left">
+                        <StackPanel Orientation="Horizontal" >
+                            <Image Source="/Resources/Images/Settings.png" Width="24" Margin="4,0,4,0"/>
+                            <TextBlock Text="Games" Margin="5" FontSize="16" FontWeight="Bold"/>
+                        </StackPanel>
+                    </Button>
+
+
+                    <Button  Padding="5" Margin="2,3,2,2" Command="{Binding NavigateToGamesCommand}" HorizontalContentAlignment="Left">
+                        <StackPanel Orientation="Horizontal" >
+                            <Image Source="/Resources/Images/LaunchboxLogoB+W.png" Width="24" Margin="4,0,4,0"/>
+                            <TextBlock Text="Installations" Margin="5" FontSize="16" FontWeight="Bold"/>
+                        </StackPanel>
+                    </Button>
+
+                    <Button Padding="5" Margin="2" Command="{Binding NavigateToSettingsCommand}" HorizontalContentAlignment="Left">
+                        <StackPanel Orientation="Horizontal">
+                            <Image Source="/Resources/Images/Settings.png" Width="24" Margin="4,0,4,0"/>
+                            <TextBlock Text="Settings" Margin="5" FontSize="16" FontWeight="Bold"/>
+                        </StackPanel>
+                    </Button>
+
+                </StackPanel>
+
+                <!-- Main Content -->
+                <ContentControl Grid.Column="2" Content="{Binding CurrentPage}" />
+            </Grid>
         </StackPanel>
     </Grid>
+
+
 </Window>
