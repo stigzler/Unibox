@@ -13,6 +13,7 @@
     <None Remove="Resources\Images\menu-burger.png" />
     <None Remove="Resources\Images\platform.png" />
     <None Remove="Resources\Images\Settings.png" />
+    <None Remove="Resources\Images\SpaceInvader.png" />
     <None Remove="Resources\Images\UniboxLogo512.ico" />
   </ItemGroup>
 
@@ -29,6 +30,9 @@
     <Content Include="Resources\Images\Settings.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="Resources\Images\SpaceInvader.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
 
   <ItemGroup>
@@ -38,13 +42,11 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Services\" />
-  </ItemGroup>
-
-  <ItemGroup>
     <PackageReference Include="AdonisUI" Version="1.17.1" />
     <PackageReference Include="AdonisUI.ClassicTheme" Version="1.17.1" />
     <PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.0" />
+    <PackageReference Include="LiteDB" Version="5.0.21" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="9.0.7" />
   </ItemGroup>
 
   <ItemGroup>

@@ -9,12 +9,9 @@
         xmlns:converters="clr-namespace:Unibox.Converters"
         xmlns:adonis="clr-namespace:AdonisUI.Controls;assembly=AdonisUI"
         mc:Ignorable="d"
+        d:DataContext="{d:DesignInstance Type=vm:MainViewModel, IsDesignTimeCreatable=True}"
         Title="Unibox" Height="450" Width="800" 
         WindowStartupLocation="CenterScreen" Closing="Window_Closing">
-
-    <Window.DataContext>
-        <vm:MainViewModel/>
-    </Window.DataContext>
 
     <Window.Style>
         <Style TargetType="Window" BasedOn="{StaticResource {x:Type Window}}"/>
@@ -42,13 +39,13 @@
     <Grid Margin="4">
         <StackPanel Orientation="Vertical">
             <!-- TITLE BAR -->
-            <Grid HorizontalAlignment="Left">
+            <Grid HorizontalAlignment="Left" Margin="0,0,0,6">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="45"/>
                     <ColumnDefinition Width="*"/>
+                    <ColumnDefinition MinWidth="200"/>
                     <ColumnDefinition Width="*"/>
-                    <ColumnDefinition Width="*"/>
-                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition MinWidth="200"/>
                 </Grid.ColumnDefinitions>
                 
                 <!-- Hamburger Icon -->
@@ -58,16 +55,12 @@
 
                 <Image Grid.Column="1" Source="/Resources/Images/LaunchboxLogoB+W.png" Width="28" Margin="2"></Image>
 
-                <ComboBox Grid.Column="2" Margin="2">
-
-                </ComboBox>
+                <ComboBox Grid.Column="2" Margin="2" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
 
                 <Image Grid.Column="3" Source="/Resources/Images/platform.png" Width="28" Margin="2"></Image>
 
-                <ComboBox Grid.Column="4" Margin="2">
-
-                </ComboBox>
-
+                <ComboBox Grid.Column="4" Margin="2" ItemsSource="{Binding Installations}" DisplayMemberPath="Name"/>
+                
             </Grid>
             <!-- MAIN GRID -->
             <Grid>
@@ -85,7 +78,7 @@
 
                     <Button  Padding="5" Margin="2,3,2,2" Command="{Binding NavigateToGamesCommand}" HorizontalContentAlignment="Left">
                         <StackPanel Orientation="Horizontal" >
-                            <Image Source="/Resources/Images/Settings.png" Width="24" Margin="4,0,4,0"/>
+                            <Image Source="/Resources/Images/SpaceInvader.png" Width="24" Margin="4,0,4,0"/>
                             <TextBlock Text="Games" Margin="5" FontSize="16" FontWeight="Bold"/>
                         </StackPanel>
                     </Button>
