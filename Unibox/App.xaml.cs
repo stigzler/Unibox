@@ -49,6 +49,8 @@ namespace Unibox
 
             // Register ViewModels
             services.AddTransient<MainViewModel>();
+            services.AddTransient<SettingsViewModel>();
+            services.AddTransient<InstallationsViewModel>();
 
             // Add other necessary services here
             // e.g., services.AddSingleton<IDataService, DataService>();

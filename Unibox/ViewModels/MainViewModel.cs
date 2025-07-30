@@ -32,6 +32,7 @@ namespace Unibox.ViewModels
         public MainViewModel(DatabaseService databaseService)
         {
             DatabaseService = databaseService;
+
             Helpers.Theming.ApplyTheme();
 
             Installations = DatabaseService.Database.Collections.Installations.FindAll();
@@ -57,7 +58,13 @@ namespace Unibox.ViewModels
         {
             CurrentPage = new Views.SettingsPage();
         }
-  
+
+        [RelayCommand]
+        private void NavigateToInstallations()
+        {
+            CurrentPage = new Views.InstallationsPage();
+        }
+
     }
 }
 

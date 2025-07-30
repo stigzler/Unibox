@@ -16,14 +16,15 @@ using System.Windows.Shapes;
 namespace Unibox.Views
 {
     /// <summary>
-    /// Interaction logic for SettingsPage.xaml
+    /// Interaction logic for InstallationsPage.xaml
     /// </summary>
-    public partial class SettingsPage : UserControl
+    public partial class InstallationsPage : UserControl
     {
-        public SettingsPage()
+        public InstallationsPage()
         {
             InitializeComponent();
-            this.DataContext = App.Current.Services.GetService(typeof(ViewModels.SettingsViewModel));
+            this.DataContext = App.Current.Services.GetService(typeof(ViewModels.InstallationsViewModel));
+
         }
     }
 }

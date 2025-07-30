@@ -55,11 +55,12 @@
 
                 <Image Grid.Column="1" Source="/Resources/Images/LaunchboxLogoB+W.png" Width="28" Margin="2"></Image>
 
-                <ComboBox Grid.Column="2" Margin="2" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
+                <ComboBox Grid.Column="2" Margin="2" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" 
+                          ItemsSource="{Binding Installations}" DisplayMemberPath="Name"/>
 
                 <Image Grid.Column="3" Source="/Resources/Images/platform.png" Width="28" Margin="2"></Image>
 
-                <ComboBox Grid.Column="4" Margin="2" ItemsSource="{Binding Installations}" DisplayMemberPath="Name"/>
+                <ComboBox Grid.Column="4" Margin="2" />
                 
             </Grid>
             <!-- MAIN GRID -->
@@ -84,7 +85,7 @@
                     </Button>
 
 
-                    <Button  Padding="5" Margin="2,3,2,2" Command="{Binding NavigateToGamesCommand}" HorizontalContentAlignment="Left">
+                    <Button  Padding="5" Margin="2,3,2,2" Command="{Binding NavigateToInstallationsCommand}" HorizontalContentAlignment="Left">
                         <StackPanel Orientation="Horizontal" >
                             <Image Source="/Resources/Images/LaunchboxLogoB+W.png" Width="24" Margin="4,0,4,0"/>
                             <TextBlock Text="Installations" Margin="5" FontSize="16" FontWeight="Bold"/>
