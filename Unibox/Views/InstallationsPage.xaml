@@ -10,21 +10,25 @@
              d:DesignHeight="450" d:DesignWidth="800">
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="Auto" MinHeight="200"/>
+            <RowDefinition Height="*"/>
             <RowDefinition Height="40"/>
         </Grid.RowDefinitions>
         <ListView Grid.Row="0" 
-                  ItemsSource="{Binding Installations}" >
+                  ItemsSource="{Binding Installations}">
+            <ListView.ItemContainerStyle>
+                <Style TargetType="ListViewItem">
+                    <Setter Property="Height" Value="30"/>
+                </Style>
+            </ListView.ItemContainerStyle>
             <ListView.ItemTemplate>
+                
                 <DataTemplate>
-                    <StackPanel>
-                        <TextBlock Text="{Binding Name}" />
-                    </StackPanel>
+                    <TextBlock Text="{Binding Name}" Height="20"/>
                 </DataTemplate>
             </ListView.ItemTemplate>
         </ListView>
         <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Right">
-            <Button Content="Add New" />
+            <Button Content="Add New" Command="{Binding AddNewInstallationCommand}"/>
             <Button Content="Delete" />
             <Button Content="Edit" />
         </StackPanel>

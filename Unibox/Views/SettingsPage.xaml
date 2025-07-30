@@ -20,13 +20,24 @@
             </StackPanel>
         </GroupBox>
 
-        <GroupBox Header="User Interface" Margin="0,10,0,0">
-            <StackPanel Orientation="Vertical">
-                <ComboBox Margin="10" Width="200">
-                    <ComboBoxItem Content="Light Theme"/>
-                    <ComboBoxItem Content="Dark Theme"/>
-                </ComboBox>
-            </StackPanel>
+        <GroupBox Header="Screenscraper.fr" Margin="0,10,0,0">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="auto" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="auto"/>
+                    <RowDefinition Height="auto"/>
+                </Grid.RowDefinitions>
+                <TextBlock Grid.Column="0" Grid.Row="0" Text="Username:"/>
+                <TextBlock Grid.Column="0" Grid.Row="1" Text="Password:"/>
+                <TextBox Grid.Column="1" Grid.Row="0" Text="un"/>
+                <PasswordBox Grid.Column="1" Grid.Row="1"  />
+                <Button Content="Test Connection"/>
+
+            </Grid>
+            
         </GroupBox>
 
     </StackPanel>

@@ -6,6 +6,8 @@
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <UseWPF>true</UseWPF>
+    <PackageIcon>UniboxLogo512.png</PackageIcon>
+    <ApplicationIcon>UniboxLogo512.ico</ApplicationIcon>
   </PropertyGroup>
 
   <ItemGroup>
@@ -33,12 +35,20 @@
     <Content Include="Resources\Images\SpaceInvader.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="UniboxLogo512.ico" />
   </ItemGroup>
 
   <ItemGroup>
     <EmbeddedResource Include="Resources\Images\UniboxLogo512.ico">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </EmbeddedResource>
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="..\Dev Assets\Images\Final\UniboxLogo512.png">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
   </ItemGroup>
 
   <ItemGroup>
