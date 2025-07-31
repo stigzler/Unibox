@@ -10,7 +10,7 @@ namespace Unibox
         public MainWindow()
         {
             InitializeComponent();
-            this.DataContext = App.Current.Services.GetService(typeof(ViewModels.MainViewModel));
+            this.DataContext = App.Current.Services.GetService(typeof(ViewModels.MainWindowVM));
         }
 
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)

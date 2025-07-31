@@ -23,7 +23,7 @@ namespace Unibox.Views
         public InstallationsPage()
         {
             InitializeComponent();
-            this.DataContext = App.Current.Services.GetService(typeof(ViewModels.InstallationsViewModel));
+            this.DataContext = App.Current.Services.GetService(typeof(ViewModels.InstallationsVM));
 
         }
     }

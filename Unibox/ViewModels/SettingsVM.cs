@@ -10,7 +10,7 @@ using System.Windows;
 
 namespace Unibox.ViewModels
 {
-    public partial class SettingsViewModel : ObservableObject
+    public partial class SettingsVM : ObservableObject
     {
         [RelayCommand]
         private void ToggleDarkMode()

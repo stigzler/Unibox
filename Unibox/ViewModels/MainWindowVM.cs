@@ -1,19 +1,27 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using CommunityToolkit.Mvvm.Messaging;
 using LiteDB;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Unibox.Data.LiteDb;
 using Unibox.Data.Models;
+using Unibox.Messages;
 using Unibox.Services;
 
 namespace Unibox.ViewModels
 {
-    public partial class MainViewModel : ObservableObject
+    public partial class MainWindowVM : ObservableObject, IRecipient<InstallationAddedMessage>
     {
+
+
+        [ObservableProperty]
+        private string title = "Unibox";
+    
         [ObservableProperty]
         private object? currentPage;
 
@@ -25,20 +33,21 @@ namespace Unibox.ViewModels
 
         public DatabaseService DatabaseService;
 
-        public MainViewModel()
+        public MainWindowVM()
         {
         }
 
-        public MainViewModel(DatabaseService databaseService)
+        public MainWindowVM(DatabaseService databaseService)
         {
             DatabaseService = databaseService;
 
             Helpers.Theming.ApplyTheme();
 
-            Installations = DatabaseService.Database.Collections.Installations.FindAll();
+            WeakReferenceMessenger.Default.Register<InstallationAddedMessage>(this);
 
-            NavigateToGames();            
+            UpdateIstallationsFromDatabase();
 
+            NavigateToInstallations();            
         }
 
         [RelayCommand]
@@ -65,6 +74,15 @@ namespace Unibox.ViewModels
             CurrentPage = new Views.InstallationsPage();
         }
 
+        private void UpdateIstallationsFromDatabase()
+        {
+            Installations = new ObservableCollection<InstallationModel>(DatabaseService.Database.Collections.Installations.FindAll());
+        }
+
+        void IRecipient<InstallationAddedMessage>.Receive(InstallationAddedMessage message)
+        {
+            UpdateIstallationsFromDatabase();
+        }
     }
 }
 

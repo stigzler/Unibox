@@ -4,6 +4,7 @@ using System.Data;
 using System.Windows;
 using Unibox.Services;
 using Unibox.ViewModels;
+using Unibox.Views;
 
 namespace Unibox
 {
@@ -21,7 +22,7 @@ namespace Unibox
 
             Window window = new MainWindow
             {
-                DataContext = Services.GetService<MainViewModel>() // Set the DataContext to the MainViewModel
+                DataContext = Services.GetService<MainWindowVM>() // Set the DataContext to the MainWindowVM
             };
 
             window.Show();
@@ -45,12 +46,14 @@ namespace Unibox
             var services = new ServiceCollection();
 
             // Register Services
-            services.AddSingleton<DatabaseService>(); // Register the DatabaseService
+            services.AddSingleton<DatabaseService>(); // Register the databaseService
+            services.AddSingleton<InstallationsService>(); // Register the Installations Helper Service
 
             // Register ViewModels
-            services.AddTransient<MainViewModel>();
-            services.AddTransient<SettingsViewModel>();
-            services.AddTransient<InstallationsViewModel>();
+            services.AddTransient<MainWindowVM>();
+            services.AddTransient<SettingsVM>();
+            services.AddTransient<InstallationsVM>();
+            services.AddTransient<AddInstallationVM>();
 
             // Add other necessary services here
             // e.g., services.AddSingleton<IDataService, DataService>();

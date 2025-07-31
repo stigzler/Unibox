@@ -9,7 +9,7 @@
         xmlns:converters="clr-namespace:Unibox.Converters"
         xmlns:adonis="clr-namespace:AdonisUI.Controls;assembly=AdonisUI"
         mc:Ignorable="d"
-        d:DataContext="{d:DesignInstance Type=vm:MainViewModel, IsDesignTimeCreatable=True}"
+        d:DataContext="{d:DesignInstance Type=vm:MainWindowVM, IsDesignTimeCreatable=True}"
         Title="Unibox" Height="450" Width="800" 
         WindowStartupLocation="CenterScreen" Closing="Window_Closing">
 
@@ -35,17 +35,18 @@
         </ResourceDictionary>
     </Window.Resources>
 
-
-    <Grid Margin="4">
-        <StackPanel Orientation="Vertical">
+    <Grid Margin="4" >
+        
+        <DockPanel LastChildFill="True">
+            
             <!-- TITLE BAR -->
-            <Grid HorizontalAlignment="Left" Margin="0,0,0,6">
+            <Grid HorizontalAlignment="Left" Margin="0,0,0,6" DockPanel.Dock="Top">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="45"/>
+                    <ColumnDefinition Width="auto"/>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="auto"/>
                     <ColumnDefinition Width="*"/>
-                    <ColumnDefinition MinWidth="200"/>
-                    <ColumnDefinition Width="*"/>
-                    <ColumnDefinition MinWidth="200"/>
                 </Grid.ColumnDefinitions>
                 
                 <!-- Hamburger Icon -->
@@ -63,6 +64,7 @@
                 <ComboBox Grid.Column="4" Margin="2" />
                 
             </Grid>
+      
             <!-- MAIN GRID -->
             <Grid>
                 <Grid.ColumnDefinitions>
@@ -72,8 +74,7 @@
                 </Grid.ColumnDefinitions>
 
                 <!-- Collapsible Menu -->
-                <StackPanel Grid.Column="0"
-                 Grid.ColumnSpan="2">
+                <StackPanel Grid.Column="0"  Grid.ColumnSpan="2">
 
                     <!-- Menu Buttons -->
 
@@ -83,7 +84,6 @@
                             <TextBlock Text="Games" Margin="5" FontSize="16" FontWeight="Bold"/>
                         </StackPanel>
                     </Button>
-
 
                     <Button  Padding="5" Margin="2,3,2,2" Command="{Binding NavigateToInstallationsCommand}" HorizontalContentAlignment="Left">
                         <StackPanel Orientation="Horizontal" >
@@ -102,9 +102,10 @@
                 </StackPanel>
 
                 <!-- Main Content -->
-                <ContentControl Grid.Column="2" Content="{Binding CurrentPage}" />
+                <ContentControl Grid.Column="2" 
+                                Content="{Binding CurrentPage}" Background="Green"/>
             </Grid>
-        </StackPanel>
+        </DockPanel>
     </Grid>
 
 

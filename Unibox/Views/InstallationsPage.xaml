@@ -6,31 +6,29 @@
              xmlns:local="clr-namespace:Unibox.Views"
              xmlns:vm="clr-namespace:Unibox.ViewModels"
              mc:Ignorable="d" 
-             d:DataContext="{d:DesignInstance Type=vm:InstallationsViewModel, IsDesignTimeCreatable=True}"
-             d:DesignHeight="450" d:DesignWidth="800">
-    <Grid>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="*"/>
-            <RowDefinition Height="40"/>
-        </Grid.RowDefinitions>
-        <ListView Grid.Row="0" 
-                  ItemsSource="{Binding Installations}">
+             d:DataContext="{d:DesignInstance Type=vm:InstallationsVM, IsDesignTimeCreatable=True}"
+             d:DesignHeight="243" d:DesignWidth="551">
+    <DockPanel >
+
+        <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal" HorizontalAlignment="Right" Height="50">
+            <Button Content="Add New" Command="{Binding AddNewInstallationCommand}"/>
+            <Button Content="Delete" />
+            <Button Content="Edit" />
+        </StackPanel>
+
+        <ListView ItemsSource="{Binding Installations}" BorderBrush="Gray" BorderThickness="1"
+                  ScrollViewer.VerticalScrollBarVisibility="Auto">
             <ListView.ItemContainerStyle>
                 <Style TargetType="ListViewItem">
                     <Setter Property="Height" Value="30"/>
                 </Style>
             </ListView.ItemContainerStyle>
             <ListView.ItemTemplate>
-                
                 <DataTemplate>
                     <TextBlock Text="{Binding Name}" Height="20"/>
                 </DataTemplate>
             </ListView.ItemTemplate>
         </ListView>
-        <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Right">
-            <Button Content="Add New" Command="{Binding AddNewInstallationCommand}"/>
-            <Button Content="Delete" />
-            <Button Content="Edit" />
-        </StackPanel>
-    </Grid>
+
+    </DockPanel>
 </UserControl>

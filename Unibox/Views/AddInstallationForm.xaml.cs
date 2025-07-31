@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.RightsManagement;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -10,20 +11,25 @@ using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
 using System.Windows.Shapes;
 
 namespace Unibox.Views
 {
     /// <summary>
-    /// Interaction logic for SettingsPage.xaml
+    /// Interaction logic for AddInstallationForm.xaml
     /// </summary>
-    public partial class SettingsPage : UserControl
+    public partial class AddInstallationForm : Window
     {
-        public SettingsPage()
+        public AddInstallationForm()
         {
             InitializeComponent();
-            this.DataContext = App.Current.Services.GetService(typeof(ViewModels.SettingsVM));
+            this.DataContext = App.Current.Services.GetService(typeof(ViewModels.AddInstallationVM));
+            this.Owner = Application.Current.MainWindow;
         }
+
+        
+
+
+
     }
 }
