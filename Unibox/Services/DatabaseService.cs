@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Unibox.Data.LiteDb;
+using Unibox.Data.Models;
 
 namespace Unibox.Services
 {
@@ -37,6 +38,11 @@ namespace Unibox.Services
             {
                 throw new Exception("Database is not open.");
             }
+        }
+
+        internal PlatformModel GetPlatformByName(string name)
+        {
+            return Database.Collections.Platforms.FindOne(x => x.Name == name);
         }
     }
 }

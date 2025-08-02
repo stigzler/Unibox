@@ -34,5 +34,29 @@ namespace Unibox.Properties {
                 this["AppDarkMode"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string InstallationInitialDirectory {
+            get {
+                return ((string)(this["InstallationInitialDirectory"]));
+            }
+            set {
+                this["InstallationInitialDirectory"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string RemapToInitialDirectory {
+            get {
+                return ((string)(this["RemapToInitialDirectory"]));
+            }
+            set {
+                this["RemapToInitialDirectory"] = value;
+            }
+        }
     }
 }

@@ -1,0 +1,54 @@
+﻿<Window x:Class="Unibox.Views.InstallationPlatformDetails"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Unibox.Views"
+        xmlns:adonis="clr-namespace:AdonisUI.Controls;assembly=AdonisUI"
+        xmlns:vm="clr-namespace:Unibox.ViewModels"
+        d:DataContext="{d:DesignInstance Type=vm:InstallationPlatformDetailsVM, IsDesignTimeCreatable=True}"
+        mc:Ignorable="d" WindowStartupLocation="CenterOwner"
+        Title="Platform Details" Height="450" Width="800">
+
+    <Window.Style>
+        <Style TargetType="Window" BasedOn="{StaticResource {x:Type Window}}"/>
+    </Window.Style>
+
+    <Window.Resources>
+        <ResourceDictionary Source="/Resources/Dictionaries/Styles.xaml"/>
+    </Window.Resources>
+
+    <DockPanel LastChildFill="True">
+        <StackPanel DockPanel.Dock="Top">
+            <TextBlock x:Name="Title"  Text="{Binding PageTitle}" Style="{DynamicResource PageHeader}"/>
+            <TextBlock x:Name="SubTitle" Text="{Binding PageSubtitle}" Style="{DynamicResource PageSubText}"/>
+        </StackPanel>
+        <StackPanel Orientation="Horizontal" DockPanel.Dock="Bottom" HorizontalAlignment="Right" Margin="5">
+            <StackPanel Orientation="Horizontal" Margin="5">
+                <TextBlock Text="Platforms: " Margin="5,0,0,0" VerticalAlignment="Center"/>
+                <TextBlock Text="{Binding Platforms.Count}" VerticalAlignment="Center" d:Text="0"></TextBlock>
+            </StackPanel>
+            <Button Content="Copy Path" ToolTip="Copies the path of the selected platform to the clipboard."
+                    Margin="5" Width="75"
+                    Command="{Binding CopyPathCommand}" />
+            <Button Content="OK" Margin="5" Width="75"
+                    Command="{Binding ProcessOkButtonCommand}" 
+                    CommandParameter="{Binding RelativeSource={RelativeSource AncestorType=Window}}"  />
+
+        </StackPanel>
+        <Border BorderThickness="1" BorderBrush="gray" Margin="6">
+            <ListView x:Name="MainList" ItemsSource="{Binding Platforms}" ScrollViewer.VerticalScrollBarVisibility="Auto"
+                      SelectedItem="{Binding SelectedPlatform, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+                <ListView.View>
+                    <GridView>
+                        <GridViewColumn Header="Name" Width="200" DisplayMemberBinding="{Binding Name}" />
+                        <GridViewColumn Header="ScrapeAs" Width="120" DisplayMemberBinding="{Binding LaunchboxScrapeAs}" />
+                        <GridViewColumn Header="Roms Path" DisplayMemberBinding="{Binding LaunchboxRomFolder}" />
+                    </GridView>
+                </ListView.View>
+
+            </ListView>
+
+        </Border>
+    </DockPanel>
+</Window>

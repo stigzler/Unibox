@@ -26,4 +26,9 @@
         <Setter Property="TextWrapping" Value="Wrap"/>
     </Style>
 
+    <Style TargetType="TextBlock" x:Key="GroupBoxSubHeading">
+        <Setter Property="FontWeight" Value="Bold"/>
+    </Style>
+
+
 </ResourceDictionary>

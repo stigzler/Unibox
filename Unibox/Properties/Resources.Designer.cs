@@ -22,7 +22,7 @@ namespace Unibox.Properties {
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "17.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    internal class Resources {
+    public class Resources {
         
         private static global::System.Resources.ResourceManager resourceMan;
         
@@ -36,7 +36,7 @@ namespace Unibox.Properties {
         ///   Returns the cached ResourceManager instance used by this class.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        internal static global::System.Resources.ResourceManager ResourceManager {
+        public static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
                     global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Unibox.Properties.Resources", typeof(Resources).Assembly);
@@ -51,12 +51,21 @@ namespace Unibox.Properties {
         ///   resource lookups using this strongly typed resource class.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        internal static global::System.Globalization.CultureInfo Culture {
+        public static global::System.Globalization.CultureInfo Culture {
             get {
                 return resourceCulture;
             }
             set {
                 resourceCulture = value;
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to For remote installations (i.e. ones on the network rather than the host machine) if you have your roms or media in locations set to ones other than the launchbox default (i.e. within the installation folder) these paths will show up as on the remote computer’s remote drives (e.g. &apos;D:\Games&apos;). These will need to be set to a full UNC path in order to allow remote editing. Unibox can automatically make these replacements by specifying a part of the path to replace with what text. In the example, ‘D:\Games’ can [rest of string was truncated]&quot;;.
+        /// </summary>
+        public static string AddInstallationPathReplacementHelp {
+            get {
+                return ResourceManager.GetString("AddInstallationPathReplacementHelp", resourceCulture);
             }
         }
     }

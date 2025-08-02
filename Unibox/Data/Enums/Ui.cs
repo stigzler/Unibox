@@ -14,4 +14,7 @@ namespace Unibox.Data.Enums
         Yes,
         No,
     }
+
+
+
 }

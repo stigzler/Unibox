@@ -19,16 +19,13 @@ namespace Unibox.ViewModels
         private ObservableCollection<InstallationModel> installations = new ObservableCollection<InstallationModel>();
 
         private DatabaseService databaseService;
-        private InstallationsService installationsService;
-
         public InstallationsVM()
         {             
         }
 
-        public InstallationsVM(DatabaseService databaseService, InstallationsService installationsService)
+        public InstallationsVM(DatabaseService databaseService)
         {
             this.databaseService = databaseService;
-            this.installationsService = installationsService;
 
             UpdateIstallationsFromDatabase();
         }

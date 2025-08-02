@@ -16,8 +16,7 @@
             <Button Content="Edit" />
         </StackPanel>
 
-        <ListView ItemsSource="{Binding Installations}" BorderBrush="Gray" BorderThickness="1"
-                  ScrollViewer.VerticalScrollBarVisibility="Auto">
+        <ListView ItemsSource="{Binding Installations}" ScrollViewer.VerticalScrollBarVisibility="Auto">
             <ListView.ItemContainerStyle>
                 <Style TargetType="ListViewItem">
                     <Setter Property="Height" Value="30"/>
