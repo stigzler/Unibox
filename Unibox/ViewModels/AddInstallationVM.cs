@@ -6,6 +6,7 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Windows;
+using Unibox.Data.Enums;
 using Unibox.Data.Models;
 using Unibox.Messages;
 using Unibox.Services;
@@ -25,12 +26,21 @@ namespace Unibox.ViewModels
         private bool onRemoteMachine = false;
 
         [ObservableProperty]
-        [NotifyPropertyChangedFor(nameof(RemapTo))]
-        private string remapFrom = String.Empty;
+        [NotifyPropertyChangedFor(nameof(RemapRomsTo))]
+        private string remapRomsFrom = String.Empty;
 
         [ObservableProperty]
-        [NotifyPropertyChangedFor(nameof(RemapFrom))]
-        private string remapTo = String.Empty;
+        [NotifyPropertyChangedFor(nameof(RemapRomsFrom))]
+        private string remapRomsTo = String.Empty;
+
+        [ObservableProperty]
+        [NotifyPropertyChangedFor(nameof(RemapMediaTo))]
+        private string remapMediaFrom = String.Empty;
+
+        [ObservableProperty]
+        [NotifyPropertyChangedFor(nameof(RemapMediaFrom))]
+        private string remapMediaTo = String.Empty;
+
 
         [ObservableProperty]
         private bool isValid;
@@ -42,20 +52,33 @@ namespace Unibox.ViewModels
         private PlatformUpdateService platformUpdateService;
 
         private static readonly string[] ValidatedProperties =
-            { nameof(Name), nameof(InstallationPath), nameof(RemapFrom), nameof(RemapTo) };
+            { nameof(Name), nameof(InstallationPath), nameof(RemapRomsFrom), nameof(RemapRomsTo) };
 
         [RelayCommand]
         private void BrowseForInstallationPath()
         {
             string path = Helpers.FileSystem.GetInstallationsPath();
-            if (!string.IsNullOrWhiteSpace(path))
+            if (!string.IsNullOrWhiteSpace(path) && Helpers.FileSystem.IsLaunchboxRootDirectory(path))
             {
                 InstallationPath = path;
+                if (!OnRemoteMachine)
+                {
+                    RemapMediaFrom = string.Empty;
+                    RemapMediaTo = string.Empty;
+                    RemapRomsFrom = string.Empty;
+                    RemapRomsTo = string.Empty;
+
+                }
+            }
+            else
+            {
+                AdonisUI.Controls.MessageBox.Show("Invalid path selected for the Launchbox root directory. Please ammend", "Invalid Path",
+                     AdonisUI.Controls.MessageBoxButton.OK, AdonisUI.Controls.MessageBoxImage.Error);
             }
         }
 
         [RelayCommand]
-        private void BrowseForRemapTo()
+        private void BrowseForRemapTo(string pathType)
         {
             string path = Unibox.Helpers.FileSystem.GetRemapToPath();
 
@@ -68,13 +91,25 @@ namespace Unibox.ViewModels
                 return;
             }
 
-            RemapTo = path;
+            if (pathType == "Roms")
+                RemapRomsTo = path;
+            else
+                RemapMediaTo = path;
+        }
+
+        [RelayCommand]
+        private void ClearText(string relevantText)
+        {
+            if (relevantText == "Roms")
+                RemapRomsTo = String.Empty;
+            else if (relevantText == "Media")
+                RemapMediaTo = String.Empty;
         }
 
         [RelayCommand]
         private void ShowPlatformRomFolders()
         {
-            string prospectiveXmlPath = Path.Combine(InstallationPath,Data.Constants.Paths.LaunchboxRelDataDir,
+            string prospectiveXmlPath = Path.Combine(InstallationPath, Data.Constants.Paths.LaunchboxRelDataDir,
                 Data.Constants.Paths.LaunchboxPlatformsXmlFile);
 
             if (!File.Exists(prospectiveXmlPath))
@@ -82,21 +117,32 @@ namespace Unibox.ViewModels
                 AdonisUI.Controls.MessageBox.Show($"Could not locate the Launchbox platforms.xml file for this installation. " +
                     $"Please check it is available on this path: {prospectiveXmlPath}", "Invalid Path",
                     AdonisUI.Controls.MessageBoxButton.OK, AdonisUI.Controls.MessageBoxImage.Error);
+                return;
             }
 
             ObservableCollection<PlatformModel> platforms = new ObservableCollection<PlatformModel>(platformUpdateService.GetPlatformsFromXml(InstallationPath).OrderBy(p => p.Name));
 
-            InstallationPlatformDetails installationPlatformDetails =
-                new InstallationPlatformDetails();
+            InstallationPlatformDetails installationPlatformDetails = new InstallationPlatformDetails();
+
             installationPlatformDetails.ViewModel.PageTitle = "Launchbox database paths for Installation";
             installationPlatformDetails.ViewModel.PageSubtitle = "This list allows you to study what each Platform's Rom and Media paths look like in" +
                 " the installation's Launchbox database. Useful when considering whether to set up a path remap for remote installations" +
                 " (where rom paths are stored as local paths on the remote machine, meaning you need to remap the relevant part of those" +
                 " paths to use the remote UNC path instead).";
+
             installationPlatformDetails.ViewModel.Platforms = new ObservableCollection<PlatformModel>(platforms);
 
             installationPlatformDetails.ShowDialog();
 
+            DialogResult dialogResult = installationPlatformDetails.ViewModel.DialogResult;
+            if (dialogResult == Data.Enums.DialogResult.UsePath)
+            {
+                if (installationPlatformDetails.ViewModel.SelectedPlatform != null)
+                {
+                    RemapRomsFrom = installationPlatformDetails.ViewModel.SelectedPlatform.LaunchboxRomFolder;
+                    RemapMediaFrom = installationPlatformDetails.ViewModel.SelectedPlatformFolder.Folderpath;
+                }
+            }
         }
 
         [RelayCommand]
@@ -118,9 +164,6 @@ namespace Unibox.ViewModels
                 window.Close();
             }
         }
-
-
-
 
         public AddInstallationVM()
         {
@@ -165,24 +208,54 @@ namespace Unibox.ViewModels
                         return "Not a Launchbox root directory.";
                     break;
 
-                case nameof(RemapFrom):
-                    if (!String.IsNullOrWhiteSpace(RemapFrom))
+                case nameof(RemapRomsFrom):
+                    if (!String.IsNullOrWhiteSpace(RemapRomsFrom))
+                    {
                         if (!OnRemoteMachine)
                             return "Remap not needed as Installation is on this local machine. Please remove.";
-                        else if (!Helpers.FileSystem.IsVolumedAndRooted(RemapFrom))
-                            return "Remap From path must be a Volumed path (e.g. 'D:\\Games')";
-                    else if (RemapFrom.EndsWith('/') || RemapFrom.EndsWith('\\'))
-                            return "Remap From path cannot end with a slash or backslash.";
-                    else if (Helpers.FileSystem.PathHasInvalidChars(RemapFrom))
-                        return "Remap From path cannot contain invalid characters.";
+                        else if (!Helpers.FileSystem.IsVolumedAndRooted(RemapRomsFrom))
+                            return "Replace Text path must be a Volumed path (e.g. 'D:\\Games')";
+
+                        else if (RemapRomsFrom.EndsWith('/') || RemapRomsFrom.EndsWith('\\'))
+                            return "Replace Text path cannot end with a slash or backslash.";
+
+                    }
+                    else if (RemapRomsFrom.Length > 0 && String.IsNullOrWhiteSpace(RemapRomsFrom))
+                        return "Replace Text path is just whitespace.";
                     break;
 
-                case nameof(RemapTo):
-                    if (!String.IsNullOrWhiteSpace(RemapFrom) && String.IsNullOrWhiteSpace(RemapTo))
-                        return "Cannot be null when Remap From is set.";
+                case nameof(RemapRomsTo):
+                    if (!String.IsNullOrWhiteSpace(RemapRomsFrom) && String.IsNullOrWhiteSpace(RemapRomsTo))
+                        return "Cannot be null when Replace Text is set.";
+                    else if (!String.IsNullOrWhiteSpace(RemapRomsTo) && String.IsNullOrWhiteSpace(RemapRomsFrom))
+                        return "A path must be set in Replace Text.";
+                    else if (!String.IsNullOrWhiteSpace(RemapRomsFrom) && !Helpers.FileSystem.IsNetworkPath(RemapRomsTo))
+                        return "The path must be a network path";
+                    break;
 
-                    if (!String.IsNullOrWhiteSpace(RemapTo) && String.IsNullOrWhiteSpace(RemapFrom))
-                        return "A path must be set in Remap To.";
+                case nameof(RemapMediaFrom):
+                    if (!String.IsNullOrWhiteSpace(RemapMediaFrom))
+                    {
+                        if (!OnRemoteMachine)
+                            return "Remap not needed as Installation is on this local machine. Please remove.";
+                        else if (!Helpers.FileSystem.IsVolumedAndRooted(RemapMediaFrom))
+                            return "Replace Text path must be a Volumed path (e.g. 'D:\\Games')";
+
+                        else if (RemapMediaFrom.EndsWith('/') || RemapMediaFrom.EndsWith('\\'))
+                            return "Replace Text path cannot end with a slash or backslash.";
+
+                    }
+                    else if (RemapMediaFrom.Length > 0 && String.IsNullOrWhiteSpace(RemapMediaFrom))
+                        return "Replace Text path is just whitespace.";
+                    break;
+
+                case nameof(RemapMediaTo):
+                    if (!String.IsNullOrWhiteSpace(RemapMediaFrom) && String.IsNullOrWhiteSpace(RemapMediaTo))
+                        return "Cannot be null when Replace Text is set.";
+                    else if (!String.IsNullOrWhiteSpace(RemapMediaTo) && String.IsNullOrWhiteSpace(RemapMediaFrom))
+                        return "A path must be set in Replace Text.";
+                    else if (!String.IsNullOrWhiteSpace(RemapMediaFrom) && !Helpers.FileSystem.IsNetworkPath(RemapMediaTo))
+                        return "The path must be a network path";
                     break;
             }
 

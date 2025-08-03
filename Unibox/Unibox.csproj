@@ -11,6 +11,8 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Resources\Images\eraser.png" />
+    <None Remove="Resources\Images\folder-horizontal-open.png" />
     <None Remove="Resources\Images\information.png" />
     <None Remove="Resources\Images\LaunchboxLogoB+W.png" />
     <None Remove="Resources\Images\menu-burger.png" />
@@ -21,6 +23,8 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Resource Include="Resources\Images\eraser.png" />
+    <Resource Include="Resources\Images\folder-horizontal-open.png" />
     <Resource Include="Resources\Images\information.png">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </Resource>

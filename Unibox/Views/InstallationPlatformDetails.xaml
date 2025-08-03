@@ -8,7 +8,7 @@
         xmlns:vm="clr-namespace:Unibox.ViewModels"
         d:DataContext="{d:DesignInstance Type=vm:InstallationPlatformDetailsVM, IsDesignTimeCreatable=True}"
         mc:Ignorable="d" WindowStartupLocation="CenterOwner"
-        Title="Platform Details" Height="450" Width="800">
+        Title="Platform Details" Height="674" Width="610">
 
     <Window.Style>
         <Style TargetType="Window" BasedOn="{StaticResource {x:Type Window}}"/>
@@ -18,7 +18,7 @@
         <ResourceDictionary Source="/Resources/Dictionaries/Styles.xaml"/>
     </Window.Resources>
 
-    <DockPanel LastChildFill="True">
+    <DockPanel >
         <StackPanel DockPanel.Dock="Top">
             <TextBlock x:Name="Title"  Text="{Binding PageTitle}" Style="{DynamicResource PageHeader}"/>
             <TextBlock x:Name="SubTitle" Text="{Binding PageSubtitle}" Style="{DynamicResource PageSubText}"/>
@@ -28,27 +28,58 @@
                 <TextBlock Text="Platforms: " Margin="5,0,0,0" VerticalAlignment="Center"/>
                 <TextBlock Text="{Binding Platforms.Count}" VerticalAlignment="Center" d:Text="0"></TextBlock>
             </StackPanel>
-            <Button Content="Copy Path" ToolTip="Copies the path of the selected platform to the clipboard."
+            <Button Content="Use Paths" ToolTip="Populates 'Replace Text' with the selected Rom and Media Paths for editing."
                     Margin="5" Width="75"
-                    Command="{Binding CopyPathCommand}" />
+                    Command="{Binding UsePathCommand}" CommandParameter="{Binding RelativeSource={RelativeSource AncestorType=Window}}" />
             <Button Content="OK" Margin="5" Width="75"
-                    Command="{Binding ProcessOkButtonCommand}" 
-                    CommandParameter="{Binding RelativeSource={RelativeSource AncestorType=Window}}"  />
+                    Command="{Binding ProcessOkButtonCommand}" CommandParameter="{Binding RelativeSource={RelativeSource AncestorType=Window}}"  />
 
         </StackPanel>
-        <Border BorderThickness="1" BorderBrush="gray" Margin="6">
-            <ListView x:Name="MainList" ItemsSource="{Binding Platforms}" ScrollViewer.VerticalScrollBarVisibility="Auto"
+
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="6"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+
+            <Border Grid.Row="0" BorderThickness="1" BorderBrush="gray" Margin="6" >
+                <DockPanel >
+                    <TextBlock Text="Rom Paths" DockPanel.Dock="Top" FontWeight="Bold" Margin="5"></TextBlock>
+                    <ListView x:Name="MainList"  ItemsSource="{Binding Platforms}" ScrollViewer.VerticalScrollBarVisibility="auto"
                       SelectedItem="{Binding SelectedPlatform, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
-                <ListView.View>
-                    <GridView>
-                        <GridViewColumn Header="Name" Width="200" DisplayMemberBinding="{Binding Name}" />
-                        <GridViewColumn Header="ScrapeAs" Width="120" DisplayMemberBinding="{Binding LaunchboxScrapeAs}" />
-                        <GridViewColumn Header="Roms Path" DisplayMemberBinding="{Binding LaunchboxRomFolder}" />
-                    </GridView>
-                </ListView.View>
+                        <ListView.View>
+                            <GridView>
+                                <GridViewColumn Header="Name" Width="200" DisplayMemberBinding="{Binding Name}" />
+                                <GridViewColumn Header="ScrapeAs" Width="120" DisplayMemberBinding="{Binding LaunchboxScrapeAs}" />
+                                <GridViewColumn Header="Roms Path" Width="auto" DisplayMemberBinding="{Binding LaunchboxRomFolder}" />
+                            </GridView>
+                        </ListView.View>
+                    </ListView>
+                </DockPanel>
+            </Border>
+            
+            <GridSplitter Grid.Row="1" Background="gray" BorderThickness="10" Margin="2"
+                          HorizontalAlignment="Stretch" ></GridSplitter>
 
-            </ListView>
 
-        </Border>
+            <Border Grid.Row="2" BorderThickness="1" BorderBrush="gray" Margin="6">
+                <DockPanel>
+                    <TextBlock Text="Media Paths" DockPanel.Dock="Top" FontWeight="Bold" Margin="5"></TextBlock>
+
+                    <ListView ItemsSource="{Binding PlatformFolders, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" ScrollViewer.VerticalScrollBarVisibility="Auto"
+                      SelectedItem="{Binding SelectedPlatformFolder, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+                        <ListView.View>
+                            <GridView>
+                                <GridViewColumn Header="Media Type" Width="200" DisplayMemberBinding="{Binding MediaType}" />
+                                <GridViewColumn Header="Folder Path" Width="auto" DisplayMemberBinding="{Binding Folderpath}" />
+                            </GridView>
+                        </ListView.View>
+                    </ListView>
+                </DockPanel>
+            </Border>
+            
+        </Grid>
+
     </DockPanel>
 </Window>

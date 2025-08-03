@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Unibox.Properties;
 
@@ -31,9 +32,17 @@ namespace Unibox.Helpers
             return true; // is a UNC path
         }
 
-        public static bool PathHasInvalidChars(string path)
+        public static bool IsValidFilepath(string path)
         {
-            return (!string.IsNullOrEmpty(path) && path.IndexOfAny(System.IO.Path.GetInvalidPathChars()) >= 0);
+            if (string.IsNullOrEmpty(path))
+                return false;
+
+            // Combine invalid path and file name characters
+            var invalidChars = new HashSet<char>(
+                Path.GetInvalidPathChars().Concat(Path.GetInvalidFileNameChars())
+            );
+
+            return !path.Any(c => invalidChars.Contains(c));
         }
 
         public static string GetInstallationsPath()
@@ -61,7 +70,7 @@ namespace Unibox.Helpers
 
             OpenFolderDialog openFolderDialog = new OpenFolderDialog
             {
-                Title = "Select the directory to remap the Launchbox database local paths to",
+                Title = "Select the directory to remap the Launchbox database paths to",
                 InitialDirectory = Settings.Default.RemapToInitialDirectory            
 
             };

@@ -6,13 +6,14 @@ using System.Threading.Tasks;
 
 namespace Unibox.Data.Enums
 {
-    internal enum DialogResult
+    public enum DialogResult
     {
         Unset,
         OK,
         Cancel,
         Yes,
         No,
+        UsePath
     }
 
 

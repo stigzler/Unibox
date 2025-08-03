@@ -25,29 +25,43 @@ namespace Unibox.ViewModels
         ObservableCollection<PlatformModel> platforms = new ObservableCollection<PlatformModel>();
 
         [ObservableProperty]
+        ObservableCollection<PlatformFolderModel> platformFolders = new ObservableCollection<PlatformFolderModel>();
+
+        [ObservableProperty]
+        [NotifyPropertyChangedFor(nameof(PlatformFolders))]
         private PlatformModel selectedPlatform = null;
+
+        [ObservableProperty]
+        private PlatformFolderModel selectedPlatformFolder = null;
+
+        public Data.Enums.DialogResult DialogResult { get; set; }
 
         public InstallationPlatformDetailsVM()
         {
             
         }
 
-        [RelayCommand]
-        private void CopyPath()
+        partial void OnSelectedPlatformChanged(PlatformModel value)
         {
+            platformFolders = value.PlatformFolders;
+        }
+
+        [RelayCommand]
+        private void UsePath(Window window)
+        {
+            DialogResult = DialogResult.UsePath;
             Clipboard.SetText(SelectedPlatform?.LaunchboxRomFolder ?? string.Empty);
+            if (window != null) window.Close();
         }
 
         [RelayCommand]
         private void ProcessOkButton(Window window)
         {
+            DialogResult = DialogResult.OK;
             if (window != null) window.Close();        
         }
 
-        //public InstallationPlatformDetailsVM(string title, string subtitle, ObservableCollection<PlatformModel> platforms)
-        //{
 
-        //}
 
 
     }

@@ -196,6 +196,21 @@ namespace Unibox.Services
                     LaunchboxScrapeAs = platformElement.Element("ScrapeAs")?.Value
                 };
 
+                platform.PlatformFolders = new ObservableCollection<PlatformFolderModel>();
+
+                foreach (var platformFolderElement in doc.Root.Elements("PlatformFolder").Where(pf => pf.Element("Platform").Value == platform.Name))
+                {
+                    if (platformFolderElement.Element("Platform")?.Value == platform.Name)
+                    {
+                        PlatformFolderModel platformFolder = new PlatformFolderModel
+                        {
+                            MediaType = platformFolderElement.Element("MediaType")?.Value,
+                            Folderpath = platformFolderElement.Element("FolderPath")?.Value,
+                        };
+                        platform.PlatformFolders.Add(platformFolder);
+                    }
+                }
+
                 lbPlatforms.Add(platform);
             }
 

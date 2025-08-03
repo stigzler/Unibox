@@ -15,4 +15,7 @@
     <None Include="$(MSBuildThisFileDirectory)Pages\Processes.md" />
     <None Include="$(MSBuildThisFileDirectory)Pages\UserGuideSketch.md" />
   </ItemGroup>
+  <ItemGroup>
+    <Content Include="$(MSBuildThisFileDirectory)Pages\TutorialVidScript.md" />
+  </ItemGroup>
 </Project>
