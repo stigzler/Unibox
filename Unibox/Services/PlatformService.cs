@@ -182,7 +182,7 @@ namespace Unibox.Services
                //databaseService.Database.Collections.Platforms.Upsert(launchboxPlatform);
             }
 
-            //WeakReferenceMessenger.Default.Send(new Messages.InstallationAddedMessage(newInstallation));
+            //WeakReferenceMessenger.Default.Send(new Messages.InstallationDeletedMessage(newInstallation));
 
             // NB: Don't forget to review the xml for any REMOVED Platforms (i.e. local db PLatform.Name cannot be found in the xml)
             updatePlatformsOutcome.UpdatePlatformOutcome = UpdatePlatformOutcome.Success;

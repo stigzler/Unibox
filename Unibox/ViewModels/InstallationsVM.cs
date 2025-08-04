@@ -18,6 +18,9 @@ namespace Unibox.ViewModels
         [ObservableProperty]
         private ObservableCollection<InstallationModel> installations = new ObservableCollection<InstallationModel>();
 
+        [ObservableProperty]
+        private InstallationModel selectedInstallation;
+
         private DatabaseService databaseService;
         private InstallationService installationService;
         public InstallationsVM()
@@ -74,5 +77,25 @@ namespace Unibox.ViewModels
             //databaseService.Database.Collections.Installations.Insert(newInstallation);
         }
 
+        [RelayCommand]
+        private void EditInstallation()
+        {
+        }
+
+        [RelayCommand]
+        private void DeleteInstallation()
+        {
+            if (selectedInstallation == null) return;
+           
+            if (AdonisUI.Controls.MessageBox.Show($"Are you sure you want to delete the installation: {selectedInstallation.Name}?",
+                       "Delete Installation", AdonisUI.Controls.MessageBoxButton.YesNo, AdonisUI.Controls.MessageBoxImage.Warning)
+                       == AdonisUI.Controls.MessageBoxResult.Yes)
+            {
+                installationService.Delete(selectedInstallation);
+                WeakReferenceMessenger.Default.Send(new Messages.InstallationDeletedMessage(selectedInstallation));
+                UpdateIstallationsFromDatabase();
+            }
+        }
     }
 }
+

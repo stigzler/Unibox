@@ -21,9 +21,6 @@ namespace Unibox.Services
         {
             int count = 1;
 
-      // while (databaseService.Database.Collections.Installations.FindAll().Where(i => i.Name == $"New Installation [{count}]") != null)
-
-
             while (databaseService.Database.Collections.Installations.FindAll().Where(i => i.Name == $"New Installation [{count}]").Count() > 0)
             {
                 count++;
@@ -40,6 +37,16 @@ namespace Unibox.Services
             databaseService.Database.Collections.Installations.Insert(installationModel);
 
             return installationModel;
+        }
+
+        public bool Delete(InstallationModel installationModel)
+        {
+            if (installationModel == null)
+            {
+                throw new ArgumentNullException(nameof(installationModel), "Installation model cannot be null.");
+            }
+            var result = databaseService.Database.Collections.Installations.Delete(installationModel.ID);
+            return result;
         }
 
         public void Update(InstallationModel installationModel)
