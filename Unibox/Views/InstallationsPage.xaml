@@ -17,7 +17,7 @@
         </ResourceDictionary>
     </UserControl.Resources>
 
-    <Grid>
+    <Grid Margin="10">
         <Grid.RowDefinitions>
             <RowDefinition Height="*" />
             <RowDefinition Height="3" />
@@ -50,16 +50,16 @@
         <DockPanel Grid.Row="2" Margin="2">
             <TextBlock Text="Platforms" FontWeight="Bold" DockPanel.Dock="Top" />
             <StackPanel DockPanel.Dock="Right" Orientation="Vertical" HorizontalAlignment="Right">
-                <Button Content="Update" Command="{Binding AddNewInstallationCommand}"  Margin="2" />
-                <Button Content="Edit" Command="{Binding DeleteInstallationCommand}" Margin="2" />
+                <Button Content="Update" Command="{Binding UpdatePlatformsCommand}"  Margin="2" />
+                <Button Content="Edit" Margin="2" />
             </StackPanel>
             <Border BorderBrush="gray" BorderThickness="1" Margin="2">
-                <ListView ItemsSource="{Binding Installations}" SelectedItem="{Binding SelectedInstallation}"
+                <ListView ItemsSource="{Binding Platforms}" SelectedItem="{Binding SelectedPlatform}"
                   ScrollViewer.VerticalScrollBarVisibility="Auto">
                     <ListView.View>
                         <GridView>
                             <GridViewColumn Header="Name" Width="200" DisplayMemberBinding="{Binding Name}" />
-                            <GridViewColumn Header="Path" Width="auto" DisplayMemberBinding="{Binding InstallationPath}" />
+                            <GridViewColumn Header="Rom Folder" Width="auto" DisplayMemberBinding="{Binding ResolvedRomFolder}" />
                         </GridView>
                     </ListView.View>
                 </ListView>

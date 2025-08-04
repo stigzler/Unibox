@@ -9,29 +9,49 @@ using Unibox.Views;
 
 namespace Unibox.ViewModels
 {
-    public partial class InstallationsVM : ObservableObject, IRecipient<InstallationUpdatedMessage>
+    internal partial class InstallationsVM : ObservableObject, IRecipient<InstallationUpdatedMessage>
     {
         [ObservableProperty]
         private ObservableCollection<InstallationModel> installations = new ObservableCollection<InstallationModel>();
 
         [ObservableProperty]
+        private ObservableCollection<PlatformModel> platforms = new ObservableCollection<PlatformModel>();
+
+        [ObservableProperty]
         private InstallationModel selectedInstallation;
+
+        [ObservableProperty]
+        private PlatformModel selectedPlatform;
 
         private DatabaseService databaseService;
         private InstallationService installationService;
+        private PlatformService platformService;
 
         public InstallationsVM()
         {
         }
 
-        public InstallationsVM(DatabaseService databaseService, InstallationService installationService)
+        public InstallationsVM(DatabaseService databaseService, InstallationService installationService, PlatformService platformService)
         {
             this.databaseService = databaseService;
             this.installationService = installationService;
+            this.platformService = platformService;
 
             WeakReferenceMessenger.Default.Register<InstallationUpdatedMessage>(this);
 
             UpdateIstallationsFromDatabase();
+            this.platformService = platformService;
+        }
+
+        partial void OnSelectedInstallationChanged(InstallationModel value)
+        {
+            UpdatePlatformsList();
+        }
+
+        private void UpdatePlatformsList()
+        {
+            if (SelectedInstallation == null) return;
+            Platforms = new ObservableCollection<PlatformModel>(SelectedInstallation.Platforms);
         }
 
         private void UpdateIstallationsFromDatabase()
@@ -73,8 +93,11 @@ namespace Unibox.ViewModels
             if (newInstallation != null)
             {
                 AdonisUI.Controls.MessageBox.Show($"New Installation added successfully. " +
-                    $"Please edit this to set it up. Name: {newInstallation.Name}", "New Installaiton created",
-                        AdonisUI.Controls.MessageBoxButton.OK, AdonisUI.Controls.MessageBoxImage.Information);
+                    $"If this is for a remote installation, it is strongly advised to edit it and set up Remote Path Modificiations " +
+                    $"to ensure that Platforms get imported correctly. Once done, or if this is a local installation, you can " +
+                    $"now proceed to Update Platforms below.",
+                    "New Installaiton created",
+                    AdonisUI.Controls.MessageBoxButton.OK, AdonisUI.Controls.MessageBoxImage.Information);
                 WeakReferenceMessenger.Default.Send(new Messages.InstallationAddedMessage(newInstallation));
                 UpdateIstallationsFromDatabase();
             }
@@ -97,6 +120,16 @@ namespace Unibox.ViewModels
                 WeakReferenceMessenger.Default.Send(new InstallationDeletedMessage(selectedInstallation));
                 UpdateIstallationsFromDatabase();
             }
+        }
+
+        [RelayCommand]
+        private void UpdatePlatforms()
+        {
+            if (selectedInstallation == null) return;
+
+            platformService.UpdateInstallationPlatforms(selectedInstallation);
+
+            UpdatePlatformsList();
         }
 
         void IRecipient<InstallationUpdatedMessage>.Receive(InstallationUpdatedMessage message)

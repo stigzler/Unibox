@@ -41,6 +41,7 @@ namespace Unibox.Services
                 Name = newInstallationName,
                 InstallationPath = installtionPath,
                 Added = DateTime.Now,
+                OnRemoteMachine = Helpers.FileSystem.IsNetworkPath(installtionPath),
             };
 
             databaseService.Database.Collections.Installations.Insert(installationModel);

@@ -23,28 +23,28 @@ namespace Unibox.Services
             this.installationService = installationService;
         }
 
-        public UpdatePlatformsOutcome UpdateInstallationPlatforms(InstallationModel installationModel)
+        public UpdatePlatformsOutcome UpdateInstallationPlatforms(InstallationModel installation)
         {
             UpdatePlatformsOutcome updatePlatformsOutcome = new UpdatePlatformsOutcome();
 
             // CHECK FOR ERRORS
 
             // Check can access Installaiton Path Directory
-            if (!Directory.Exists(installationModel.InstallationPath))
+            if (!Directory.Exists(installation.InstallationPath))
             {
                 updatePlatformsOutcome.UpdatePlatformOutcome = UpdatePlatformOutcome.CannotAccessInstallationDirectory;
                 return updatePlatformsOutcome;
             }
 
             // Populate the candidate platforms list from the PLatforms.xml file:
-            ObservableCollection<PlatformModel> xmlPlatforms = GetPlatformsFromXml(installationModel.InstallationPath);
+            ObservableCollection<PlatformModel> xmlPlatforms = GetPlatformsFromXml(installation.InstallationPath);
 
             // Check if the XML Platforms file was found and parsed successfully
             if (xmlPlatforms == null)
             {
                 updatePlatformsOutcome.UpdatePlatformOutcome = UpdatePlatformOutcome.XmlFileDoesNotExist;
                 updatePlatformsOutcome.OutcomeSummary = $"The XML Platforms xml file does not exist at: " +
-                    $"{Path.Combine(installationModel.InstallationPath, Data.Constants.Paths.LaunchboxRelDataDir,
+                    $"{Path.Combine(installation.InstallationPath, Data.Constants.Paths.LaunchboxRelDataDir,
                 Data.Constants.Paths.LaunchboxPlatformsXmlFile)}";
                 return updatePlatformsOutcome;
             }
@@ -54,36 +54,38 @@ namespace Unibox.Services
             foreach (PlatformModel launchboxPlatform in xmlPlatforms)
             {
                 // Check if the platform already exists in the database
-                PlatformModel upsertPlatform = databaseService.GetPlatformByName(launchboxPlatform.Name);
-                if (upsertPlatform == null)
+                PlatformModel installationPlatform = installation.Platforms.Where(p => p.Name == launchboxPlatform.Name).FirstOrDefault();
+                if (installationPlatform == null)
                 {
                     // ADD NEW PLATFORM
                     // Does not exist, add new to the database
-                    SendMessage(UpdatePlatformMessageType.Information,
-                        $"New Platform detected. Adding platform: [{launchboxPlatform.Name}] to the database.");
+                    updatePlatformsOutcome.SubOperationOutcomes.Add(new UpdatePlatformsSubOperationOutcome(
+                        UpdatePlatformMessageType.Information,
+                        $"New Platform detected. Adding platform: [{launchboxPlatform.Name}] to the database.",
+                        launchboxPlatform.Name));
 
-                    upsertPlatform = new PlatformModel();
-                    //{
-                    //    Name = launchboxPlatform.Name,
-                    //    LaunchboxScrapeAs = launchboxPlatform.LaunchboxScrapeAs,
-                    //    LaunchboxRomFolder = launchboxPlatform.LaunchboxRomFolder,
-                    //};
+                    installationPlatform = new PlatformModel();
+                    installation.Platforms.Add(installationPlatform);
                 }
                 else
                 {
-                    SendMessage(UpdatePlatformMessageType.Information,
-                        $"Platform already in database. Updating: [{launchboxPlatform.Name}].");
+                    updatePlatformsOutcome.SubOperationOutcomes.Add(new UpdatePlatformsSubOperationOutcome(
+                        UpdatePlatformMessageType.Information,
+                        $"Platform already in database. Updating: [{launchboxPlatform.Name}].",
+                        installationPlatform.Name));
                 }
 
-                upsertPlatform.Name = launchboxPlatform.Name;
-                upsertPlatform.LaunchboxScrapeAs = launchboxPlatform.LaunchboxScrapeAs;
-                upsertPlatform.LaunchboxRomFolder = launchboxPlatform.LaunchboxRomFolder;
+                installationPlatform.Name = launchboxPlatform.Name;
+                installationPlatform.LaunchboxScrapeAs = launchboxPlatform.LaunchboxScrapeAs;
+                installationPlatform.LaunchboxRomFolder = launchboxPlatform.LaunchboxRomFolder;
 
                 // Check LaunchboxScrapeAs
                 if (launchboxPlatform.LaunchboxScrapeAs == null)
                 {
-                    SendMessage(UpdatePlatformMessageType.Warning,
-                        $"No ScrapeAs set in Launchbox. You will have to set this manually to enable metadata/media scrapes.");
+                    updatePlatformsOutcome.SubOperationOutcomes.Add(new UpdatePlatformsSubOperationOutcome(
+                        UpdatePlatformMessageType.Warning,
+                        $"No ScrapeAs set in Launchbox. You will have to set this manually to enable metadata/media scrapes.",
+                        launchboxPlatform.Name));
                 }
 
                 // ROM FOLDER OPS
@@ -91,101 +93,118 @@ namespace Unibox.Services
                 if (String.IsNullOrWhiteSpace(launchboxPlatform.LaunchboxRomFolder))
                 // Rom Folder Null - try to resolve to LB Games folder
                 {
-                    string candidatePath = Path.Combine(installationModel.InstallationPath,
+                    string candidatePath = Path.Combine(installation.InstallationPath,
                         Data.Constants.Paths.LaunchboxRelGamesDir, launchboxPlatform.Name);
 
                     if (Directory.Exists(candidatePath))
                     {
-                        SendMessage(UpdatePlatformMessageType.Warning,
-                            $"No Rom Folder set in Launchbox, but folder for this Platform exists in the Launchbox Games folder. Setting to this. It may be wise to check this is the right path.");
-                        launchboxPlatform.ResolvedRomFolder = candidatePath;
+                        updatePlatformsOutcome.SubOperationOutcomes.Add(new UpdatePlatformsSubOperationOutcome(
+                            UpdatePlatformMessageType.Warning,
+                            $"No Rom Folder set in Launchbox, but folder for this Platform exists in the Launchbox Games folder." +
+                            $" Setting to this. It may be wise to check this is the right path.",
+                            launchboxPlatform.Name));
+
+                        installationPlatform.ResolvedRomFolder = candidatePath;
                     }
                     else
                     {
-                        SendMessage(UpdatePlatformMessageType.Error,
-                        $"No Rom Folder set in Launchbox and no PLatform of this name in Launchbox/Games folder. You will have to set this manually to enable adding Roms for this Platform.");
+                        updatePlatformsOutcome.SubOperationOutcomes.Add(new UpdatePlatformsSubOperationOutcome(
+                            UpdatePlatformMessageType.Error,
+                            $"No Rom Folder set in Launchbox and no PLatform of this name in Launchbox/Games folder. " +
+                            $"You will have to set this manually to enable adding Roms for this Platform.",
+                            launchboxPlatform.Name));
                     }
                 }
                 else if (!Helpers.FileSystem.IsVolumedAndRooted(launchboxPlatform.LaunchboxRomFolder))
                 // Rom folder rootless (e.g. "Games\C64 Dreams")
                 {
-                    string lbRootRelativePath = Path.Combine(installationModel.InstallationPath, launchboxPlatform.LaunchboxRomFolder);
-                    string lbGamesRelativePath = Path.Combine(installationModel.InstallationPath, Data.Constants.Paths.LaunchboxRelGamesDir,
+                    string lbRootRelativePath = Path.Combine(installation.InstallationPath, launchboxPlatform.LaunchboxRomFolder);
+                    string lbGamesRelativePath = Path.Combine(installation.InstallationPath, Data.Constants.Paths.LaunchboxRelGamesDir,
                         launchboxPlatform.Name);
 
                     if (Directory.Exists(lbRootRelativePath))
                     {
                         // If the Rom folder is not rooted, assume it is relative to the installation path
-                        launchboxPlatform.ResolvedRomFolder = lbRootRelativePath;
+                        installationPlatform.ResolvedRomFolder = lbRootRelativePath;
 
-                        SendMessage(UpdatePlatformMessageType.Information,
+                        updatePlatformsOutcome.SubOperationOutcomes.Add(new UpdatePlatformsSubOperationOutcome(
+                            UpdatePlatformMessageType.Information,
                             $"Rom Folder path is not rooted: [{launchboxPlatform.LaunchboxRomFolder}]." +
-                            $" However, folder exists relative to the Launchbox Root Directory, so set to this: [{launchboxPlatform.ResolvedRomFolder}]");
+                            $" However, folder exists relative to the Launchbox Root Directory, so set to this:" +
+                            $" [{launchboxPlatform.ResolvedRomFolder}]",
+                            launchboxPlatform.Name));
                     }
                     else if (Directory.Exists(lbGamesRelativePath))
                     {
                         // If the Rom folder is not rooted, assume it is relative to the installation path
-                        launchboxPlatform.ResolvedRomFolder = lbGamesRelativePath;
+                        installationPlatform.ResolvedRomFolder = lbGamesRelativePath;
 
-                        SendMessage(UpdatePlatformMessageType.Information,
+                        updatePlatformsOutcome.SubOperationOutcomes.Add(new UpdatePlatformsSubOperationOutcome(
+                            UpdatePlatformMessageType.Information,
                             $"Rom Folder path is not rooted: [{launchboxPlatform.LaunchboxRomFolder}]." +
-                            $" However, folder exisits in Launchbox Games Directory, so set to this: [{launchboxPlatform.ResolvedRomFolder}]");
+                            $" However, folder exisits in Launchbox Games Directory, so set to this: [{launchboxPlatform.ResolvedRomFolder}]",
+                            launchboxPlatform.Name));
                     }
                     else
                     {
-                        SendMessage(UpdatePlatformMessageType.Error,
+                        updatePlatformsOutcome.SubOperationOutcomes.Add(new UpdatePlatformsSubOperationOutcome(
+                            UpdatePlatformMessageType.Error,
                             $"Rom Folder path is not rooted and no folder found for this in the Launchbox Games folder. " +
                             $"You will have to set this manually to add Roms to this Platform. " +
-                            $"Launchbox Path: [{launchboxPlatform.LaunchboxRomFolder}].");
+                            $"Launchbox Path: [{launchboxPlatform.LaunchboxRomFolder}].",
+                            launchboxPlatform.Name));
                     }
                 }
                 else if (Helpers.FileSystem.IsVolumedAndRooted(launchboxPlatform.LaunchboxRomFolder) &&
-                    installationModel.OnRemoteMachine)
+                    installation.OnRemoteMachine)
                 // Rom folder has Drive letter, but installation is on a network share
                 {
-                    if (installationModel.RemapRomsFrom == null)
+                    if (installation.RemapRomsFrom == null)
                     {
-                        SendMessage(UpdatePlatformMessageType.Error,
+                        updatePlatformsOutcome.SubOperationOutcomes.Add(new UpdatePlatformsSubOperationOutcome(UpdatePlatformMessageType.Error,
                             $"The Installation is on a network path, but the Launchbox Rom path has a drive letter and no remap specified in the Installation. " +
-                            $"Cannot set Rom Folder - you will have to do this manually. Launchbox path: {launchboxPlatform.LaunchboxRomFolder}");
+                            $"Cannot set Rom Folder - you will have to do this manually. Launchbox path: {launchboxPlatform.LaunchboxRomFolder}",
+                            launchboxPlatform.Name));
                     }
                     else
                     {
-                        string candidateRomFolder = Path.Combine(installationModel.InstallationPath,
-                            launchboxPlatform.LaunchboxRomFolder.Replace(installationModel.RemapRomsFrom,
-                                                                        installationModel.RemapRomsTo));
+                        string candidateRomFolder = Path.Combine(installation.InstallationPath,
+                            launchboxPlatform.LaunchboxRomFolder.Replace(installation.RemapRomsFrom,
+                                                                        installation.RemapRomsTo));
                         if (!Directory.Exists(candidateRomFolder))
                         {
-                            SendMessage(UpdatePlatformMessageType.Error,
+                            updatePlatformsOutcome.SubOperationOutcomes.Add(new UpdatePlatformsSubOperationOutcome(UpdatePlatformMessageType.Error,
                                 $"The Installation is on a network path, but the Launchbox Rom path has a drive letter. " +
                                 $"The propsective folder constructed by the Installation Rom folder Remap does not exist. " +
-                                $"You will have to set this manually. Launchbox path: {launchboxPlatform.LaunchboxRomFolder}");
+                                $"You will have to set this manually. Launchbox path: {launchboxPlatform.LaunchboxRomFolder}",
+                                launchboxPlatform.Name));
                         }
                         else
                         {
-                            SendMessage(UpdatePlatformMessageType.Information,
+                            updatePlatformsOutcome.SubOperationOutcomes.Add(new UpdatePlatformsSubOperationOutcome(UpdatePlatformMessageType.Information,
                                 $"The Installation is on a network path, but the Launchbox Rom path has a drive letter. " +
                                 $"The propsective folder constructed by the Installation Rom folder Remap exists, therefore set to that. " +
-                                $"You may be advised to check this path: {candidateRomFolder}");
-                            upsertPlatform.ResolvedRomFolder = candidateRomFolder;
+                                $"You may be advised to check this path: {candidateRomFolder}",
+                                launchboxPlatform.Name));
+
+                            installationPlatform.ResolvedRomFolder = candidateRomFolder;
                         }
                     }
                 }
                 else
                 {
-                    upsertPlatform.ResolvedRomFolder = launchboxPlatform.LaunchboxRomFolder;
+                    updatePlatformsOutcome.SubOperationOutcomes.Add(new UpdatePlatformsSubOperationOutcome(
+                            UpdatePlatformMessageType.Information,
+                            $"Rom folder added as per Launchbox database entry.",
+                            launchboxPlatform.Name));
+                    installationPlatform.ResolvedRomFolder = launchboxPlatform.LaunchboxRomFolder;
                 }
-
-                Debug.WriteLine(launchboxPlatform.Name);
-
-                installationModel.Platforms.Add(upsertPlatform);
-
-                //databaseService.Database.Collections.Platforms.Upsert(launchboxPlatform);
-            }
-
-            //WeakReferenceMessenger.Default.Send(new Messages.InstallationDeletedMessage(newInstallation));
+            } // END of xmlPlatforms foreach
 
             // NB: Don't forget to review the xml for any REMOVED Platforms (i.e. local db PLatform.Name cannot be found in the xml)
+
+            installationService.Update(installation);
+
             updatePlatformsOutcome.UpdatePlatformOutcome = UpdatePlatformOutcome.Success;
             return updatePlatformsOutcome;
         }
