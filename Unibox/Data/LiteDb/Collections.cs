@@ -14,8 +14,6 @@ namespace Unibox.Data.LiteDb
             Connection = connection;
             InitialiseCollections();
         }
-
-
         public ILiteCollection<InstallationModel> Installations { get; set; }
         public ILiteCollection<PlatformModel> Platforms { get; set; }
         public ILiteCollection<PlatformFolderModel> PlatformFolders { get; set; }

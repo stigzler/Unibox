@@ -12,11 +12,11 @@ using Unibox.Messages;
 
 namespace Unibox.Services
 {
-    internal class PlatformUpdateService
+    internal class PlatformService
     {
         DatabaseService databaseService;
 
-        public PlatformUpdateService(DatabaseService databaseService)
+        public PlatformService(DatabaseService databaseService)
         {
             this.databaseService = databaseService;
         }

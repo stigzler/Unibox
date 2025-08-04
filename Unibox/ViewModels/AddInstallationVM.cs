@@ -49,7 +49,7 @@ namespace Unibox.ViewModels
         public Data.Enums.DialogResult DialogResult { get; set; } = Data.Enums.DialogResult.Unset;
 
         private DatabaseService databaseService;
-        private PlatformUpdateService platformUpdateService;
+        private PlatformService platformUpdateService;
 
         private static readonly string[] ValidatedProperties =
             { nameof(Name), nameof(InstallationPath), nameof(RemapRomsFrom), nameof(RemapRomsTo), nameof(RemapMediaFrom), nameof(RemapMediaTo) };
@@ -171,7 +171,7 @@ namespace Unibox.ViewModels
         {
         }
 
-        public AddInstallationVM(DatabaseService databaseService, PlatformUpdateService platformUpdateService)
+        public AddInstallationVM(DatabaseService databaseService, PlatformService platformUpdateService)
         {
             this.databaseService = databaseService;
             this.platformUpdateService = platformUpdateService;

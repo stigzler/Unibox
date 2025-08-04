@@ -13,19 +13,21 @@ using Unibox.Views;
 
 namespace Unibox.ViewModels
 {
-   public partial class InstallationsVM: ObservableObject
+    public partial class InstallationsVM : ObservableObject
     {
         [ObservableProperty]
         private ObservableCollection<InstallationModel> installations = new ObservableCollection<InstallationModel>();
 
         private DatabaseService databaseService;
+        private InstallationService installationService;
         public InstallationsVM()
-        {             
+        {
         }
 
-        public InstallationsVM(DatabaseService databaseService)
+        public InstallationsVM(DatabaseService databaseService, InstallationService installationService)
         {
             this.databaseService = databaseService;
+            this.installationService = installationService;
 
             UpdateIstallationsFromDatabase();
         }
@@ -47,17 +49,25 @@ namespace Unibox.ViewModels
             //    InstallationPath = "//Atari1280/C:/Launchbox"
             //};
 
-            AddInstallationForm addInstallationForm = new AddInstallationForm();
-            addInstallationForm.ShowDialog();
+            //AddInstallationForm addInstallationForm = new AddInstallationForm();
+            //addInstallationForm.ShowDialog();
 
-            if (addInstallationForm.ViewModel.DialogResult != Data.Enums.DialogResult.OK)
+            //if (addInstallationForm.ViewModel.DialogResult != Data.Enums.DialogResult.OK)
+            //{
+            //    return;
+            //}
+
+            InstallationModel newInstallation = installationService.AddNew();
+
+            if (newInstallation != null)
             {
-                return;
+                AdonisUI.Controls.MessageBox.Show($"New Installation added successfully. " +
+                    $"Please edit this to set it up. Name: {newInstallation.Name}", "New Installaiton created",
+                        AdonisUI.Controls.MessageBoxButton.OK, AdonisUI.Controls.MessageBoxImage.Information);
+                WeakReferenceMessenger.Default.Send(new Messages.InstallationAddedMessage(newInstallation));
+                UpdateIstallationsFromDatabase();
             }
 
-
-
-            //WeakReferenceMessenger.Default.Send(new Messages.InstallationAddedMessage(newInstallation));
 
             //UpdateIstallationsFromDatabase();
 

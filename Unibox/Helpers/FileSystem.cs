@@ -31,7 +31,7 @@ namespace Unibox.Helpers
             }
             return true; // is a UNC path
         }
-
+        
         public static bool IsValidFilepath(string path)
         {
             if (string.IsNullOrEmpty(path))
