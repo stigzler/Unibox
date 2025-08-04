@@ -1,12 +1,7 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
-using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Unibox.Data.Models;
 using Unibox.Services;
 using Unibox.Views;
@@ -23,6 +18,7 @@ namespace Unibox.ViewModels
 
         private DatabaseService databaseService;
         private InstallationService installationService;
+
         public InstallationsVM()
         {
         }
@@ -37,30 +33,38 @@ namespace Unibox.ViewModels
 
         private void UpdateIstallationsFromDatabase()
         {
-            Installations = new ObservableCollection<InstallationModel>(databaseService.Database.Collections.Installations.FindAll());
+            Installations = installationService.GetAllInstallations();
+        }
+
+        [RelayCommand]
+        private void EditInstallation()
+        {
+            if (selectedInstallation == null) return;
+
+            EditInstallationForm editInstallationForm = new EditInstallationForm();
+            editInstallationForm.ViewModel.Installation = SelectedInstallation;
+            editInstallationForm.ShowDialog();
         }
 
         [RelayCommand]
         private void AddNewInstallation()
         {
-            //string path = installationsService.GetInstallationsPath();
+            string prospectivePath = installationService.GetInstallationPath();
 
-            //return;
-            //InstallationModel newInstallation = new InstallationModel()
-            //{
-            //    Name = $"New Installation {Installations.Count() +1}",
-            //    InstallationPath = "//Atari1280/C:/Launchbox"
-            //};
+            if (!installationService.IsLaunchboxRootDirectory(prospectivePath))
+            {
+                AdonisUI.Controls.MessageBox.Show($"The path selected is not a Launchbox root path. New Installation not created.", "Invalid Path",
+                        AdonisUI.Controls.MessageBoxButton.OK, AdonisUI.Controls.MessageBoxImage.Error);
+                return;
+            }
+            else if (!installationService.IsUniqueInstallationPath(prospectivePath))
+            {
+                AdonisUI.Controls.MessageBox.Show($"There is already an Installation created for this Launchbox location. New Installation not created.", "Invalid Path",
+                        AdonisUI.Controls.MessageBoxButton.OK, AdonisUI.Controls.MessageBoxImage.Error);
+                return;
+            }
 
-            //AddInstallationForm addInstallationForm = new AddInstallationForm();
-            //addInstallationForm.ShowDialog();
-
-            //if (addInstallationForm.ViewModel.DialogResult != Data.Enums.DialogResult.OK)
-            //{
-            //    return;
-            //}
-
-            InstallationModel newInstallation = installationService.AddNew();
+            InstallationModel newInstallation = installationService.AddNew(prospectivePath);
 
             if (newInstallation != null)
             {
@@ -71,22 +75,16 @@ namespace Unibox.ViewModels
                 UpdateIstallationsFromDatabase();
             }
 
-
             //UpdateIstallationsFromDatabase();
 
             //databaseService.Database.Collections.Installations.Insert(newInstallation);
         }
 
         [RelayCommand]
-        private void EditInstallation()
-        {
-        }
-
-        [RelayCommand]
         private void DeleteInstallation()
         {
             if (selectedInstallation == null) return;
-           
+
             if (AdonisUI.Controls.MessageBox.Show($"Are you sure you want to delete the installation: {selectedInstallation.Name}?",
                        "Delete Installation", AdonisUI.Controls.MessageBoxButton.YesNo, AdonisUI.Controls.MessageBoxImage.Warning)
                        == AdonisUI.Controls.MessageBoxResult.Yes)
@@ -98,4 +96,3 @@ namespace Unibox.ViewModels
         }
     }
 }
-

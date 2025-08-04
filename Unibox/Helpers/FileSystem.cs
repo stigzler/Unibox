@@ -45,24 +45,7 @@ namespace Unibox.Helpers
             return !path.Any(c => invalidChars.Contains(c));
         }
 
-        public static string GetInstallationsPath()
-        {
-            string installationPath = string.Empty;
 
-            OpenFolderDialog openFolderDialog = new OpenFolderDialog
-            {
-                Title = "Select the Launchbox root directory for the installation",
-                InitialDirectory = Settings.Default.InstallationInitialDirectory,
-            };
-
-            if (openFolderDialog.ShowDialog() == true)
-            {
-                installationPath = openFolderDialog.FolderName;
-                Settings.Default.InstallationInitialDirectory = installationPath;
-            }
-
-            return installationPath;
-        }
 
         public static string GetRemapToPath()
         {
@@ -84,14 +67,6 @@ namespace Unibox.Helpers
             return remapToPath;
         }
 
-        public static bool IsLaunchboxRootDirectory(string path)
-        {
-            if (string.IsNullOrWhiteSpace(path)) return false;
 
-            // Check for Launchbox.exe and also, not Launchbox.exe in the "Core" directory
-            if (File.Exists(Path.Combine(path, "LaunchBox.exe")) && Directory.Exists(Path.Combine(path, "Core"))) return true;
-
-            return false;
-        }
     }
 }

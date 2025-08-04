@@ -20,14 +20,13 @@ namespace Unibox.Views
     /// <summary>
     /// Interaction logic for AddInstallationForm.xaml
     /// </summary>
-    public partial class AddInstallationForm : Window
+    public partial class EditInstallationForm : Window
     {
-        internal AddInstallationVM ViewModel => (AddInstallationVM)this.DataContext;
-        public AddInstallationForm()
+        internal EditInstallationVM ViewModel => (EditInstallationVM)this.DataContext;
+        public EditInstallationForm()
         {
             InitializeComponent();
-            this.DataContext = App.Current.Services.GetService(typeof(ViewModels.AddInstallationVM));
-            this.Owner = Application.Current.MainWindow;
+            this.DataContext = App.Current.Services.GetService(typeof(ViewModels.EditInstallationVM));
         }     
         
     }

@@ -14,8 +14,11 @@ using Unibox.Views;
 
 namespace Unibox.ViewModels
 {
-    internal partial class AddInstallationVM : ObservableObject, IDataErrorInfo, IRecipient<UpdatePlatformMessage>
+    internal partial class EditInstallationVM : ObservableObject, IDataErrorInfo, IRecipient<UpdatePlatformMessage>
     {
+        [ObservableProperty]
+        private InstallationModel installation;
+
         [ObservableProperty]
         private string name = "Atari 1280";
 
@@ -41,15 +44,21 @@ namespace Unibox.ViewModels
         [NotifyPropertyChangedFor(nameof(RemapMediaFrom))]
         private string remapMediaTo = @"\\ATARI-1280\Assets";
 
-
         [ObservableProperty]
         private bool isValid;
+
+        partial void OnInstallationChanged(InstallationModel value)
+        {
+            UpdateViewModelFromDataObject();
+        }
+
         public string Error => null;
 
         public Data.Enums.DialogResult DialogResult { get; set; } = Data.Enums.DialogResult.Unset;
 
         private DatabaseService databaseService;
         private PlatformService platformUpdateService;
+        private InstallationService installationService;
 
         private static readonly string[] ValidatedProperties =
             { nameof(Name), nameof(InstallationPath), nameof(RemapRomsFrom), nameof(RemapRomsTo), nameof(RemapMediaFrom), nameof(RemapMediaTo) };
@@ -57,8 +66,8 @@ namespace Unibox.ViewModels
         [RelayCommand]
         private void BrowseForInstallationPath()
         {
-            string path = Helpers.FileSystem.GetInstallationsPath();
-            if (!string.IsNullOrWhiteSpace(path) && Helpers.FileSystem.IsLaunchboxRootDirectory(path))
+            string path = installationService.GetInstallationPath();
+            if (!string.IsNullOrWhiteSpace(path) && installationService.IsLaunchboxRootDirectory(path))
             {
                 InstallationPath = path;
                 if (!OnRemoteMachine)
@@ -67,7 +76,6 @@ namespace Unibox.ViewModels
                     RemapMediaTo = string.Empty;
                     RemapRomsFrom = string.Empty;
                     RemapRomsTo = string.Empty;
-
                 }
             }
             else
@@ -167,15 +175,32 @@ namespace Unibox.ViewModels
             }
         }
 
-        public AddInstallationVM()
+        public EditInstallationVM()
         {
         }
 
-        public AddInstallationVM(DatabaseService databaseService, PlatformService platformUpdateService)
+        public EditInstallationVM(DatabaseService databaseService, InstallationService installationService, PlatformService platformUpdateService)
         {
             this.databaseService = databaseService;
+            this.installationService = installationService;
             this.platformUpdateService = platformUpdateService;
+
             Helpers.Theming.ApplyTheme();
+        }
+
+        private void UpdateViewModelFromDataObject()
+        {
+            if (installation != null)
+            {
+                Name = installation.Name;
+                InstallationPath = installation.InstallationPath;
+                OnRemoteMachine = installation.OnRemoteMachine;
+                RemapRomsFrom = installation.RemapRomsFrom;
+                RemapRomsTo = installation.RemapRomsTo;
+                RemapMediaFrom = installation.RemapMediaFrom;
+                RemapMediaTo = installation.RemapMediaTo;
+                ValidateForm();
+            }
         }
 
         private void AddInstallation()
@@ -199,13 +224,8 @@ namespace Unibox.ViewModels
             }
             else
             {
-
             }
-
-
-
         }
-
 
         string IDataErrorInfo.this[string propertyName]
         {
@@ -224,17 +244,17 @@ namespace Unibox.ViewModels
                 case nameof(Name):
                     if (string.IsNullOrWhiteSpace(Name))
                         return "Installation name cannot be empty.";
-                    if (databaseService.Database.Collections.Installations.FindOne(x => x.Name == Name) != null)
-                        return "An Installation with this name already exists.";
+                    else if (!installationService.IsUniqueName(Name, Installation))
+                        return "Another Installation with this name already exists.";
                     break;
 
                 case nameof(InstallationPath):
                     OnRemoteMachine = Helpers.FileSystem.IsNetworkPath(InstallationPath);
                     if (string.IsNullOrWhiteSpace(InstallationPath))
                         return "Installation path cannot be empty.";
-                    if (databaseService.Database.Collections.Installations.FindOne(x => x.InstallationPath == InstallationPath) != null)
-                        return "There is already an Installation for this path.";
-                    if (!Helpers.FileSystem.IsLaunchboxRootDirectory(InstallationPath))
+                    else if (databaseService.Database.Collections.Installations.Find(x => x.InstallationPath == InstallationPath).Count() > 1)
+                        return "There is already another Installation with this path.";
+                    else if (installationService.IsLaunchboxRootDirectory(InstallationPath))
                         return "Not a Launchbox root directory.";
                     break;
 
@@ -245,13 +265,11 @@ namespace Unibox.ViewModels
                             return "Remap not needed as Installation is on this local machine. Please remove.";
                         else if (!Helpers.FileSystem.IsVolumedAndRooted(RemapRomsFrom))
                             return "Replace Text path must be a Volumed path (e.g. 'D:\\Games')";
-
                         else if (RemapRomsFrom.EndsWith('/') || RemapRomsFrom.EndsWith('\\'))
                             return "Replace Text path cannot end with a slash or backslash.";
-
                     }
-                    else if (RemapRomsFrom.Length > 0 && String.IsNullOrWhiteSpace(RemapRomsFrom))
-                        return "Replace Text path is just whitespace.";
+                    //else if (RemapRomsFrom.Length > 0 && String.IsNullOrWhiteSpace(RemapRomsFrom))
+                    //    return "Replace Text path is just whitespace.";
                     break;
 
                 case nameof(RemapRomsTo):
@@ -270,13 +288,11 @@ namespace Unibox.ViewModels
                             return "Remap not needed as Installation is on this local machine. Please remove.";
                         else if (!Helpers.FileSystem.IsVolumedAndRooted(RemapMediaFrom))
                             return "Replace Text path must be a Volumed path (e.g. 'D:\\Games')";
-
                         else if (RemapMediaFrom.EndsWith('/') || RemapMediaFrom.EndsWith('\\'))
                             return "Replace Text path cannot end with a slash or backslash.";
-
                     }
-                    else if (RemapMediaFrom.Length > 0 && String.IsNullOrWhiteSpace(RemapMediaFrom))
-                        return "Replace Text path is just whitespace.";
+                    //else if (RemapMediaFrom.Length > 0 && String.IsNullOrWhiteSpace(RemapMediaFrom))
+                    //    return "Replace Text path is just whitespace.";
                     break;
 
                 case nameof(RemapMediaTo):
@@ -292,10 +308,8 @@ namespace Unibox.ViewModels
             return null;
         }
 
-
         public void ValidateForm()
         {
-
             foreach (string property in ValidatedProperties)
             {
                 if (ProcessPropertyChange(property) != null)
@@ -313,4 +327,3 @@ namespace Unibox.ViewModels
         }
     }
 }
-

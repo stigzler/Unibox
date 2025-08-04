@@ -13,22 +13,18 @@
         <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal" HorizontalAlignment="Right" Height="50">
             <Button Content="Add New" Command="{Binding AddNewInstallationCommand}"/>
             <Button Content="Delete" Command="{Binding DeleteInstallationCommand}"/>
-            <Button Content="Edit" />
+            <Button Content="Edit" Command="{Binding EditInstallationCommand}"/>
         </StackPanel>
-
-        <ListView ItemsSource="{Binding Installations}" SelectedItem="{Binding SelectedInstallation}" 
+        <Border BorderBrush="gray" BorderThickness="1" Margin="2">
+            <ListView ItemsSource="{Binding Installations}" SelectedItem="{Binding SelectedInstallation}" 
                   ScrollViewer.VerticalScrollBarVisibility="Auto">
-            <ListView.ItemContainerStyle>
-                <Style TargetType="ListViewItem">
-                    <Setter Property="Height" Value="30"/>
-                </Style>
-            </ListView.ItemContainerStyle>
-            <ListView.ItemTemplate>
-                <DataTemplate>
-                    <TextBlock Text="{Binding Name}" Height="20"/>
-                </DataTemplate>
-            </ListView.ItemTemplate>
-        </ListView>
-
+            <ListView.View>
+                <GridView>
+                    <GridViewColumn Header="Name" Width="200" DisplayMemberBinding="{Binding Name}" />
+                    <GridViewColumn Header="Path" Width="auto" DisplayMemberBinding="{Binding InstallationPath}" />
+                </GridView>
+            </ListView.View>
+            </ListView>
+        </Border>
     </DockPanel>
 </UserControl>

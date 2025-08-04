@@ -13,7 +13,7 @@ namespace Unibox.Data.Models
     {
         public ObjectId ID { get; set; } = ObjectId.NewObjectId();
         public string Name { get; set; } = string.Empty;
-        public string InstallationPath { get; set; } = string.Empty;
+        public string InstallationPath { get; set; } = null;
         public bool OnRemoteMachine { get; set; } = false;
         public DateTime Added { get; set; } = DateTime.UtcNow;
         public ObservableCollection<PlatformModel> Platforms { get; set; } = new ObservableCollection<PlatformModel>();

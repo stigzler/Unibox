@@ -68,5 +68,14 @@ namespace Unibox.Properties {
                 return ResourceManager.GetString("AddInstallationPathReplacementHelp", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to [placeholder in lieu of text].
+        /// </summary>
+        public static string EditInstalltionSubTitle {
+            get {
+                return ResourceManager.GetString("EditInstalltionSubTitle", resourceCulture);
+            }
+        }
     }
 }

@@ -120,4 +120,7 @@
   <data name="AddInstallationPathReplacementHelp" xml:space="preserve">
     <value>For remote installations (i.e. ones on the network rather than the host machine) if you have your roms or media in locations set to ones other than the launchbox default (i.e. within the installation folder) these paths will show up as on the remote computer’s remote drives (e.g. 'D:\Games'). These will need to be set to a full UNC path in order to allow remote editing. Unibox can automatically make these replacements by specifying a part of the path to replace with what text. In the example, ‘D:\Games’ can be replaced with `\\ArcadeMachineInstallation\Games` which will change all Platform Rom folders with the amended path. </value>
   </data>
+  <data name="EditInstalltionSubTitle" xml:space="preserve">
+    <value>[placeholder in lieu of text]</value>
+  </data>
 </root>

@@ -1,23 +1,31 @@
-﻿using System;
+﻿using Microsoft.Win32;
+using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Unibox.Data.Models;
-using Unibox.Interfaces;
+using Unibox.Properties;
 
 namespace Unibox.Services
 {
-    public class InstallationService : IInstallationService
+    public class InstallationService
     {
-        DatabaseService databaseService;
+        private DatabaseService databaseService;
 
         public InstallationService(DatabaseService databaseService)
         {
             this.databaseService = databaseService;
         }
 
-        public InstallationModel AddNew()
+        public ObservableCollection<InstallationModel> GetAllInstallations()
+        {
+            return new ObservableCollection<InstallationModel>(databaseService.Database.Collections.Installations.FindAll());
+        }
+
+        public InstallationModel AddNew(string installtionPath)
         {
             int count = 1;
 
@@ -31,6 +39,7 @@ namespace Unibox.Services
             InstallationModel installationModel = new InstallationModel
             {
                 Name = newInstallationName,
+                InstallationPath = installtionPath,
                 Added = DateTime.Now,
             };
 
@@ -52,6 +61,71 @@ namespace Unibox.Services
         public void Update(InstallationModel installationModel)
         {
             throw new NotImplementedException();
+        }
+
+        /// <summary>
+        /// This tests if the given name is unique in the Installation Collection.
+        /// </summary>
+        /// <param name="ignoredInstalltion"></param>
+        /// <param name="name"></param>
+        /// <returns></returns>
+        /// <exception cref="ArgumentException"></exception>
+        public bool IsUniqueName(string name, InstallationModel ignoredInstallation = null)
+        {
+            if (string.IsNullOrWhiteSpace(name))
+            {
+                throw new ArgumentException("Installation name cannot be null or empty.", nameof(name));
+            }
+            var installations = databaseService.Database.Collections.Installations.FindAll().Where(i => i.Name == name);
+
+            if (ignoredInstallation != null)
+            {
+                installations = installations.Where(i => i.ID != ignoredInstallation.ID);
+            }
+            return !installations.Any();
+        }
+
+        public bool IsUniqueInstallationPath(string path, InstallationModel ignoredInstallation = null)
+        {
+            if (string.IsNullOrWhiteSpace(path))
+            {
+                throw new ArgumentException("Installation path cannot be null or empty.", nameof(path));
+            }
+            var installations = databaseService.Database.Collections.Installations.FindAll().Where(i => i.InstallationPath == path);
+            if (ignoredInstallation != null)
+            {
+                installations = installations.Where(i => i.ID != ignoredInstallation.ID);
+            }
+            return !installations.Any();
+        }
+
+        public string GetInstallationPath()
+        {
+            string installationPath = string.Empty;
+
+            OpenFolderDialog openFolderDialog = new OpenFolderDialog
+            {
+                Title = "Select the Launchbox root directory for the installation",
+                InitialDirectory = Settings.Default.InstallationInitialDirectory,
+            };
+
+            if (openFolderDialog.ShowDialog() == true)
+            {
+                installationPath = openFolderDialog.FolderName;
+                Settings.Default.InstallationInitialDirectory = installationPath;
+            }
+
+            return installationPath;
+        }
+
+        public bool IsLaunchboxRootDirectory(string path)
+        {
+            if (string.IsNullOrWhiteSpace(path)) return false;
+
+            // Check for Launchbox.exe and also, not Launchbox.exe in the "Core" directory
+            if (File.Exists(Path.Combine(path, "LaunchBox.exe")) && Directory.Exists(Path.Combine(path, "Core"))) return true;
+
+            return false;
         }
     }
 }

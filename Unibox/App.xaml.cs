@@ -13,7 +13,6 @@ namespace Unibox
     /// </summary>
     public partial class App : Application
     {
-
         public App()
         {
             Services = ConfigureServices();
@@ -54,16 +53,12 @@ namespace Unibox
             services.AddTransient<MainWindowVM>();
             services.AddTransient<SettingsVM>();
             services.AddTransient<InstallationsVM>();
-            services.AddTransient<AddInstallationVM>();
+            services.AddTransient<EditInstallationVM>();
             services.AddTransient<InstallationPlatformDetailsVM>();
 
             // Add other necessary services here
             // e.g., services.AddSingleton<IDataService, DataService>();
             return services.BuildServiceProvider();
-
         }
-
-
-
     }
 }
