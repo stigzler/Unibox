@@ -50,6 +50,13 @@ namespace Unibox.ViewModels
             AddInstallationForm addInstallationForm = new AddInstallationForm();
             addInstallationForm.ShowDialog();
 
+            if (addInstallationForm.ViewModel.DialogResult != Data.Enums.DialogResult.OK)
+            {
+                return;
+            }
+
+
+
             //WeakReferenceMessenger.Default.Send(new Messages.InstallationAddedMessage(newInstallation));
 
             //UpdateIstallationsFromDatabase();

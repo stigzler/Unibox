@@ -17,7 +17,10 @@ namespace Unibox.Data.Models
         public bool OnRemoteMachine { get; set; } = false;
         public DateTime Added { get; set; } = DateTime.UtcNow;
         public ObservableCollection<PlatformModel> Platforms { get; set; } = new ObservableCollection<PlatformModel>();
-        public string RomPathRemapLocalRootPath { get; set; } = string.Empty;
-        public string RomPathRemapUncRootPath { get; set; } = string.Empty;
+        public string RemapRomsFrom { get; set; } = string.Empty;
+        public string RemapRomsTo { get; set; } = string.Empty;
+        public string RemapMediaFrom { get; set; } = string.Empty;
+        public string RemapMediaTo { get; set; } = string.Empty;
+
     }
 }

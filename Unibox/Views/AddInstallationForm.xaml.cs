@@ -12,6 +12,8 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using Unibox.Data.Enums;
+using Unibox.ViewModels;
 
 namespace Unibox.Views
 {
@@ -20,16 +22,13 @@ namespace Unibox.Views
     /// </summary>
     public partial class AddInstallationForm : Window
     {
+        internal AddInstallationVM ViewModel => (AddInstallationVM)this.DataContext;
         public AddInstallationForm()
         {
             InitializeComponent();
             this.DataContext = App.Current.Services.GetService(typeof(ViewModels.AddInstallationVM));
             this.Owner = Application.Current.MainWindow;
-        }
-
+        }     
         
-
-
-
     }
 }

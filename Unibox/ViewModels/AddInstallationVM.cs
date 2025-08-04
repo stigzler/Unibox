@@ -17,29 +17,29 @@ namespace Unibox.ViewModels
     internal partial class AddInstallationVM : ObservableObject, IDataErrorInfo, IRecipient<UpdatePlatformMessage>
     {
         [ObservableProperty]
-        private string name;
+        private string name = "Atari 1280";
 
         [ObservableProperty]
         private string installationPath = @"\\ATARI-1280\Users\admin\LaunchBox";
 
         [ObservableProperty]
-        private bool onRemoteMachine = false;
+        private bool onRemoteMachine = true;
 
         [ObservableProperty]
         [NotifyPropertyChangedFor(nameof(RemapRomsTo))]
-        private string remapRomsFrom = String.Empty;
+        private string remapRomsFrom = @"D:\Games";
 
         [ObservableProperty]
         [NotifyPropertyChangedFor(nameof(RemapRomsFrom))]
-        private string remapRomsTo = String.Empty;
+        private string remapRomsTo = @"\\ATARI-1280\Games";
 
         [ObservableProperty]
         [NotifyPropertyChangedFor(nameof(RemapMediaTo))]
-        private string remapMediaFrom = String.Empty;
+        private string remapMediaFrom = @"D:\Assets";
 
         [ObservableProperty]
         [NotifyPropertyChangedFor(nameof(RemapMediaFrom))]
-        private string remapMediaTo = String.Empty;
+        private string remapMediaTo = @"\\ATARI-1280\Assets";
 
 
         [ObservableProperty]
@@ -52,7 +52,7 @@ namespace Unibox.ViewModels
         private PlatformUpdateService platformUpdateService;
 
         private static readonly string[] ValidatedProperties =
-            { nameof(Name), nameof(InstallationPath), nameof(RemapRomsFrom), nameof(RemapRomsTo) };
+            { nameof(Name), nameof(InstallationPath), nameof(RemapRomsFrom), nameof(RemapRomsTo), nameof(RemapMediaFrom), nameof(RemapMediaTo) };
 
         [RelayCommand]
         private void BrowseForInstallationPath()
@@ -148,6 +148,8 @@ namespace Unibox.ViewModels
         [RelayCommand]
         private void ProcessOkButton(Window window)
         {
+            AddInstallation();
+
             if (window != null)
             {
                 DialogResult = Data.Enums.DialogResult.OK;
@@ -174,6 +176,34 @@ namespace Unibox.ViewModels
             this.databaseService = databaseService;
             this.platformUpdateService = platformUpdateService;
             Helpers.Theming.ApplyTheme();
+        }
+
+        private void AddInstallation()
+        {
+            InstallationModel newInstallation = new InstallationModel()
+            {
+                Name = Name,
+                InstallationPath = InstallationPath,
+                OnRemoteMachine = OnRemoteMachine,
+                RemapRomsFrom = RemapRomsFrom,
+                RemapRomsTo = RemapRomsTo,
+                RemapMediaFrom = RemapMediaFrom,
+                RemapMediaTo = RemapMediaTo
+            };
+
+            var outcome = platformUpdateService.UpdateInstallationPlatforms(newInstallation);
+
+            if (outcome.UpdatePlatformOutcome == UpdatePlatformOutcome.Success)
+            {
+                //databaseService.Database.Collections.Installations.Insert(newInstallation);
+            }
+            else
+            {
+
+            }
+
+
+
         }
 
 

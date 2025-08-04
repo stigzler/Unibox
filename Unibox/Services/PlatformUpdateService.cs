@@ -45,6 +45,8 @@ namespace Unibox.Services
                 return updatePlatformsOutcome;
             }
 
+            // AT THIS POINT, PROCESS WILL COMPLETE SUCCESSFULLY, but could contain wanrings
+
             foreach (PlatformModel launchboxPlatform in xmlPlatforms)
             {
                 // Check if the platform already exists in the database
@@ -56,12 +58,12 @@ namespace Unibox.Services
                     SendMessage(UpdatePlatformMessageType.Information,
                         $"New Platform detected. Adding platform: [{launchboxPlatform.Name}] to the database.");
 
-                    PlatformModel newPlatform = new PlatformModel
-                    {
-                        Name = launchboxPlatform.Name,
-                        LaunchboxScrapeAs = launchboxPlatform.LaunchboxScrapeAs,
-                        LaunchboxRomFolder = launchboxPlatform.LaunchboxRomFolder,
-                    };
+                    upsertPlatform = new PlatformModel();
+                    //{
+                    //    Name = launchboxPlatform.Name,
+                    //    LaunchboxScrapeAs = launchboxPlatform.LaunchboxScrapeAs,
+                    //    LaunchboxRomFolder = launchboxPlatform.LaunchboxRomFolder,
+                    //};
                 }
                 else
                 {
@@ -80,23 +82,47 @@ namespace Unibox.Services
                         $"No ScrapeAs set in Launchbox. You will have to set this manually to enable metadata/media scrapes.");
                 }
 
-                // Check LaunchboxRomFolder
-                // Rom Folder Null
-                if (launchboxPlatform.LaunchboxRomFolder == null)
+                // ROM FOLDER OPS
+
+                if (String.IsNullOrWhiteSpace(launchboxPlatform.LaunchboxRomFolder))
+                // Rom Folder Null - try to resolve to LB Games folder 
                 {
-                    SendMessage(UpdatePlatformMessageType.Error,
-                        $"No Rom Folder set in Launchbox. You will have to set this manually to enable adding Roms for this Platform.");
+                    string candidatePath = Path.Combine(installationModel.InstallationPath, 
+                        Data.Constants.Paths.LaunchboxRelGamesDir, launchboxPlatform.Name);
+
+                    if (Directory.Exists(candidatePath))
+                    {
+                        SendMessage(UpdatePlatformMessageType.Warning,
+                            $"No Rom Folder set in Launchbox, but folder for this Platform exists in the Launchbox Games folder. Setting to this. It may be wise to check this is the right path.");
+                        launchboxPlatform.ResolvedRomFolder = candidatePath;
+                    }
+                    else
+                    {
+                        SendMessage(UpdatePlatformMessageType.Error,
+                        $"No Rom Folder set in Launchbox and no PLatform of this name in Launchbox/Games folder. You will have to set this manually to enable adding Roms for this Platform.");
+                    }
                 }
 
-                // ROM FOLDER OPS
-                // Rom folder rootless (e.g. "Games\C64 Dreams")
                 else if (!Helpers.FileSystem.IsVolumedAndRooted(launchboxPlatform.LaunchboxRomFolder))
+                // Rom folder rootless (e.g. "Games\C64 Dreams")
                 {
-                    if (Directory.Exists(Path.Combine(installationModel.InstallationPath, Data.Constants.Paths.LaunchboxRelGamesDir, launchboxPlatform.Name)))
+                    string lbRootRelativePath = Path.Combine(installationModel.InstallationPath, launchboxPlatform.LaunchboxRomFolder);
+                    string lbGamesRelativePath = Path.Combine(installationModel.InstallationPath, Data.Constants.Paths.LaunchboxRelGamesDir,
+                        launchboxPlatform.Name);
+
+                    if (Directory.Exists(lbRootRelativePath))
                     {
                         // If the Rom folder is not rooted, assume it is relative to the installation path
-                        launchboxPlatform.ResolvedRomFolder = Path.Combine(installationModel.InstallationPath,
-                            Data.Constants.Paths.LaunchboxRelGamesDir, launchboxPlatform.Name);
+                        launchboxPlatform.ResolvedRomFolder = lbRootRelativePath;
+
+                        SendMessage(UpdatePlatformMessageType.Information,
+                            $"Rom Folder path is not rooted: [{launchboxPlatform.LaunchboxRomFolder}]." +
+                            $" However, folder exists relative to the Launchbox Root Directory, so set to this: [{launchboxPlatform.ResolvedRomFolder}]");
+                    }
+                    else if (Directory.Exists(lbGamesRelativePath))
+                    {
+                        // If the Rom folder is not rooted, assume it is relative to the installation path
+                        launchboxPlatform.ResolvedRomFolder = lbGamesRelativePath;
 
                         SendMessage(UpdatePlatformMessageType.Information,
                             $"Rom Folder path is not rooted: [{launchboxPlatform.LaunchboxRomFolder}]." +
@@ -111,11 +137,11 @@ namespace Unibox.Services
                     }
                 }
 
-                // Rom folder has Drive letter, but installation is on a network share
                 else if (Helpers.FileSystem.IsVolumedAndRooted(launchboxPlatform.LaunchboxRomFolder) &&
-                    Helpers.FileSystem.IsNetworkPath(launchboxPlatform.LaunchboxRomFolder))
+                    installationModel.OnRemoteMachine)
+                // Rom folder has Drive letter, but installation is on a network share
                 {
-                    if (installationModel.RomPathRemapLocalRootPath == null)
+                    if (installationModel.RemapRomsFrom == null)
                     {
                         SendMessage(UpdatePlatformMessageType.Error,
                             $"The Installation is on a network path, but the Launchbox Rom path has a drive letter and no remap specified in the Installation. " +
@@ -124,8 +150,8 @@ namespace Unibox.Services
                     else
                     {
                         string candidateRomFolder = Path.Combine(installationModel.InstallationPath,
-                            launchboxPlatform.LaunchboxRomFolder.Replace(installationModel.RomPathRemapLocalRootPath,
-                                                                        installationModel.RomPathRemapUncRootPath));
+                            launchboxPlatform.LaunchboxRomFolder.Replace(installationModel.RemapRomsFrom,
+                                                                        installationModel.RemapRomsTo));
                         if (!Directory.Exists(candidateRomFolder))
                         {
                             SendMessage(UpdatePlatformMessageType.Error,
@@ -149,13 +175,17 @@ namespace Unibox.Services
                     upsertPlatform.ResolvedRomFolder = launchboxPlatform.LaunchboxRomFolder;
                 }
 
-                databaseService.Database.Collections.Platforms.Upsert(launchboxPlatform);
+                Debug.WriteLine(launchboxPlatform.Name);
 
+                installationModel.Platforms.Add(upsertPlatform);
+
+               //databaseService.Database.Collections.Platforms.Upsert(launchboxPlatform);
             }
 
             //WeakReferenceMessenger.Default.Send(new Messages.InstallationAddedMessage(newInstallation));
 
             // NB: Don't forget to review the xml for any REMOVED Platforms (i.e. local db PLatform.Name cannot be found in the xml)
+            updatePlatformsOutcome.UpdatePlatformOutcome = UpdatePlatformOutcome.Success;
             return updatePlatformsOutcome;
 
         }

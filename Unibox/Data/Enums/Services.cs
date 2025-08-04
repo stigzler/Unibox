@@ -23,9 +23,11 @@ namespace Unibox.Data.Enums
 
     internal enum UpdatePlatformOutcome
     {
+        Success,
         Indeterminate,
         CannotAccessInstallationDirectory,
         XmlFileDoesNotExist,
+        
     }
 }
 
