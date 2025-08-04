@@ -60,7 +60,7 @@ namespace Unibox.Services
 
         public void Update(InstallationModel installationModel)
         {
-            throw new NotImplementedException();
+            databaseService.Database.Collections.Installations.Upsert(installationModel);
         }
 
         /// <summary>

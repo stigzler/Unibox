@@ -3,12 +3,13 @@ using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
 using System.Collections.ObjectModel;
 using Unibox.Data.Models;
+using Unibox.Messages;
 using Unibox.Services;
 using Unibox.Views;
 
 namespace Unibox.ViewModels
 {
-    public partial class InstallationsVM : ObservableObject
+    public partial class InstallationsVM : ObservableObject, IRecipient<InstallationUpdatedMessage>
     {
         [ObservableProperty]
         private ObservableCollection<InstallationModel> installations = new ObservableCollection<InstallationModel>();
@@ -27,6 +28,8 @@ namespace Unibox.ViewModels
         {
             this.databaseService = databaseService;
             this.installationService = installationService;
+
+            WeakReferenceMessenger.Default.Register<InstallationUpdatedMessage>(this);
 
             UpdateIstallationsFromDatabase();
         }
@@ -50,6 +53,7 @@ namespace Unibox.ViewModels
         private void AddNewInstallation()
         {
             string prospectivePath = installationService.GetInstallationPath();
+            if (prospectivePath == String.Empty) return;
 
             if (!installationService.IsLaunchboxRootDirectory(prospectivePath))
             {
@@ -90,9 +94,14 @@ namespace Unibox.ViewModels
                        == AdonisUI.Controls.MessageBoxResult.Yes)
             {
                 installationService.Delete(selectedInstallation);
-                WeakReferenceMessenger.Default.Send(new Messages.InstallationDeletedMessage(selectedInstallation));
+                WeakReferenceMessenger.Default.Send(new InstallationDeletedMessage(selectedInstallation));
                 UpdateIstallationsFromDatabase();
             }
+        }
+
+        void IRecipient<InstallationUpdatedMessage>.Receive(InstallationUpdatedMessage message)
+        {
+            UpdateIstallationsFromDatabase();
         }
     }
 }

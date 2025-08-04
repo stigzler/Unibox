@@ -23,11 +23,12 @@ namespace Unibox.Views
     public partial class EditInstallationForm : Window
     {
         internal EditInstallationVM ViewModel => (EditInstallationVM)this.DataContext;
+
         public EditInstallationForm()
         {
             InitializeComponent();
+            this.Owner = Application.Current.MainWindow;
             this.DataContext = App.Current.Services.GetService(typeof(ViewModels.EditInstallationVM));
-        }     
-        
+        }
     }
 }

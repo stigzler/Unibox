@@ -61,28 +61,38 @@ namespace Unibox.ViewModels
         private InstallationService installationService;
 
         private static readonly string[] ValidatedProperties =
-            { nameof(Name), nameof(InstallationPath), nameof(RemapRomsFrom), nameof(RemapRomsTo), nameof(RemapMediaFrom), nameof(RemapMediaTo) };
+            { nameof(Name), nameof(InstallationPath), nameof(RemapRomsFrom), nameof(RemapRomsTo), nameof(RemapMediaFrom),
+            nameof(RemapMediaTo) };
 
         [RelayCommand]
         private void BrowseForInstallationPath()
         {
-            string path = installationService.GetInstallationPath();
-            if (!string.IsNullOrWhiteSpace(path) && installationService.IsLaunchboxRootDirectory(path))
+            string prospectivePath = installationService.GetInstallationPath();
+
+            if (prospectivePath == String.Empty) return;
+
+            if (!installationService.IsLaunchboxRootDirectory(prospectivePath))
             {
-                InstallationPath = path;
-                if (!OnRemoteMachine)
-                {
-                    RemapMediaFrom = string.Empty;
-                    RemapMediaTo = string.Empty;
-                    RemapRomsFrom = string.Empty;
-                    RemapRomsTo = string.Empty;
-                }
+                AdonisUI.Controls.MessageBox.Show($"The path selected is not a Launchbox root path. Path unchanged.", "Invalid Path",
+                        AdonisUI.Controls.MessageBoxButton.OK, AdonisUI.Controls.MessageBoxImage.Error);
+                return;
             }
-            else
+            else if (!installationService.IsUniqueInstallationPath(prospectivePath, Installation))
             {
-                AdonisUI.Controls.MessageBox.Show("Invalid path selected for the Launchbox root directory. Please ammend", "Invalid Path",
-                     AdonisUI.Controls.MessageBoxButton.OK, AdonisUI.Controls.MessageBoxImage.Error);
+                AdonisUI.Controls.MessageBox.Show($"An installtion for this launchbox locaiton already exists. Path left unchanged.", "Invalid Path",
+                        AdonisUI.Controls.MessageBoxButton.OK, AdonisUI.Controls.MessageBoxImage.Error);
+                return;
             }
+
+            InstallationPath = prospectivePath;
+
+            //if (!OnRemoteMachine)
+            //{
+            //    RemapMediaFrom = string.Empty;
+            //    RemapMediaTo = string.Empty;
+            //    RemapRomsFrom = string.Empty;
+            //    RemapRomsTo = string.Empty;
+            //}
         }
 
         [RelayCommand]
@@ -153,16 +163,27 @@ namespace Unibox.ViewModels
             }
         }
 
+        private void UpdateInstallation()
+        {
+            installation.Name = Name;
+            installation.InstallationPath = InstallationPath;
+            installation.RemapRomsFrom = RemapRomsFrom;
+            installation.RemapRomsTo = RemapRomsTo;
+            installation.RemapMediaFrom = RemapMediaFrom;
+            installation.RemapMediaTo = RemapMediaTo;
+
+            installationService.Update(installation);
+        }
+
         [RelayCommand]
         private void ProcessOkButton(Window window)
         {
-            AddInstallation();
+            UpdateInstallation();
 
-            if (window != null)
-            {
-                DialogResult = Data.Enums.DialogResult.OK;
-                window.Close();
-            }
+            WeakReferenceMessenger.Default.Send(new InstallationUpdatedMessage(installation));
+
+            DialogResult = Data.Enums.DialogResult.OK;
+            window.Close();
         }
 
         [RelayCommand]
@@ -203,30 +224,6 @@ namespace Unibox.ViewModels
             }
         }
 
-        private void AddInstallation()
-        {
-            InstallationModel newInstallation = new InstallationModel()
-            {
-                Name = Name,
-                InstallationPath = InstallationPath,
-                OnRemoteMachine = OnRemoteMachine,
-                RemapRomsFrom = RemapRomsFrom,
-                RemapRomsTo = RemapRomsTo,
-                RemapMediaFrom = RemapMediaFrom,
-                RemapMediaTo = RemapMediaTo
-            };
-
-            var outcome = platformUpdateService.UpdateInstallationPlatforms(newInstallation);
-
-            if (outcome.UpdatePlatformOutcome == UpdatePlatformOutcome.Success)
-            {
-                //databaseService.Database.Collections.Installations.Insert(newInstallation);
-            }
-            else
-            {
-            }
-        }
-
         string IDataErrorInfo.this[string propertyName]
         {
             get
@@ -234,6 +231,18 @@ namespace Unibox.ViewModels
                 string validaitonError = ProcessPropertyChange(propertyName);
                 ValidateForm();
                 return validaitonError;
+            }
+        }
+
+        partial void OnInstallationPathChanged(string value)
+        {
+            OnRemoteMachine = Helpers.FileSystem.IsNetworkPath(InstallationPath);
+            if (!OnRemoteMachine)
+            {
+                RemapMediaFrom = string.Empty;
+                RemapMediaTo = string.Empty;
+                RemapRomsFrom = string.Empty;
+                RemapRomsTo = string.Empty;
             }
         }
 
@@ -250,12 +259,12 @@ namespace Unibox.ViewModels
 
                 case nameof(InstallationPath):
                     OnRemoteMachine = Helpers.FileSystem.IsNetworkPath(InstallationPath);
-                    if (string.IsNullOrWhiteSpace(InstallationPath))
-                        return "Installation path cannot be empty.";
-                    else if (databaseService.Database.Collections.Installations.Find(x => x.InstallationPath == InstallationPath).Count() > 1)
-                        return "There is already another Installation with this path.";
-                    else if (installationService.IsLaunchboxRootDirectory(InstallationPath))
-                        return "Not a Launchbox root directory.";
+                    //if (string.IsNullOrWhiteSpace(InstallationPath))
+                    //    return "Installation path cannot be empty.";
+                    //else if (!installationService.IsUniqueInstallationPath(InstallationPath))
+                    //    return "There is already another Installation with this path.";
+                    //else if (installationService.IsLaunchboxRootDirectory(InstallationPath))
+                    //    return "Not a Launchbox root directory.";
                     break;
 
                 case nameof(RemapRomsFrom):

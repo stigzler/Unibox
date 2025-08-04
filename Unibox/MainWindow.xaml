@@ -10,66 +10,63 @@
         xmlns:adonis="clr-namespace:AdonisUI.Controls;assembly=AdonisUI"
         mc:Ignorable="d"
         d:DataContext="{d:DesignInstance Type=vm:MainWindowVM, IsDesignTimeCreatable=True}"
-        Title="Unibox" Height="450" Width="800" 
+        Title="Unibox" Height="450" Width="800"
         WindowStartupLocation="CenterScreen" Closing="Window_Closing">
 
     <Window.Style>
-        <Style TargetType="Window" BasedOn="{StaticResource {x:Type Window}}"/>
+        <Style TargetType="Window" BasedOn="{StaticResource {x:Type Window}}" />
     </Window.Style>
 
     <Window.Resources>
         <ResourceDictionary>
-            <converters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
-            <converters:BoolToWidthConverter x:Key="BoolToWidthConverter"/>
+            <converters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter" />
+            <converters:BoolToWidthConverter x:Key="BoolToWidthConverter" />
 
             <Style x:Key="SlideMenuMuttons" TargetType="Button">
-                <Setter Property="BorderThickness" Value="0"/>
-                <Setter Property="Padding" Value="10,5"/>
+                <Setter Property="BorderThickness" Value="0" />
+                <Setter Property="Padding" Value="10,5" />
             </Style>
 
             <Style TargetType="Image">
                 <Setter Property="RenderOptions.BitmapScalingMode" Value="HighQuality" />
             </Style>
-
-
         </ResourceDictionary>
     </Window.Resources>
 
-    <Grid Margin="4" >
-        
+    <Grid Margin="4">
+
         <DockPanel LastChildFill="True">
-            
+
             <!-- TITLE BAR -->
             <Grid HorizontalAlignment="Left" Margin="0,0,0,6" DockPanel.Dock="Top">
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="45"/>
-                    <ColumnDefinition Width="auto"/>
+                    <ColumnDefinition Width="45" />
+                    <ColumnDefinition Width="auto" />
                     <ColumnDefinition Width="*" />
-                    <ColumnDefinition Width="auto"/>
-                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="auto" />
+                    <ColumnDefinition Width="*" />
                 </Grid.ColumnDefinitions>
-                
+
                 <!-- Hamburger Icon -->
                 <Button Grid.Column="0" Width="40" Height="40" VerticalAlignment="Top" Margin="2" Command="{Binding ToggleMenuCommand}">
-                    <Image Source="/Resources/Images/menu-burger.png" Width="24"/>
+                    <Image Source="/Resources/Images/menu-burger.png" Width="24" />
                 </Button>
 
                 <Image Grid.Column="1" Source="/Resources/Images/LaunchboxLogoB+W.png" Width="28" Margin="2"></Image>
 
-                <ComboBox Grid.Column="2" Margin="2" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" 
-                          ItemsSource="{Binding Installations}" DisplayMemberPath="Name"/>
+                <ComboBox Grid.Column="2" Margin="2" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
+                          ItemsSource="{Binding Installations}" DisplayMemberPath="Name" />
 
                 <Image Grid.Column="3" Source="/Resources/Images/platform.png" Width="28" Margin="2"></Image>
 
                 <ComboBox Grid.Column="4" Margin="2" />
-                
             </Grid>
-      
+
             <!-- MAIN GRID -->
             <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="{Binding IsMenuOpen, Converter={StaticResource BoolToWidthConverter}}" />
-                    <ColumnDefinition Width="2"/>
+                    <ColumnDefinition Width="2" />
                     <ColumnDefinition Width="*" />
                 </Grid.ColumnDefinitions>
 
@@ -79,34 +76,31 @@
                     <!-- Menu Buttons -->
 
                     <Button  Padding="5" Margin="2,3,2,2" Command="{Binding NavigateToGamesCommand}" HorizontalContentAlignment="Left">
-                        <StackPanel Orientation="Horizontal" >
-                            <Image Source="/Resources/Images/SpaceInvader.png" Width="24" Margin="4,0,4,0"/>
-                            <TextBlock Text="Games" Margin="5" FontSize="16" FontWeight="Bold"/>
+                        <StackPanel Orientation="Horizontal">
+                            <Image Source="/Resources/Images/SpaceInvader.png" Width="24" Margin="4,0,4,0" />
+                            <TextBlock Text="Games" Margin="5" FontSize="16" FontWeight="Bold" />
                         </StackPanel>
                     </Button>
 
                     <Button  Padding="5" Margin="2,3,2,2" Command="{Binding NavigateToInstallationsCommand}" HorizontalContentAlignment="Left">
-                        <StackPanel Orientation="Horizontal" >
-                            <Image Source="/Resources/Images/LaunchboxLogoB+W.png" Width="24" Margin="4,0,4,0"/>
-                            <TextBlock Text="Installations" Margin="5" FontSize="16" FontWeight="Bold"/>
+                        <StackPanel Orientation="Horizontal">
+                            <Image Source="/Resources/Images/LaunchboxLogoB+W.png" Width="24" Margin="4,0,4,0" />
+                            <TextBlock Text="Installations" Margin="5" FontSize="16" FontWeight="Bold" />
                         </StackPanel>
                     </Button>
 
                     <Button Padding="5" Margin="2" Command="{Binding NavigateToSettingsCommand}" HorizontalContentAlignment="Left">
                         <StackPanel Orientation="Horizontal">
-                            <Image Source="/Resources/Images/Settings.png" Width="24" Margin="4,0,4,0"/>
-                            <TextBlock Text="Settings" Margin="5" FontSize="16" FontWeight="Bold"/>
+                            <Image Source="/Resources/Images/Settings.png" Width="24" Margin="4,0,4,0" />
+                            <TextBlock Text="Settings" Margin="5" FontSize="16" FontWeight="Bold" />
                         </StackPanel>
                     </Button>
-
                 </StackPanel>
 
                 <!-- Main Content -->
-                <ContentControl Grid.Column="2" 
-                                Content="{Binding CurrentPage}" Background="Green"/>
+                <ContentControl Grid.Column="2"
+                                Content="{Binding CurrentPage}" Background="Green" />
             </Grid>
         </DockPanel>
     </Grid>
-
-
 </Window>

@@ -46,8 +46,8 @@ namespace Unibox
 
             // Register Services
             services.AddSingleton<DatabaseService>(); // Register the databaseService
-            services.AddSingleton<PlatformService>(); // Register the platform update service
             services.AddSingleton<InstallationService>(); // Register the installation service
+            services.AddSingleton<PlatformService>(); // Register the platform update service
 
             // Register ViewModels
             services.AddTransient<MainWindowVM>();

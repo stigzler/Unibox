@@ -14,16 +14,20 @@ namespace Unibox.Services
 {
     internal class PlatformService
     {
-        DatabaseService databaseService;
+        private DatabaseService databaseService;
+        private InstallationService installationService;
 
-        public PlatformService(DatabaseService databaseService)
+        public PlatformService(DatabaseService databaseService, InstallationService installationService)
         {
             this.databaseService = databaseService;
+            this.installationService = installationService;
         }
 
         public UpdatePlatformsOutcome UpdateInstallationPlatforms(InstallationModel installationModel)
         {
             UpdatePlatformsOutcome updatePlatformsOutcome = new UpdatePlatformsOutcome();
+
+            // CHECK FOR ERRORS
 
             // Check can access Installaiton Path Directory
             if (!Directory.Exists(installationModel.InstallationPath))
@@ -45,7 +49,7 @@ namespace Unibox.Services
                 return updatePlatformsOutcome;
             }
 
-            // AT THIS POINT, PROCESS WILL COMPLETE SUCCESSFULLY, but could contain wanrings
+            // AT THIS POINT, PROCESS WILL COMPLETE SUCCESSFULLY, but could contain warnings
 
             foreach (PlatformModel launchboxPlatform in xmlPlatforms)
             {
@@ -85,9 +89,9 @@ namespace Unibox.Services
                 // ROM FOLDER OPS
 
                 if (String.IsNullOrWhiteSpace(launchboxPlatform.LaunchboxRomFolder))
-                // Rom Folder Null - try to resolve to LB Games folder 
+                // Rom Folder Null - try to resolve to LB Games folder
                 {
-                    string candidatePath = Path.Combine(installationModel.InstallationPath, 
+                    string candidatePath = Path.Combine(installationModel.InstallationPath,
                         Data.Constants.Paths.LaunchboxRelGamesDir, launchboxPlatform.Name);
 
                     if (Directory.Exists(candidatePath))
@@ -102,7 +106,6 @@ namespace Unibox.Services
                         $"No Rom Folder set in Launchbox and no PLatform of this name in Launchbox/Games folder. You will have to set this manually to enable adding Roms for this Platform.");
                     }
                 }
-
                 else if (!Helpers.FileSystem.IsVolumedAndRooted(launchboxPlatform.LaunchboxRomFolder))
                 // Rom folder rootless (e.g. "Games\C64 Dreams")
                 {
@@ -136,7 +139,6 @@ namespace Unibox.Services
                             $"Launchbox Path: [{launchboxPlatform.LaunchboxRomFolder}].");
                     }
                 }
-
                 else if (Helpers.FileSystem.IsVolumedAndRooted(launchboxPlatform.LaunchboxRomFolder) &&
                     installationModel.OnRemoteMachine)
                 // Rom folder has Drive letter, but installation is on a network share
@@ -169,7 +171,6 @@ namespace Unibox.Services
                         }
                     }
                 }
-
                 else
                 {
                     upsertPlatform.ResolvedRomFolder = launchboxPlatform.LaunchboxRomFolder;
@@ -179,7 +180,7 @@ namespace Unibox.Services
 
                 installationModel.Platforms.Add(upsertPlatform);
 
-               //databaseService.Database.Collections.Platforms.Upsert(launchboxPlatform);
+                //databaseService.Database.Collections.Platforms.Upsert(launchboxPlatform);
             }
 
             //WeakReferenceMessenger.Default.Send(new Messages.InstallationDeletedMessage(newInstallation));
@@ -187,7 +188,6 @@ namespace Unibox.Services
             // NB: Don't forget to review the xml for any REMOVED Platforms (i.e. local db PLatform.Name cannot be found in the xml)
             updatePlatformsOutcome.UpdatePlatformOutcome = UpdatePlatformOutcome.Success;
             return updatePlatformsOutcome;
-
         }
 
         private void SendMessage(UpdatePlatformMessageType updatePlatformMessageType, string message)
@@ -197,7 +197,6 @@ namespace Unibox.Services
                 MessageType = updatePlatformMessageType,
                 SummaryLine = message
             });
-
         }
 
         public ObservableCollection<PlatformModel> GetPlatformsFromXml(string installationPath)

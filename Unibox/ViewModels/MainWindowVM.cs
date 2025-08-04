@@ -15,10 +15,11 @@ using Unibox.Services;
 
 namespace Unibox.ViewModels
 {
-    public partial class MainWindowVM : ObservableObject, IRecipient<InstallationAddedMessage>, IRecipient<InstallationDeletedMessage>
+    public partial class MainWindowVM : ObservableObject,
+        IRecipient<InstallationAddedMessage>,
+        IRecipient<InstallationDeletedMessage>,
+        IRecipient<InstallationUpdatedMessage>
     {
-
-
         [ObservableProperty]
         private string title = "Unibox";
 
@@ -45,6 +46,7 @@ namespace Unibox.ViewModels
 
             WeakReferenceMessenger.Default.Register<InstallationAddedMessage>(this);
             WeakReferenceMessenger.Default.Register<InstallationDeletedMessage>(this);
+            WeakReferenceMessenger.Default.Register<InstallationUpdatedMessage>(this);
 
             UpdateIstallationsFromDatabase();
 
@@ -89,6 +91,10 @@ namespace Unibox.ViewModels
         {
             UpdateIstallationsFromDatabase();
         }
+
+        void IRecipient<InstallationUpdatedMessage>.Receive(InstallationUpdatedMessage message)
+        {
+            UpdateIstallationsFromDatabase();
+        }
     }
 }
-
