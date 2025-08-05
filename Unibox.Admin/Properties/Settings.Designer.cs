@@ -58,5 +58,41 @@ namespace Unibox.Admin.Properties {
                 this["SsPassword"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("{Please Set}")]
+        public string ssApiName {
+            get {
+                return ((string)(this["ssApiName"]));
+            }
+            set {
+                this["ssApiName"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("{Please Set}")]
+        public string ssApiUsername {
+            get {
+                return ((string)(this["ssApiUsername"]));
+            }
+            set {
+                this["ssApiUsername"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("{Please Set}")]
+        public string ssApiPassword {
+            get {
+                return ((string)(this["ssApiPassword"]));
+            }
+            set {
+                this["ssApiPassword"] = value;
+            }
+        }
     }
 }

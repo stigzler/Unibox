@@ -11,8 +11,13 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Data\LbMediaTypesList.dat" />
+    <None Remove="Data\LbPlatfomList.dat" />
     <None Remove="Data\LbToSsMediaMap.dat" />
     <None Remove="Data\LbToSsSystemsMap.dat" />
+    <None Remove="Data\secrets.ini" />
+    <None Remove="Data\SsMediaTypesList.dat" />
+    <None Remove="Data\SsSystemList.dat" />
     <None Remove="Resources\Images\eraser.png" />
     <None Remove="Resources\Images\folder-horizontal-open.png" />
     <None Remove="Resources\Images\information.png" />
@@ -30,10 +35,22 @@
     <Resource Include="Resources\Images\information.png">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </Resource>
+    <Content Include="Data\LbMediaTypesList.dat">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Data\LbPlatfomList.dat">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="Data\LbToSsMediaMap.dat">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Data\LbToSsSystemsMap.dat">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Data\SsMediaTypesList.dat">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Data\SsSystemList.dat">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Resources\Images\LaunchboxLogoB+W.png">
@@ -55,6 +72,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <EmbeddedResource Include="Data\secrets.ini" />
     <EmbeddedResource Include="Resources\Images\UniboxLogo512.ico">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </EmbeddedResource>

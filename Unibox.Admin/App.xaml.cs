@@ -44,6 +44,8 @@ namespace Unibox.Admin
 
             // Register Services
             services.AddSingleton<Admin.Services.SqliteService>();
+            services.AddSingleton<Admin.Services.ScreenscraperService>();
+            services.AddSingleton<Admin.Services.DatabaseService>();
 
             // Register ViewModels
             services.AddTransient<MainWindowVM>();

@@ -1,41 +1,78 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using stigzler.ScreenscraperWrapper.Data.Entities.Screenscraper;
+using System.Text.Json.Serialization;
 using System.Windows;
-using System.Xml.Linq;
+using System.Windows.Input;
+using Unibox.Admin.Services;
 
 namespace Unibox.Admin.ViewModels
 {
     internal partial class MainWindowVM : ObservableObject
     {
-        private Services.SqliteService sqliteService;
+        [ObservableProperty]
+        private string consoleText = String.Empty;
+
+        [ObservableProperty]
+        private Cursor cursor = Cursors.Arrow;
 
         [ObservableProperty]
         private string lbRootPath = String.Empty;
 
+        private ScreenscraperService screenscraperService;
+        private SqliteService sqliteService;
+        private DatabaseService databaseService;
+
         [ObservableProperty]
-        private string ssUsername = String.Empty;
+        private string ssApiName = String.Empty;
+
+        [ObservableProperty]
+        private string ssApiPassword = String.Empty;
+
+        [ObservableProperty]
+        private string ssApiUsername = String.Empty;
 
         [ObservableProperty]
         private string ssPassword = String.Empty;
 
         [ObservableProperty]
-        private string consoleText = String.Empty;
+        private string ssUsername = String.Empty;
 
-        [RelayCommand]
-        private void SaveToSettings()
+        public MainWindowVM()
         {
-            Properties.Settings.Default.LbInstallationRootPath = LbRootPath;
-            Properties.Settings.Default.SsUsername = SsUsername;
-            Properties.Settings.Default.SsPassword = SsPassword;
+        }
+
+        public MainWindowVM(SqliteService sqliteService, ScreenscraperService screenscraperService, DatabaseService databaseService)
+        {
+            LoadSettings();
+
+            this.sqliteService = sqliteService;
+            this.screenscraperService = screenscraperService;
+            this.databaseService = databaseService;
 
             SetSqliteFilepath();
+            screenscraperService.UpdateCredentialsFromUserSettings();
+        }
+
+        [RelayCommand]
+        private void CopyText()
+        {
+            Clipboard.SetText(ConsoleText.TrimEnd(Environment.NewLine.ToCharArray()));
+            AdonisUI.Controls.MessageBox.Show("Text copied to clipboard!", "Copy Text",
+                AdonisUI.Controls.MessageBoxButton.OK, AdonisUI.Controls.MessageBoxImage.Information);
+        }
+
+        [RelayCommand]
+        private void GetLaunchboxMediaTypes()
+        {
+            var query = "SELECT DISTINCT Type FROM GameImages";
+            var results = sqliteService.GetData(query);
+            ConsoleText = String.Empty;
+            // Handle results as needed, e.g., display in a UI element
+            foreach (var mediaType in results)
+            {
+                ConsoleText += mediaType + Environment.NewLine;
+            }
         }
 
         [RelayCommand]
@@ -54,44 +91,74 @@ namespace Unibox.Admin.ViewModels
         }
 
         [RelayCommand]
-        private void GetLaunchboxMediaTypes()
+        private async Task GetScreenscraperSystems()
         {
-            var query = "SELECT DISTINCT Type FROM GameImages";
-            var results = sqliteService.GetData(query);
+            Cursor = Cursors.Wait;
+            var dave = await screenscraperService.GetScreenscraperSystems();
+            Cursor = Cursors.Arrow;
+
             ConsoleText = String.Empty;
-            // Handle results as needed, e.g., display in a UI element
-            foreach (var mediaType in results)
+
+            foreach (var system in (List<stigzler.ScreenscraperWrapper.Data.Entities.Screenscraper.System>)dave.DataObject)
             {
-                ConsoleText += mediaType + Environment.NewLine;
+                ConsoleText += $"{system.ID}|{system.NameEurope}" + Environment.NewLine;
             }
         }
 
         [RelayCommand]
-        private void CopyText()
+        private void GetScreenscraperGameMediaTypeEnums()
         {
-            Clipboard.SetText(ConsoleText.TrimEnd(Environment.NewLine.ToCharArray()));
-            AdonisUI.Controls.MessageBox.Show("Text copied to clipboard!", "Copy Text",
-                AdonisUI.Controls.MessageBoxButton.OK, AdonisUI.Controls.MessageBoxImage.Information);
+            //Cursor = Cursors.Wait;
+            //var dave = await screenscraperService.GetScreenscraperGameMediaTypes();
+            //Cursor = Cursors.Arrow;
+
+            //ConsoleText = String.Empty;
+
+            //foreach (var mediaType in (List<stigzler.ScreenscraperWrapper.Data.Entities.Screenscraper.System>)dave.DataObject)
+            //{
+            //    ConsoleText += $"{mediaType.}|{system.NameEurope}" + Environment.NewLine;
+            //}
+            ConsoleText = String.Empty;
+            foreach (var enumName in Enum.GetValues(typeof(stigzler.ScreenscraperWrapper.Data.Enums.GameMediaType)))
+            {
+                ConsoleText += enumName.ToString() + Environment.NewLine;
+            }
         }
 
         private void LoadSettings()
         {
             LbRootPath = Properties.Settings.Default.LbInstallationRootPath;
-            SsUsername = Properties.Settings.Default.SsUsername;
-            SsPassword = Properties.Settings.Default.SsPassword;
+            //SsUsername = Properties.Settings.Default.SsUsername;
+            //SsPassword = Properties.Settings.Default.SsPassword;
+            //SsApiName = Properties.Settings.Default.ssApiName;
+            //SsApiUsername = Properties.Settings.Default.ssApiUsername;
+            //SsApiPassword = Properties.Settings.Default.ssApiPassword;
+
+            SsUsername = "Dummy";
+            SsPassword = "Dummy";
+            SsApiName = "Dummy";
+            SsApiUsername = "Dummy";
+            SsApiPassword = "Dummy";
+        }
+
+        [RelayCommand]
+        private void SaveToSettings()
+        {
+            Properties.Settings.Default.LbInstallationRootPath = LbRootPath;
+            Properties.Settings.Default.SsUsername = SsUsername;
+            Properties.Settings.Default.SsPassword = SsPassword;
+            Properties.Settings.Default.ssApiName = SsApiName;
+            Properties.Settings.Default.ssApiUsername = SsApiUsername;
+            Properties.Settings.Default.ssApiPassword = SsApiPassword;
+
+            SetSqliteFilepath();
+            screenscraperService.UpdateCredentialsFromUserSettings();
         }
 
         private void SetSqliteFilepath()
         {
             sqliteService.Filepath = System.IO.Path.Combine(Properties.Settings.Default.LbInstallationRootPath,
                 @"Metadata\LaunchBox.Metadata.db");
-        }
-
-        public MainWindowVM(Admin.Services.SqliteService sqliteService)
-        {
-            LoadSettings();
-            this.sqliteService = sqliteService;
-            SetSqliteFilepath();
         }
     }
 }

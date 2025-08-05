@@ -9,6 +9,7 @@
         xmlns:adonisControls="clr-namespace:AdonisUI.Controls;assembly=AdonisUI"
         mc:Ignorable="d"
         d:DataContext="{d:DesignInstance Type=vm:MainWindowVM, IsDesignTimeCreatable=True}"
+        Cursor="{Binding Cursor}"
         Title="Unibox Admin" Height="450" Width="800" WindowStartupLocation="CenterScreen" Closing="Window_Closing">
 
     <Window.Style>
@@ -38,6 +39,9 @@
                                 <RowDefinition Height="auto" />
                                 <RowDefinition Height="auto" />
                                 <RowDefinition Height="auto" />
+                                <RowDefinition Height="auto" />
+                                <RowDefinition Height="auto" />
+                                <RowDefinition Height="auto" />
                             </Grid.RowDefinitions>
 
                             <TextBlock Grid.Column="0" Grid.Row="0" Text="Launchbox Root:" Margin="5" />
@@ -51,7 +55,17 @@
 
                             <TextBlock Grid.Column="0" Grid.Row="2" Text="Screenscraper Password:" Margin="5" />
                             <TextBox Grid.Column="1" Grid.Row="2" Margin="5" Text="{Binding SsPassword}" />
-                            <StackPanel Orientation="Horizontal" Grid.Column="1" Grid.Row="3" HorizontalAlignment="Right">
+
+                            <TextBlock Grid.Column="0" Grid.Row="3" Text="Screenscraper ApiName:" Margin="5" />
+                            <TextBox Grid.Column="1" Grid.Row="3" Margin="5" Text="{Binding SsApiName}" />
+
+                            <TextBlock Grid.Column="0" Grid.Row="4" Text="Screenscraper ApiUsername:" Margin="5" />
+                            <TextBox Grid.Column="1" Grid.Row="4" Margin="5" Text="{Binding SsApiUsername}" />
+
+                            <TextBlock Grid.Column="0" Grid.Row="5" Text="Screenscraper ApiPassword:" Margin="5" />
+                            <TextBox Grid.Column="1" Grid.Row="5" Margin="5" Text="{Binding SsApiPassword}" />
+
+                            <StackPanel Orientation="Horizontal" Grid.Column="1" Grid.Row="6" HorizontalAlignment="Right">
                                 <Button  Content="Save" Margin="5" Command="{Binding SaveToSettingsCommand}" />
                                 <Button  Content="Test" Margin="5" />
                             </StackPanel>
@@ -74,7 +88,8 @@
                     <StackPanel Grid.Row="0" Orientation="Horizontal">
                         <Button Content="LB Platforms" Margin="2" Command="{Binding GetLaunchboxPlatformsCommand}" />
                         <Button Content="LB Media Types" Margin="2" Command="{Binding GetLaunchboxMediaTypesCommand}" />
-                        <Button Content="SS Platforms List" Margin="2" />
+                        <Button Content="SS Systems" Margin="2" Command="{Binding GetScreenscraperSystemsCommand}" />
+                        <Button Content="SS Media Type Enum Names" Margin="2" Command="{Binding GetScreenscraperGameMediaTypeEnumsCommand}" />
                     </StackPanel>
 
                     <TextBox x:Name="ConsoleTB" Grid.Row="1" Margin="5" Padding="10"

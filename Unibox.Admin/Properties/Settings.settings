@@ -11,5 +11,14 @@
     <Setting Name="SsPassword" Type="System.String" Scope="User">
       <Value Profile="(Default)">{Please Set}</Value>
     </Setting>
+    <Setting Name="ssApiName" Type="System.String" Scope="User">
+      <Value Profile="(Default)">{Please Set}</Value>
+    </Setting>
+    <Setting Name="ssApiUsername" Type="System.String" Scope="User">
+      <Value Profile="(Default)">{Please Set}</Value>
+    </Setting>
+    <Setting Name="ssApiPassword" Type="System.String" Scope="User">
+      <Value Profile="(Default)">{Please Set}</Value>
+    </Setting>
   </Settings>
 </SettingsFile>
