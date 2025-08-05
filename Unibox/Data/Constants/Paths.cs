@@ -10,13 +10,14 @@ namespace Unibox.Data.Constants
     {
         // Direcotries
         public const string LaunchboxRelDataDir = @"Data";
+
         public const string LaunchboxRelGamesDir = @"Games";
         public const string LaunchboxRelGamesXmlDir = @"Data\Platforms";
 
         // Files
         public const string LaunchboxPlatformsXmlFile = @"Platforms.xml";
 
-
-
+        public const string MediaMapFile = @"LbToSsMediaMap.dat";
+        public const string PlatformMapFile = @"LbToSsSystemsMap.dat";
     }
 }

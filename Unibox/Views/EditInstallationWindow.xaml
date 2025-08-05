@@ -1,4 +1,4 @@
-﻿<Window x:Class="Unibox.Views.EditInstallationForm"
+﻿<Window x:Class="Unibox.Views.EditInstallationWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -45,8 +45,6 @@
             <GroupBox Margin="6">
                 <GroupBox.Header>
                     <DockPanel>
-                        <Button DockPanel.Dock="Right" Grid.Column="2" Grid.ColumnSpan="2" Grid.Row="0" Margin="0" Content="Show Paths" Command="{Binding ShowPlatformRomFoldersCommand}"
-                            ToolTip="Show Launchbox database paths for Rom and Media paths. Helps setting up any path modifications." />
                         <TextBlock Text="Required" />
                     </DockPanel>
                 </GroupBox.Header>
@@ -81,6 +79,8 @@
             <GroupBox Margin="6" IsEnabled="{Binding OnRemoteMachine}">
                 <GroupBox.Header>
                     <DockPanel>
+                        <Button DockPanel.Dock="Right" Grid.Column="2" Grid.ColumnSpan="2" Grid.Row="0" Margin="0" Content="Show Paths" Command="{Binding ShowPlatformRomFoldersCommand}"
+                            ToolTip="Show Launchbox database paths for Rom and Media paths. Helps setting up any path modifications." />
                         <TextBlock DockPanel.Dock="Left" Text="Remote Path Modifications (optional)" VerticalAlignment="Center" />
                         <Image DockPanel.Dock="Left" Source="pack://application:,,,/Resources/Images/information.png" Margin="5,0,0,0"
                                Width="16" VerticalAlignment="Center" HorizontalAlignment="Left"

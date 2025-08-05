@@ -64,9 +64,9 @@ namespace Unibox.ViewModels
         {
             if (selectedInstallation == null) return;
 
-            EditInstallationForm editInstallationForm = new EditInstallationForm();
-            editInstallationForm.ViewModel.Installation = SelectedInstallation;
-            editInstallationForm.ShowDialog();
+            EditInstallationWindow editInstallationWindow = new EditInstallationWindow();
+            editInstallationWindow.ViewModel.Installation = SelectedInstallation;
+            editInstallationWindow.ShowDialog();
         }
 
         [RelayCommand]

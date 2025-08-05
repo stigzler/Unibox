@@ -1,0 +1,90 @@
+﻿<Window x:Class="Unibox.Admin.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Unibox.Admin"
+        xmlns:properties="clr-namespace:Unibox.Admin.Properties"
+        xmlns:vm="clr-namespace:Unibox.Admin.ViewModels"
+        xmlns:adonisControls="clr-namespace:AdonisUI.Controls;assembly=AdonisUI"
+        mc:Ignorable="d"
+        d:DataContext="{d:DesignInstance Type=vm:MainWindowVM, IsDesignTimeCreatable=True}"
+        Title="Unibox Admin" Height="450" Width="800" WindowStartupLocation="CenterScreen" Closing="Window_Closing">
+
+    <Window.Style>
+        <Style TargetType="Window" BasedOn="{StaticResource {x:Type Window}}" />
+    </Window.Style>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <TextBlock Grid.Row="0" Text="⚠️ This is down and dirty with no data validation - be careful ⚠️" HorizontalAlignment="Center" Margin="5" />
+
+        <TabControl Grid.Row="1">
+            <TabItem Header="Settings">
+                <Grid>
+                    <GroupBox Header="File Locations">
+
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="auto" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="auto" />
+                                <RowDefinition Height="auto" />
+                                <RowDefinition Height="auto" />
+                                <RowDefinition Height="auto" />
+                                <RowDefinition Height="auto" />
+                            </Grid.RowDefinitions>
+
+                            <TextBlock Grid.Column="0" Grid.Row="0" Text="Launchbox Root:" Margin="5" />
+                            <TextBox x:Name="LbRootPath" Grid.Column="1" Grid.Row="0" Margin="5"
+                             Text="{Binding LbRootPath}" />
+
+                            <TextBlock Grid.Column="0" Grid.Row="1" Text="Screenscraper Username:" Margin="5" />
+                            <TextBox Grid.Column="1" Grid.Row="1" Margin="5"
+                        Text="{Binding SsUsername, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True,
+                        NotifyOnValidationError=True, Mode=TwoWay}" />
+
+                            <TextBlock Grid.Column="0" Grid.Row="2" Text="Screenscraper Password:" Margin="5" />
+                            <TextBox Grid.Column="1" Grid.Row="2" Margin="5" Text="{Binding SsPassword}" />
+                            <StackPanel Orientation="Horizontal" Grid.Column="1" Grid.Row="3" HorizontalAlignment="Right">
+                                <Button  Content="Save" Margin="5" Command="{Binding SaveToSettingsCommand}" />
+                                <Button  Content="Test" Margin="5" />
+                            </StackPanel>
+                        </Grid>
+                    </GroupBox>
+                </Grid>
+            </TabItem>
+
+            <TabItem Header="Lists">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <!-- Top controls -->
+                        <RowDefinition Height="*" />
+                        <!-- ConsoleTB fills space -->
+                        <RowDefinition Height="Auto" />
+                        <!-- BottomTB at bottom -->
+                    </Grid.RowDefinitions>
+
+                    <StackPanel Grid.Row="0" Orientation="Horizontal">
+                        <Button Content="LB Platforms" Margin="2" Command="{Binding GetLaunchboxPlatformsCommand}" />
+                        <Button Content="LB Media Types" Margin="2" Command="{Binding GetLaunchboxMediaTypesCommand}" />
+                        <Button Content="SS Platforms List" Margin="2" />
+                    </StackPanel>
+
+                    <TextBox x:Name="ConsoleTB" Grid.Row="1" Margin="5" Padding="10"
+                         FontFamily="Courier New" TextWrapping="Wrap" VerticalScrollBarVisibility="Auto"
+                         Text="{Binding ConsoleText}" IsReadOnly="True" />
+                    <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right">
+                        <Button Content="Copy Text" Margin="2" Command="{Binding CopyTextCommand}" />
+                    </StackPanel>
+                </Grid>
+            </TabItem>
+        </TabControl>
+    </Grid>
+</Window>

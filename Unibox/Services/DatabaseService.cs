@@ -15,10 +15,11 @@ namespace Unibox.Services
 
         public DatabaseService()
         {
+            // LITEDB ============================================================================
             ConnectionParameters connectionParameters = new ConnectionParameters
             {
                 ConnectionType = ConnectionType.Shared,
-                Filename = "Unibox.db",
+                Filename = "Unibox.ldb",
                 ReadOnly = false
             };
 
@@ -27,22 +28,17 @@ namespace Unibox.Services
             //Database.Collections.Installations.Insert(new Data.Models.InstallationModel { InstallationPath = "Dave", Name = "Test Installation" });
             //Database.CloseDatabase();
 
-
             if (Database.ConnectionException != null)
             {
                 throw new Exception("Failed to open database: " + Database.ConnectionException.Message);
-              
             }
-            
+
             if (!Database.DatabaseOpen)
             {
                 throw new Exception("Database is not open.");
             }
-        }
 
-        internal PlatformModel GetPlatformByName(string name)
-        {
-            return Database.Collections.Platforms.FindOne(x => x.Name == name);
+            // MySQL ============================================================================
         }
     }
 }

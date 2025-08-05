@@ -9,6 +9,7 @@ using Unibox.Data.MessageDetails;
 using Unibox.Data.Models;
 using Unibox.Data.ServiceOperationOutcomes;
 using Unibox.Messages;
+using Unibox.Views;
 
 namespace Unibox.Services
 {
@@ -75,6 +76,8 @@ namespace Unibox.Services
                         installationPlatform.Name));
                 }
 
+                // PLATFORMS ===============================================================================================
+
                 installationPlatform.Name = launchboxPlatform.Name;
                 installationPlatform.LaunchboxScrapeAs = launchboxPlatform.LaunchboxScrapeAs;
                 installationPlatform.LaunchboxRomFolder = launchboxPlatform.LaunchboxRomFolder;
@@ -91,7 +94,7 @@ namespace Unibox.Services
                 // ROM FOLDER OPS
 
                 if (String.IsNullOrWhiteSpace(launchboxPlatform.LaunchboxRomFolder))
-                // Rom Folder Null - try to resolve to LB Games folder
+                // Rom Folder Null - try to resolve to LB Games folder  ----------------------------------------------------
                 {
                     string candidatePath = Path.Combine(installation.InstallationPath,
                         Data.Constants.Paths.LaunchboxRelGamesDir, launchboxPlatform.Name);
@@ -116,7 +119,7 @@ namespace Unibox.Services
                     }
                 }
                 else if (!Helpers.FileSystem.IsVolumedAndRooted(launchboxPlatform.LaunchboxRomFolder))
-                // Rom folder rootless (e.g. "Games\C64 Dreams")
+                // Rom folder rootless (e.g. "Games\C64 Dreams") ----------------------------------------------------
                 {
                     string lbRootRelativePath = Path.Combine(installation.InstallationPath, launchboxPlatform.LaunchboxRomFolder);
                     string lbGamesRelativePath = Path.Combine(installation.InstallationPath, Data.Constants.Paths.LaunchboxRelGamesDir,
@@ -157,7 +160,7 @@ namespace Unibox.Services
                 }
                 else if (Helpers.FileSystem.IsVolumedAndRooted(launchboxPlatform.LaunchboxRomFolder) &&
                     installation.OnRemoteMachine)
-                // Rom folder has Drive letter, but installation is on a network share
+                // Rom folder has Drive letter, but installation is on a network share  --------------------------------------
                 {
                     if (installation.RemapRomsFrom == null)
                     {
@@ -193,11 +196,48 @@ namespace Unibox.Services
                 }
                 else
                 {
+                    // Drop-out = Copy path as is  ----------------------------------------------------
                     updatePlatformsOutcome.SubOperationOutcomes.Add(new UpdatePlatformsSubOperationOutcome(
                             UpdatePlatformMessageType.Information,
                             $"Rom folder added as per Launchbox database entry.",
                             launchboxPlatform.Name));
                     installationPlatform.ResolvedRomFolder = launchboxPlatform.LaunchboxRomFolder;
+                }
+
+                // PLATFORM FOLDERS ===============================================================================================
+
+                foreach (PlatformFolderModel launchboxPlatformFolder in launchboxPlatform.PlatformFolders)
+                {
+                    PlatformFolderModel installationPlatformFolder =
+                        installationPlatform.PlatformFolders.Where(pf => pf.MediaType == launchboxPlatformFolder.MediaType).FirstOrDefault();
+
+                    if (installationPlatformFolder == null)
+                    {
+                        // ADD NEW PLATFORM FOLDER
+                        // Does not exist, add new to the database
+                        updatePlatformsOutcome.SubOperationOutcomes.Add(new UpdatePlatformsSubOperationOutcome(
+                            UpdatePlatformMessageType.Information,
+                            $"New Platform Folder detected. Adding platform folder: [{launchboxPlatformFolder.MediaType}] to the database.",
+                            launchboxPlatform.Name));
+                        installationPlatformFolder = new PlatformFolderModel();
+                        installationPlatform.PlatformFolders.Add(installationPlatformFolder);
+                    }
+                    else
+                    {
+                        updatePlatformsOutcome.SubOperationOutcomes.Add(new UpdatePlatformsSubOperationOutcome(
+                            UpdatePlatformMessageType.Information,
+                            $"Platform Folder already in database. Updating: [{launchboxPlatformFolder.MediaType}].",
+                            installationPlatform.Name));
+                    }
+
+                    installationPlatformFolder.MediaType = launchboxPlatformFolder.MediaType;
+
+                    if (!Helpers.FileSystem.IsVolumedAndRooted(launchboxPlatformFolder.LaunchboxMediaPath))
+                    {
+                        string lbRootRelativePath = Path.Combine(installation.InstallationPath, launchboxPlatformFolder.LaunchboxMediaPath);
+                        string lbGamesRelativePath = Path.Combine(installation.InstallationPath, Data.Constants.Paths.LaunchboxRelGamesDir,
+                            launchboxPlatform.Name);
+                    }
                 }
             } // END of xmlPlatforms foreach
 
@@ -248,15 +288,16 @@ namespace Unibox.Services
 
                 foreach (var platformFolderElement in doc.Root.Elements("PlatformFolder").Where(pf => pf.Element("Platform").Value == platform.Name))
                 {
-                    if (platformFolderElement.Element("Platform")?.Value == platform.Name)
-                    {
-                        PlatformFolderModel platformFolder = new PlatformFolderModel
-                        {
-                            MediaType = platformFolderElement.Element("MediaType")?.Value,
-                            Folderpath = platformFolderElement.Element("FolderPath")?.Value,
-                        };
-                        platform.PlatformFolders.Add(platformFolder);
-                    }
+                    // ⚠️ Digressed here to media/system maps ⚠️
+                    //if (platformFolderElement.Element("Platform")?.Value == platform.Name)
+                    //{
+                    //    PlatformFolderModel platformFolder = new PlatformFolderModel
+                    //    {
+                    //        MediaType = platformFolderElement.Element("MediaType")?.Value,
+                    //        Folderpath = platformFolderElement.Element("FolderPath")?.Value,
+                    //    };
+                    //    platform.PlatformFolders.Add(platformFolder);
+                    //}
                 }
 
                 lbPlatforms.Add(platform);

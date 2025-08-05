@@ -158,7 +158,7 @@ namespace Unibox.ViewModels
                 if (installationPlatformDetails.ViewModel.SelectedPlatform != null)
                 {
                     RemapRomsFrom = installationPlatformDetails.ViewModel.SelectedPlatform.LaunchboxRomFolder;
-                    RemapMediaFrom = installationPlatformDetails.ViewModel.SelectedPlatformFolder.Folderpath;
+                    RemapMediaFrom = installationPlatformDetails.ViewModel.SelectedPlatformFolder.LaunchboxMediaPath;
                 }
             }
         }
@@ -167,9 +167,9 @@ namespace Unibox.ViewModels
         {
             installation.Name = Name;
             installation.InstallationPath = InstallationPath;
-            installation.RemapRomsFrom = RemapRomsFrom;
+            installation.RemapRomsFrom = RemapRomsFrom?.TrimEnd('\\').TrimEnd('/');
             installation.RemapRomsTo = RemapRomsTo;
-            installation.RemapMediaFrom = RemapMediaFrom;
+            installation.RemapMediaFrom = RemapMediaFrom?.TrimEnd('\\').TrimEnd('/');
             installation.RemapMediaTo = RemapMediaTo;
 
             installationService.Update(installation);
@@ -274,8 +274,8 @@ namespace Unibox.ViewModels
                             return "Remap not needed as Installation is on this local machine. Please remove.";
                         else if (!Helpers.FileSystem.IsVolumedAndRooted(RemapRomsFrom))
                             return "Replace Text path must be a Volumed path (e.g. 'D:\\Games')";
-                        else if (RemapRomsFrom.EndsWith('/') || RemapRomsFrom.EndsWith('\\'))
-                            return "Replace Text path cannot end with a slash or backslash.";
+                        //else if (RemapRomsFrom.EndsWith('/') || RemapRomsFrom.EndsWith('\\'))
+                        //    return "Replace Text path cannot end with a slash or backslash.";
                     }
                     //else if (RemapRomsFrom.Length > 0 && String.IsNullOrWhiteSpace(RemapRomsFrom))
                     //    return "Replace Text path is just whitespace.";
@@ -297,8 +297,8 @@ namespace Unibox.ViewModels
                             return "Remap not needed as Installation is on this local machine. Please remove.";
                         else if (!Helpers.FileSystem.IsVolumedAndRooted(RemapMediaFrom))
                             return "Replace Text path must be a Volumed path (e.g. 'D:\\Games')";
-                        else if (RemapMediaFrom.EndsWith('/') || RemapMediaFrom.EndsWith('\\'))
-                            return "Replace Text path cannot end with a slash or backslash.";
+                        //else if (RemapMediaFrom.EndsWith('/') || RemapMediaFrom.EndsWith('\\'))
+                        //    return "Replace Text path cannot end with a slash or backslash.";
                     }
                     //else if (RemapMediaFrom.Length > 0 && String.IsNullOrWhiteSpace(RemapMediaFrom))
                     //    return "Replace Text path is just whitespace.";

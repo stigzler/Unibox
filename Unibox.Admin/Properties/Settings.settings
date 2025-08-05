@@ -1,0 +1,15 @@
+﻿<?xml version='1.0' encoding='utf-8'?>
+<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="Unibox.Admin.Properties" GeneratedClassName="Settings">
+  <Profiles />
+  <Settings>
+    <Setting Name="LbInstallationRootPath" Type="System.String" Scope="User">
+      <Value Profile="(Default)">{Please Set}</Value>
+    </Setting>
+    <Setting Name="SsUsername" Type="System.String" Scope="User">
+      <Value Profile="(Default)">{Please Set}</Value>
+    </Setting>
+    <Setting Name="SsPassword" Type="System.String" Scope="User">
+      <Value Profile="(Default)">{Please Set}</Value>
+    </Setting>
+  </Settings>
+</SettingsFile>

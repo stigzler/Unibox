@@ -12,6 +12,7 @@
     <Folder Include="$(MSBuildThisFileDirectory)Assets\Images\" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="$(MSBuildThisFileDirectory)Pages\DesignSpec.md" />
     <None Include="$(MSBuildThisFileDirectory)Pages\Processes.md" />
     <None Include="$(MSBuildThisFileDirectory)Pages\UserGuideSketch.md" />
   </ItemGroup>
