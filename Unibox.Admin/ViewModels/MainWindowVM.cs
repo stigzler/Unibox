@@ -73,6 +73,9 @@ namespace Unibox.Admin.ViewModels
             {
                 ConsoleText += mediaType + Environment.NewLine;
             }
+            ConsoleText += "Video" + Environment.NewLine;
+            ConsoleText += "Music" + Environment.NewLine;
+            ConsoleText += "Manual";
         }
 
         [RelayCommand]
@@ -108,16 +111,6 @@ namespace Unibox.Admin.ViewModels
         [RelayCommand]
         private void GetScreenscraperGameMediaTypeEnums()
         {
-            //Cursor = Cursors.Wait;
-            //var dave = await screenscraperService.GetScreenscraperGameMediaTypes();
-            //Cursor = Cursors.Arrow;
-
-            //ConsoleText = String.Empty;
-
-            //foreach (var mediaType in (List<stigzler.ScreenscraperWrapper.Data.Entities.Screenscraper.System>)dave.DataObject)
-            //{
-            //    ConsoleText += $"{mediaType.}|{system.NameEurope}" + Environment.NewLine;
-            //}
             ConsoleText = String.Empty;
             foreach (var enumName in Enum.GetValues(typeof(stigzler.ScreenscraperWrapper.Data.Enums.GameMediaType)))
             {

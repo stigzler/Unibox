@@ -14,22 +14,30 @@ namespace Unibox.Data.LiteDb
             Connection = connection;
             InitialiseCollections();
         }
+
         public ILiteCollection<InstallationModel> Installations { get; set; }
         public ILiteCollection<PlatformModel> Platforms { get; set; }
         public ILiteCollection<PlatformFolderModel> PlatformFolders { get; set; }
-     
+        public ILiteCollection<SsMediaType> SsMediaTypes { get; set; }
+        public ILiteCollection<SsSystem> SsSystems { get; set; }
+        public ILiteCollection<LbPlatform> LbPlatforms { get; set; }
+        public ILiteCollection<LbMediaType> LbMediaTypes { get; set; }
+        public ILiteCollection<LbSsMediaTypeMap> LbSsMediaTypeMap { get; set; }
+        public ILiteCollection<LbSsSystemMap> LbSsSystemsMap { get; set; }
+
         private void InitialiseCollections()
         {
             // ⚠️ NOTE: Don't forget to add .Include where needed!! ⚠️
-             
+
             PlatformFolders = Connection.GetCollection<PlatformFolderModel>("platformFolders");
             Platforms = Connection.GetCollection<PlatformModel>("platforms").Include(p => p.PlatformFolders);
             Installations = Connection.GetCollection<InstallationModel>("installations").Include(i => i.Platforms);
-
-            //Layouts = Connection.GetCollection<Layout>("layouts").Include(x => x.Components).Include("$.Components[*].Effects");
-
-
-
+            SsMediaTypes = Connection.GetCollection<SsMediaType>("ssMediaTypes");
+            SsSystems = Connection.GetCollection<SsSystem>("ssSystems");
+            LbPlatforms = Connection.GetCollection<LbPlatform>("lbPlatforms");
+            LbMediaTypes = Connection.GetCollection<LbMediaType>("lbMediaTypes");
+            LbSsMediaTypeMap = Connection.GetCollection<LbSsMediaTypeMap>("lbSsMediaTypeMap");
+            LbSsSystemsMap = Connection.GetCollection<LbSsSystemMap>("lbSsSystemsMap");
         }
     }
 }

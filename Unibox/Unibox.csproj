@@ -27,6 +27,7 @@
     <None Remove="Resources\Images\Settings.png" />
     <None Remove="Resources\Images\SpaceInvader.png" />
     <None Remove="Resources\Images\UniboxLogo512.ico" />
+    <None Remove="Resources\Images\UniboxLogo512.png" />
   </ItemGroup>
 
   <ItemGroup>
@@ -53,9 +54,10 @@
     <Content Include="Data\SsSystemList.dat">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Resources\Images\LaunchboxLogoB+W.png">
+    <Resource Include="Resources\Images\LaunchboxLogoB+W.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
+    </Resource>
+    <Resource Include="Resources\Images\UniboxLogo512.png" />
     <Content Include="Resources\Images\menu-burger.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
@@ -72,7 +74,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <EmbeddedResource Include="Data\secrets.ini" />
+    <EmbeddedResource Include="secrets.ini" />
     <EmbeddedResource Include="Resources\Images\UniboxLogo512.ico">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </EmbeddedResource>
@@ -119,6 +121,10 @@
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Data\Maps\" />
   </ItemGroup>
 
 </Project>

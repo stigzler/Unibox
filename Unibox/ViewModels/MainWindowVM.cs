@@ -5,7 +5,10 @@ using LiteDB;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
+using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using Unibox.Data.LiteDb;
@@ -51,6 +54,19 @@ namespace Unibox.ViewModels
             UpdateIstallationsFromDatabase();
 
             NavigateToInstallations();
+
+            // TEsts
+
+            var assembly = Assembly.GetExecutingAssembly();
+            string resourceName = "Unibox.secrets.ini";
+            string streamString = null;
+
+            using (Stream stream = assembly.GetManifestResourceStream(resourceName))
+            using (StreamReader reader = new StreamReader(stream))
+            {
+                streamString = reader.ReadToEnd();
+            }
+            Debug.WriteLine(streamString);
         }
 
         [RelayCommand]

@@ -19,12 +19,12 @@ namespace Unibox
 
             this.InitializeComponent();
 
-            Window window = new MainWindow
-            {
-                DataContext = Services.GetService<MainWindowVM>() // Set the DataContext to the MainWindowVM
-            };
+            //Window window = new MainWindow
+            //{
+            //    DataContext = Services.GetService<MainWindowVM>() // Set the DataContext to the MainWindowVM
+            //};
 
-            window.Show();
+            //window.Show();
         }
 
         /// <summary>
@@ -50,6 +50,7 @@ namespace Unibox
             services.AddSingleton<PlatformService>(); // Register the platform update service
 
             // Register ViewModels
+            services.AddTransient<SplashVM>();
             services.AddTransient<MainWindowVM>();
             services.AddTransient<SettingsVM>();
             services.AddTransient<InstallationsVM>();
@@ -59,6 +60,20 @@ namespace Unibox
             // Add other necessary services here
             // e.g., services.AddSingleton<IDataService, DataService>();
             return services.BuildServiceProvider();
+        }
+
+        protected override void OnStartup(StartupEventArgs e)
+        {
+            base.OnStartup(e);
+
+            SplashWindow splash = new SplashWindow();
+            splash.ShowDialog();
+
+            Window window = new MainWindow
+            {
+                //DataContext = Services.GetService<MainWindowVM>() // Set the DataContext to the MainWindowVM
+            };
+            window.Show();
         }
     }
 }
