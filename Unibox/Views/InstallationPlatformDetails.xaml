@@ -11,40 +11,39 @@
         Title="Platform Details" Height="674" Width="610">
 
     <Window.Style>
-        <Style TargetType="Window" BasedOn="{StaticResource {x:Type Window}}"/>
+        <Style TargetType="Window" BasedOn="{StaticResource {x:Type Window}}" />
     </Window.Style>
 
     <Window.Resources>
-        <ResourceDictionary Source="/Resources/Dictionaries/Styles.xaml"/>
+        <ResourceDictionary Source="/Resources/Dictionaries/Styles.xaml" />
     </Window.Resources>
 
-    <DockPanel >
+    <DockPanel>
         <StackPanel DockPanel.Dock="Top">
-            <TextBlock x:Name="Title"  Text="{Binding PageTitle}" Style="{DynamicResource PageHeader}"/>
-            <TextBlock x:Name="SubTitle" Text="{Binding PageSubtitle}" Style="{DynamicResource PageSubText}"/>
+            <TextBlock x:Name="Title"  Text="{Binding PageTitle}" Style="{DynamicResource PageHeader}" />
+            <TextBlock x:Name="SubTitle" Text="{Binding PageSubtitle}" Style="{DynamicResource PageSubText}" />
         </StackPanel>
         <StackPanel Orientation="Horizontal" DockPanel.Dock="Bottom" HorizontalAlignment="Right" Margin="5">
             <StackPanel Orientation="Horizontal" Margin="5">
-                <TextBlock Text="Platforms: " Margin="5,0,0,0" VerticalAlignment="Center"/>
+                <TextBlock Text="Platforms: " Margin="5,0,0,0" VerticalAlignment="Center" />
                 <TextBlock Text="{Binding Platforms.Count}" VerticalAlignment="Center" d:Text="0"></TextBlock>
             </StackPanel>
             <Button Content="Use Paths" ToolTip="Populates 'Replace Text' with the selected Rom and Media Paths for editing."
                     Margin="5" Width="75"
                     Command="{Binding UsePathCommand}" CommandParameter="{Binding RelativeSource={RelativeSource AncestorType=Window}}" />
-            <Button Content="OK" Margin="5" Width="75"
-                    Command="{Binding ProcessOkButtonCommand}" CommandParameter="{Binding RelativeSource={RelativeSource AncestorType=Window}}"  />
-
+            <Button Content="Close" Margin="5" Width="75"
+                    Command="{Binding ProcessOkButtonCommand}" CommandParameter="{Binding RelativeSource={RelativeSource AncestorType=Window}}" />
         </StackPanel>
 
         <Grid>
             <Grid.RowDefinitions>
-                <RowDefinition Height="*"/>
-                <RowDefinition Height="6"/>
-                <RowDefinition Height="*"/>
+                <RowDefinition Height="*" />
+                <RowDefinition Height="6" />
+                <RowDefinition Height="*" />
             </Grid.RowDefinitions>
 
-            <Border Grid.Row="0" BorderThickness="1" BorderBrush="gray" Margin="6" >
-                <DockPanel >
+            <Border Grid.Row="0" BorderThickness="1" BorderBrush="gray" Margin="6">
+                <DockPanel>
                     <TextBlock Text="Rom Paths" DockPanel.Dock="Top" FontWeight="Bold" Margin="5"></TextBlock>
                     <ListView x:Name="MainList"  ItemsSource="{Binding Platforms}" ScrollViewer.VerticalScrollBarVisibility="auto"
                       SelectedItem="{Binding SelectedPlatform, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
@@ -58,10 +57,9 @@
                     </ListView>
                 </DockPanel>
             </Border>
-            
+
             <GridSplitter Grid.Row="1" Background="gray" BorderThickness="10" Margin="2"
                           HorizontalAlignment="Stretch" ></GridSplitter>
-
 
             <Border Grid.Row="2" BorderThickness="1" BorderBrush="gray" Margin="6">
                 <DockPanel>
@@ -71,15 +69,13 @@
                       SelectedItem="{Binding SelectedPlatformFolder, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
                         <ListView.View>
                             <GridView>
-                                <GridViewColumn Header="Media Type" Width="200" DisplayMemberBinding="{Binding MediaType}" />
-                                <GridViewColumn Header="Folder Path" Width="auto" DisplayMemberBinding="{Binding Folderpath}" />
+                                <GridViewColumn Header="Media Type" Width="200" DisplayMemberBinding="{Binding MediaType.Name}" />
+                                <GridViewColumn Header="Folder Path" Width="auto" DisplayMemberBinding="{Binding LaunchboxMediaPath}" />
                             </GridView>
                         </ListView.View>
                     </ListView>
                 </DockPanel>
             </Border>
-            
         </Grid>
-
     </DockPanel>
 </Window>

@@ -6,8 +6,8 @@
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <UseWPF>true</UseWPF>
-    <PackageIcon>UniboxLogo512.png</PackageIcon>
-    <ApplicationIcon>UniboxLogo512.ico</ApplicationIcon>
+    <PackageIcon>UniboxLogo.png</PackageIcon>
+    <ApplicationIcon>UniboxLogo.ico</ApplicationIcon>
   </PropertyGroup>
 
   <ItemGroup>
@@ -26,8 +26,7 @@
     <None Remove="Resources\Images\menu-burger.png" />
     <None Remove="Resources\Images\Platform.png" />
     <None Remove="Resources\Images\Settings.png" />
-    <None Remove="Resources\Images\UniboxLogo512.ico" />
-    <None Remove="Resources\Images\UniboxLogo512.png" />
+    <None Remove="Resources\Images\UniboxLogo.png" />
   </ItemGroup>
 
   <ItemGroup>
@@ -58,25 +57,14 @@
     <Resource Include="Resources\Images\LaunchboxIcon.png" />
     <Resource Include="Resources\Images\Platform.png" />
     <Resource Include="Resources\Images\Settings.png" />
-    <Resource Include="Resources\Images\UniboxLogo512.png" />
+    <Resource Include="Resources\Images\UniboxLogo.png" />
     <Content Include="Resources\Images\menu-burger.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="UniboxLogo512.ico" />
   </ItemGroup>
 
   <ItemGroup>
     <EmbeddedResource Include="secrets.ini" />
-    <EmbeddedResource Include="Resources\Images\UniboxLogo512.ico">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </EmbeddedResource>
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Include="..\Dev Assets\Images\Final\UniboxLogo512.png">
-      <Pack>True</Pack>
-      <PackagePath>\</PackagePath>
-    </None>
   </ItemGroup>
 
   <ItemGroup>
@@ -117,6 +105,13 @@
 
   <ItemGroup>
     <Folder Include="Data\Maps\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="..\Dev Assets\Images\Final\UniboxLogo.png">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
   </ItemGroup>
 
 </Project>

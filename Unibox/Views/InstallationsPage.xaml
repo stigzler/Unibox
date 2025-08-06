@@ -60,6 +60,8 @@
                         <GridView>
                             <GridViewColumn Header="Name" Width="auto" DisplayMemberBinding="{Binding Name}" />
                             <GridViewColumn Header="Rom Folder" Width="auto" DisplayMemberBinding="{Binding ResolvedRomFolder}" />
+                            <GridViewColumn Header="Launchbox Database Folder" Width="auto" DisplayMemberBinding="{Binding LaunchboxRomFolder}" />
+                            <GridViewColumn Header="Launchbox ScapeAs" Width="auto" DisplayMemberBinding="{Binding LaunchboxScrapeAs}" />
                         </GridView>
                     </ListView.View>
                 </ListView>

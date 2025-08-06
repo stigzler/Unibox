@@ -49,7 +49,7 @@
 
                 <!-- Hamburger Icon -->
                 <Button Grid.Column="0" Width="40" Height="40" VerticalAlignment="Top" Margin="2" Command="{Binding ToggleMenuCommand}">
-                    <Image Source="/Resources/Images/menu-burger.png" Width="24" />
+                    <Image Source="/Resources/Images/UniboxLogo.png" Width="24" />
                 </Button>
 
                 <Image Grid.Column="1" Source="/Resources/Images/LaunchboxIcon.png" Width="28" Margin="2"></Image>

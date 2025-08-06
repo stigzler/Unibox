@@ -79,9 +79,12 @@
             <GroupBox Margin="6" IsEnabled="{Binding OnRemoteMachine}">
                 <GroupBox.Header>
                     <DockPanel>
-                        <Button DockPanel.Dock="Right" Grid.Column="2" Grid.ColumnSpan="2" Grid.Row="0" Margin="0" Content="Show Paths" Command="{Binding ShowPlatformRomFoldersCommand}"
-                            ToolTip="Show Launchbox database paths for Rom and Media paths. Helps setting up any path modifications." />
                         <TextBlock DockPanel.Dock="Left" Text="Remote Path Modifications (optional)" VerticalAlignment="Center" />
+
+                        <Button DockPanel.Dock="Right" Grid.Column="2" Content="Show Paths"
+                                Command="{Binding ShowPlatformRomFoldersCommand}"
+                                ToolTip="Show Launchbox database paths for Rom and Media paths. Helps setting up any path modifications." Height="32" />
+
                         <Image DockPanel.Dock="Left" Source="pack://application:,,,/Resources/Images/information.png" Margin="5,0,0,0"
                                Width="16" VerticalAlignment="Center" HorizontalAlignment="Left"
                           ToolTip="{x:Static properties:Resources.AddInstallationPathReplacementHelp}" />

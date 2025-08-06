@@ -11,7 +11,7 @@ namespace Unibox.Data.Models
     {
         public ObjectId ID { get; set; } = ObjectId.NewObjectId();
 
-        public string MediaType { get; set; } = String.Empty;
+        public LbMediaType? MediaType { get; set; } = null;
 
         public string LaunchboxMediaPath { get; set; } = String.Empty;
 

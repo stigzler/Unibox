@@ -37,9 +37,4 @@
     </Style>
 
     <!-- Smooths images -->
-    <Style TargetType="Image">
-        <Setter Property="Height" Value="64" />
-        <Setter Property="Width" Value="64" />
-        <Setter Property="RenderOptions.BitmapScalingMode" Value="HighQuality" />
-    </Style>
 </ResourceDictionary>
