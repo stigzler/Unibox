@@ -25,6 +25,12 @@ namespace Unibox
             //};
 
             //window.Show();
+
+            Window window = new MainWindow
+            {
+                //DataContext = Services.GetService<MainWindowVM>() // Set the DataContext to the MainWindowVM
+            };
+            window.Show();
         }
 
         /// <summary>
@@ -62,18 +68,18 @@ namespace Unibox
             return services.BuildServiceProvider();
         }
 
-        protected override void OnStartup(StartupEventArgs e)
-        {
-            base.OnStartup(e);
+        //protected override void OnStartup(StartupEventArgs e)
+        //{
+        //    base.OnStartup(e);
 
-            SplashWindow splash = new SplashWindow();
-            splash.ShowDialog();
+        //    SplashWindow splash = new SplashWindow();
+        //    splash.ShowDialog();
 
-            Window window = new MainWindow
-            {
-                //DataContext = Services.GetService<MainWindowVM>() // Set the DataContext to the MainWindowVM
-            };
-            window.Show();
-        }
+        //    Window window = new MainWindow
+        //    {
+        //        //DataContext = Services.GetService<MainWindowVM>() // Set the DataContext to the MainWindowVM
+        //    };
+        //    window.Show();
+        //}
     }
 }

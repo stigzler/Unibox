@@ -35,7 +35,7 @@ namespace Unibox.Services
                 throw new Exception("Database is not open.");
             }
 
-            //EnsureTextBasedDataPopulated();
+            EnsureTextBasedDataPopulated();
         }
 
         private void SendDatabaseInitialisationMessage(string primaryMessage = null, string secondaryMessage = null,
@@ -68,16 +68,12 @@ namespace Unibox.Services
         /// </summary>
         internal async Task EnsureTextBasedDataPopulated()
         {
-            int step = 1;
             // Screenscraper Systems
             if (Database.Collections.SsSystems.Count() == 0)
             {
-                SendDatabaseInitialisationMessage("First Run detected. Initialising Unibox...", $"(Step {step}/6) Updating Screenscraper Systems List...");
                 var file = File.ReadAllLinesAsync(Path.Combine(AppContext.BaseDirectory,
                     Data.Constants.Paths.LaunchboxRelDataDir, Data.Constants.Paths.SsSystemsFile));
                 string[] lines = file.Result;
-                int count = 0;
-                int total = lines.Count();
 
                 List<SsSystem> ssSystemsCollection = new List<SsSystem>();
 
@@ -85,83 +81,65 @@ namespace Unibox.Services
                 {
                     var parts = line.Split('|');
                     var ssSystem = new SsSystem { Name = parts[1], SsID = Convert.ToInt32(parts[0]) };
-                    SendDatabaseInitialisationMessage(count, total);
                     ssSystemsCollection.Add(ssSystem);
-                    count += 1;
                 }
                 Database.Collections.SsSystems.InsertBulk(ssSystemsCollection);
-
-                step += 1;
             }
 
             // Screenscraper Media Types
             if (Database.Collections.SsMediaTypes.Count() == 0)
             {
-                SendDatabaseInitialisationMessage("First Run detected. Initialising Unibox...", $"(Step {step}/6) Updating Screenscraper Media Types List...");
-
-                var lines = File.ReadLines(Path.Combine(AppContext.BaseDirectory,
+                var file = File.ReadAllLinesAsync(Path.Combine(AppContext.BaseDirectory,
                     Data.Constants.Paths.LaunchboxRelDataDir, Data.Constants.Paths.SsMediaTypesFile));
-                int count = 0;
-                int total = lines.Count();
+                string[] lines = file.Result;
+                List<SsMediaType> ssMediaTypesCollection = new List<SsMediaType>();
                 foreach (var line in lines)
                 {
                     var ssMediaType = new SsMediaType { Name = line };
-                    Database.Collections.SsMediaTypes.Insert(ssMediaType);
-                    SendDatabaseInitialisationMessage(count, total);
-                    count += 1;
+                    ssMediaTypesCollection.Add(ssMediaType);
                 }
-                step += 1;
+                Database.Collections.SsMediaTypes.Insert(ssMediaTypesCollection);
             }
 
             // Launchbox Platforms
             if (Database.Collections.LbPlatforms.Count() == 0)
             {
-                SendDatabaseInitialisationMessage("First Run detected. Initialising Unibox...", $"(Step {step}/6) Updating Launchbox Platforms List...");
-
-                var lines = File.ReadLines(Path.Combine(AppContext.BaseDirectory,
+                var file = File.ReadAllLinesAsync(Path.Combine(AppContext.BaseDirectory,
                     Data.Constants.Paths.LaunchboxRelDataDir, Data.Constants.Paths.LbPlatformsFile));
-                int count = 0;
-                int total = lines.Count();
+                string[] lines = file.Result;
+                List<LbPlatform> lbPlatformsCollection = new List<LbPlatform>();
                 foreach (var line in lines)
                 {
                     // Assuming the line is a valid XML representation of a PlatformModel
                     var lbPlatform = new LbPlatform { Name = line }; // Simplified for example
-                    Database.Collections.LbPlatforms.Insert(lbPlatform);
-                    SendDatabaseInitialisationMessage(count, total);
-                    count += 1;
+                    lbPlatformsCollection.Add(lbPlatform);
                 }
-                step += 1;
+                Database.Collections.LbPlatforms.Insert(lbPlatformsCollection);
             }
 
             // Launchbox Media Types
             if (Database.Collections.LbMediaTypes.Count() == 0)
             {
-                SendDatabaseInitialisationMessage("First Run detected. Initialising Unibox...", $"(Step {step}/6) Updating Launchbox Media Types List...");
-
-                var lines = File.ReadLines(Path.Combine(AppContext.BaseDirectory,
+                var file = File.ReadAllLinesAsync(Path.Combine(AppContext.BaseDirectory,
                     Data.Constants.Paths.LaunchboxRelDataDir, Data.Constants.Paths.LbMediaTypesFile));
-                int count = 0;
-                int total = lines.Count();
+                string[] lines = file.Result;
+                List<LbMediaType> lbMediaTypesCollection = new List<LbMediaType>();
                 foreach (var line in lines)
                 {
                     // Assuming the line is a valid XML representation of a PlatformModel
                     var lbMediaType = new LbMediaType { Name = line }; // Simplified for example
-                    Database.Collections.LbMediaTypes.Insert(lbMediaType);
-                    SendDatabaseInitialisationMessage(count, total);
-                    count += 1;
+                    lbMediaTypesCollection.Add(lbMediaType);
                 }
-                step += 1;
+                Database.Collections.LbMediaTypes.Insert(lbMediaTypesCollection);
             }
 
             // Launcbox to Screenscraper Media Type Map
             if (Database.Collections.LbSsMediaTypeMap.Count() == 0)
             {
-                SendDatabaseInitialisationMessage("First Run detected. Initialising Unibox...", $"(Step {step}/6) Updating Screenscraper to Launchbox Media Type Map...");
-
-                var lines = File.ReadLines(Path.Combine(AppContext.BaseDirectory,
+                var file = File.ReadAllLinesAsync(Path.Combine(AppContext.BaseDirectory,
                     Data.Constants.Paths.LaunchboxRelDataDir, Data.Constants.Paths.MediaMapFile));
-                int count = 0;
-                int total = lines.Count();
+                string[] lines = file.Result;
+                List<LbSsMediaTypeMap> lbSsMediaTypeMaps = new List<LbSsMediaTypeMap>();
                 foreach (var line in lines)
                 {
                     var parts = line.Split('|');
@@ -177,23 +155,19 @@ namespace Unibox.Services
                             lbSsMediaTypeMap.SsMediaType.Add(Database.Collections.SsMediaTypes.FindAll().Where(m => m.Name == ssMediaType).FirstOrDefault());
                         }
 
-                        Database.Collections.LbSsMediaTypeMap.Insert(lbSsMediaTypeMap);
-                        SendDatabaseInitialisationMessage(count, total);
-                        count += 1;
+                        lbSsMediaTypeMaps.Add(lbSsMediaTypeMap);
                     }
                 }
-                step += 1;
+                Database.Collections.LbSsMediaTypeMap.Insert(lbSsMediaTypeMaps);
             }
 
             // Launchbox to Screenscraper Systems Map
             if (Database.Collections.LbSsSystemsMap.Count() == 0)
             {
-                SendDatabaseInitialisationMessage("First Run detected. Initialising Unibox...", $"(Step {step}/6) Updating Screenscraper to Launchbox Systems Map...");
-
-                var lines = File.ReadLines(Path.Combine(AppContext.BaseDirectory,
+                var file = File.ReadAllLinesAsync(Path.Combine(AppContext.BaseDirectory,
                     Data.Constants.Paths.LaunchboxRelDataDir, Data.Constants.Paths.PlatformMapFile));
-                int count = 0;
-                int total = lines.Count();
+                string[] lines = file.Result;
+                List<LbSsSystemMap> lbSsSystemMaps = new List<LbSsSystemMap>();
                 foreach (var line in lines)
                 {
                     var parts = line.Split('|');
@@ -206,13 +180,11 @@ namespace Unibox.Services
                             LbPlatform = lbPlatform,
                             SsSystem = ssSystem
                         };
-                        Database.Collections.LbSsSystemsMap.Insert(lbSsSystemMap);
-                        SendDatabaseInitialisationMessage(count, total);
-                        count += 1;
+                        lbSsSystemMaps.Add(lbSsSystemMap);
                     }
                 }
-                step += 1;
+                Database.Collections.LbSsSystemsMap.Insert(lbSsSystemMaps);
             }
-        }
+        } // here
     }
 }
