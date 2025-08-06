@@ -38,35 +38,11 @@ namespace Unibox.Services
             EnsureTextBasedDataPopulated();
         }
 
-        private void SendDatabaseInitialisationMessage(string primaryMessage = null, string secondaryMessage = null,
-            int count = -1, int total = -1)
-        {
-            if (primaryMessage != null) progressMessageArgs.PrimaryMessage = primaryMessage;
-            if (secondaryMessage != null) progressMessageArgs.SecondaryMessage = secondaryMessage;
-            if (count != -1 && total != -1) progressMessageArgs.PercentageComplete = (int)((double)count / total * 100);
-            WeakReferenceMessenger.Default.Send(new Messages.ProgressMessage(progressMessageArgs));
-        }
-
-        private void SendDatabaseInitialisationMessage(string primaryMessage, string secondaryMessage)
-        {
-            SendDatabaseInitialisationMessage(primaryMessage, secondaryMessage, -1, -1);
-        }
-
-        private void SendDatabaseInitialisationMessage(int count, int total)
-        {
-            SendDatabaseInitialisationMessage(null, null, count, total);
-        }
-
-        private void SendDatabaseInitialisationMessage(string secondaryMessage)
-        {
-            SendDatabaseInitialisationMessage(null, secondaryMessage, -1, -1);
-        }
-
         /// <summary>
         /// This ensures that data based on that held in the Data/[various].dat is
         /// populated into LiteDb models. Normally occurs at startup.
         /// </summary>
-        internal async Task EnsureTextBasedDataPopulated()
+        internal void EnsureTextBasedDataPopulated()
         {
             // Screenscraper Systems
             if (Database.Collections.SsSystems.Count() == 0)
@@ -185,6 +161,6 @@ namespace Unibox.Services
                 }
                 Database.Collections.LbSsSystemsMap.Insert(lbSsSystemMaps);
             }
-        } // here
+        }
     }
 }

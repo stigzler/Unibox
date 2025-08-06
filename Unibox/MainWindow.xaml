@@ -52,7 +52,7 @@
                     <Image Source="/Resources/Images/menu-burger.png" Width="24" />
                 </Button>
 
-                <Image Grid.Column="1" Source="/Resources/Images/LaunchboxLogoB+W.png" Width="28" Margin="2"></Image>
+                <Image Grid.Column="1" Source="/Resources/Images/LaunchboxIcon.png" Width="28" Margin="2"></Image>
 
                 <ComboBox Grid.Column="2" Margin="2" MinWidth="200"
                           ItemsSource="{Binding Installations}" DisplayMemberPath="Name" />
@@ -77,14 +77,14 @@
 
                     <Button  Padding="5" Margin="2,3,2,2" Command="{Binding NavigateToGamesCommand}" HorizontalContentAlignment="Left">
                         <StackPanel Orientation="Horizontal">
-                            <Image Source="/Resources/Images/SpaceInvader.png" Width="24" Margin="4,0,4,0" />
+                            <Image Source="/Resources/Images/GameIcon.png" Width="24" Margin="4,0,4,0" />
                             <TextBlock Text="Games" Margin="5" FontSize="16" FontWeight="Bold" />
                         </StackPanel>
                     </Button>
 
                     <Button  Padding="5" Margin="2,3,2,2" Command="{Binding NavigateToInstallationsCommand}" HorizontalContentAlignment="Left">
                         <StackPanel Orientation="Horizontal">
-                            <Image Source="/Resources/Images/LaunchboxLogoB+W.png" Width="24" Margin="4,0,4,0" />
+                            <Image Source="/Resources/Images/LaunchboxIcon.png" Width="24" Margin="4,0,4,0" />
                             <TextBlock Text="Installations" Margin="5" FontSize="16" FontWeight="Bold" />
                         </StackPanel>
                     </Button>
