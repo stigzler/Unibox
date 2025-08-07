@@ -58,5 +58,53 @@ namespace Unibox.Properties {
                 this["RemapToInitialDirectory"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("1024")]
+        public double AppMainWidth {
+            get {
+                return ((double)(this["AppMainWidth"]));
+            }
+            set {
+                this["AppMainWidth"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("768")]
+        public double AppMainHeight {
+            get {
+                return ((double)(this["AppMainHeight"]));
+            }
+            set {
+                this["AppMainHeight"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("100")]
+        public double AppInstallationsPgTopPanelHeight {
+            get {
+                return ((double)(this["AppInstallationsPgTopPanelHeight"]));
+            }
+            set {
+                this["AppInstallationsPgTopPanelHeight"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("200")]
+        public double AppInstallationsPgMidPanelHeight {
+            get {
+                return ((double)(this["AppInstallationsPgMidPanelHeight"]));
+            }
+            set {
+                this["AppInstallationsPgMidPanelHeight"] = value;
+            }
+        }
     }
 }

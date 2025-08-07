@@ -1,7 +1,9 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
+using System.Collections;
 using System.Collections.ObjectModel;
+using System.Windows.Input;
 using Unibox.Data.Models;
 using Unibox.Messages;
 using Unibox.Services;
@@ -12,10 +14,22 @@ namespace Unibox.ViewModels
     internal partial class InstallationsVM : ObservableObject, IRecipient<InstallationUpdatedMessage>
     {
         [ObservableProperty]
+        private Cursor cursor = Cursors.Arrow;
+
+        private DatabaseService databaseService;
+
+        [ObservableProperty]
         private ObservableCollection<InstallationModel> installations = new ObservableCollection<InstallationModel>();
+
+        private InstallationService installationService;
+
+        [ObservableProperty]
+        private ObservableCollection<PlatformFolderModel> platformFolders = new ObservableCollection<PlatformFolderModel>();
 
         [ObservableProperty]
         private ObservableCollection<PlatformModel> platforms = new ObservableCollection<PlatformModel>();
+
+        private PlatformService platformService;
 
         [ObservableProperty]
         private InstallationModel selectedInstallation;
@@ -23,9 +37,11 @@ namespace Unibox.ViewModels
         [ObservableProperty]
         private PlatformModel selectedPlatform;
 
-        private DatabaseService databaseService;
-        private InstallationService installationService;
-        private PlatformService platformService;
+        [ObservableProperty]
+        private List<PlatformModel> selectedPlatforms;
+
+        [ObservableProperty]
+        private PlatformFolderModel selectedPlatformFolder;
 
         public InstallationsVM()
         {
@@ -43,30 +59,34 @@ namespace Unibox.ViewModels
             this.platformService = platformService;
         }
 
-        partial void OnSelectedInstallationChanged(InstallationModel value)
+        void IRecipient<InstallationUpdatedMessage>.Receive(InstallationUpdatedMessage message)
         {
-            UpdatePlatformsList();
-        }
-
-        private void UpdatePlatformsList()
-        {
-            if (SelectedInstallation == null) return;
-            Platforms = new ObservableCollection<PlatformModel>(SelectedInstallation.Platforms);
-        }
-
-        private void UpdateIstallationsFromDatabase()
-        {
-            Installations = installationService.GetAllInstallations();
+            UpdateIstallationsFromDatabase();
         }
 
         [RelayCommand]
-        private void EditInstallation()
+        private void UpdateRomFolder()
         {
-            if (selectedInstallation == null) return;
+            if (selectedPlatform == null) return;
 
-            EditInstallationWindow editInstallationWindow = new EditInstallationWindow();
-            editInstallationWindow.ViewModel.Installation = SelectedInstallation;
-            editInstallationWindow.ShowDialog();
+            string prospectivePath = Helpers.FileSystem.GetFolderPath($"Please select the Rom Folder to use for the Platform: {selectedPlatform.Name}",
+                SelectedPlatform.ResolvedRomFolder);
+            if (prospectivePath == String.Empty) return;
+            SelectedPlatform.ResolvedRomFolder = prospectivePath;
+            databaseService.Database.Collections.Installations.Update(SelectedInstallation);
+            UpdatePlatformsList();
+        }
+
+        [RelayCommand]
+        private void UpdatePlatformMediaFolder()
+        {
+            if (selectedPlatformFolder == null) return;
+            string prospectivePath = Helpers.FileSystem.GetFolderPath($"Please select the Media Folder to use for this Media Type: {selectedPlatformFolder.MediaType}",
+                SelectedPlatformFolder.ResolvedMediaPath);
+            if (prospectivePath == String.Empty) return;
+            SelectedPlatformFolder.ResolvedMediaPath = prospectivePath;
+            databaseService.Database.Collections.Installations.Update(SelectedInstallation);
+            UpdatePlatformFoldersList();
         }
 
         [RelayCommand]
@@ -123,18 +143,80 @@ namespace Unibox.ViewModels
         }
 
         [RelayCommand]
-        private void UpdatePlatforms()
+        private void EditInstallation()
         {
             if (selectedInstallation == null) return;
 
-            platformService.UpdateInstallationPlatforms(selectedInstallation);
+            EditInstallationWindow editInstallationWindow = new EditInstallationWindow();
+            editInstallationWindow.ViewModel.Installation = SelectedInstallation;
+            editInstallationWindow.ShowDialog();
+        }
+
+        partial void OnSelectedInstallationChanged(InstallationModel value)
+        {
+            Platforms = null;
+            PlatformFolders = null;
+            //SelectedPlatformFolder = null;
 
             UpdatePlatformsList();
         }
 
-        void IRecipient<InstallationUpdatedMessage>.Receive(InstallationUpdatedMessage message)
+        partial void OnSelectedPlatformChanged(PlatformModel value)
         {
-            UpdateIstallationsFromDatabase();
+            UpdatePlatformFoldersList();
+        }
+
+        private void UpdateIstallationsFromDatabase()
+        {
+            Installations = installationService.GetAllInstallations();
+        }
+
+        private void UpdatePlatformFoldersList()
+        {
+            if (SelectedPlatform == null) return;
+            PlatformFolders = new ObservableCollection<PlatformFolderModel>(SelectedPlatform.PlatformFolders);
+        }
+
+        [RelayCommand]
+        private void UpdatePlatforms()
+        {
+            if (selectedInstallation == null) return;
+
+            Cursor = Cursors.Wait;
+
+            platformService.UpdateInstallationPlatforms(selectedInstallation);
+
+            UpdatePlatformsList();
+
+            Cursor = Cursors.Arrow;
+        }
+
+        [RelayCommand]
+        private void TogglePlatformLocks(IList platforms)
+        {
+            foreach (var platform in platforms.OfType<PlatformModel>())
+            {
+                platform.Locked = !platform.Locked;
+                databaseService.Database.Collections.Installations.Update(selectedInstallation);
+            }
+            UpdatePlatformsList();
+        }
+
+        [RelayCommand]
+        private void ToggleMediaFolderLocks(IList mediaFolders)
+        {
+            foreach (var mediaFolder in mediaFolders.OfType<PlatformFolderModel>())
+            {
+                mediaFolder.Locked = !mediaFolder.Locked;
+                databaseService.Database.Collections.Installations.Update(selectedInstallation);
+            }
+            UpdatePlatformFoldersList();
+        }
+
+        private void UpdatePlatformsList()
+        {
+            if (SelectedInstallation == null) return;
+            Platforms = new ObservableCollection<PlatformModel>(SelectedInstallation.Platforms);
         }
     }
 }

@@ -12,7 +12,6 @@ namespace Unibox.Helpers
 {
     internal class FileSystem
     {
-
         public static bool IsVolumedAndRooted(string path)
         {
             return Path.IsPathRooted(path)
@@ -22,7 +21,7 @@ namespace Unibox.Helpers
         public static bool IsNetworkPath(string path)
         {
             if (string.IsNullOrWhiteSpace(path)) return false;
- 
+
             if (!path.StartsWith(@"/") && !path.StartsWith(@"\"))
             {
                 string rootPath = System.IO.Path.GetPathRoot(path); // get drive's letter
@@ -31,7 +30,7 @@ namespace Unibox.Helpers
             }
             return true; // is a UNC path
         }
-        
+
         public static bool IsValidFilepath(string path)
         {
             if (string.IsNullOrEmpty(path))
@@ -45,8 +44,6 @@ namespace Unibox.Helpers
             return !path.Any(c => invalidChars.Contains(c));
         }
 
-
-
         public static string GetRemapToPath()
         {
             string remapToPath = string.Empty;
@@ -54,8 +51,7 @@ namespace Unibox.Helpers
             OpenFolderDialog openFolderDialog = new OpenFolderDialog
             {
                 Title = "Select the directory to remap the Launchbox database paths to",
-                InitialDirectory = Settings.Default.RemapToInitialDirectory            
-
+                InitialDirectory = Settings.Default.RemapToInitialDirectory
             };
 
             if (openFolderDialog.ShowDialog() == true)
@@ -67,6 +63,19 @@ namespace Unibox.Helpers
             return remapToPath;
         }
 
-
+        public static string GetFolderPath(string prompt = "Please select folder", string initialDirectory = "")
+        {
+            string folderPath = string.Empty;
+            OpenFolderDialog openFolderDialog = new OpenFolderDialog
+            {
+                Title = prompt,
+                InitialDirectory = initialDirectory
+            };
+            if (openFolderDialog.ShowDialog() == true)
+            {
+                folderPath = openFolderDialog.FolderName;
+            }
+            return folderPath;
+        }
     }
 }

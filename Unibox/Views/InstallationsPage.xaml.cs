@@ -24,7 +24,17 @@ namespace Unibox.Views
         {
             InitializeComponent();
             this.DataContext = App.Current.Services.GetService(typeof(ViewModels.InstallationsVM));
+        }
 
+        private void GridSplitter_DragCompleted(object sender, System.Windows.Controls.Primitives.DragCompletedEventArgs e)
+        {
+            UpdateRowHeights();
+        }
+
+        private void UpdateRowHeights()
+        {
+            Properties.Settings.Default.AppInstallationsPgTopPanelHeight = TopPanel.ActualHeight;
+            Properties.Settings.Default.AppInstallationsPgMidPanelHeight = MidPanel.ActualHeight;
         }
     }
 }

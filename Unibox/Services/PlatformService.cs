@@ -68,6 +68,15 @@ namespace Unibox.Services
                     installationPlatform = new PlatformModel();
                     installation.Platforms.Add(installationPlatform);
                 }
+                else if (installationPlatform.Locked)
+                {
+                    // Platform is locked - skip
+                    updatePlatformsOutcome.SubOperationOutcomes.Add(new UpdatePlatformsSubOperationOutcome(
+                        UpdatePlatformMessageType.Warning,
+                        $"Platform is locked. Skipping update: [{launchboxPlatform.Name}].",
+                        installationPlatform.Name));
+                    continue;
+                }
                 else
                 {
                     updatePlatformsOutcome.SubOperationOutcomes.Add(new UpdatePlatformsSubOperationOutcome(
@@ -171,9 +180,11 @@ namespace Unibox.Services
                     }
                     else
                     {
-                        string candidateRomFolder = Path.Combine(installation.InstallationPath,
-                            launchboxPlatform.LaunchboxRomFolder.Replace(installation.RemapRomsFrom,
-                                                                        installation.RemapRomsTo));
+                        //string candidateRomFolder = Path.Combine(installation.InstallationPath,
+                        //    launchboxPlatform.LaunchboxRomFolder.Replace(installation.RemapRomsFrom,
+                        //                                                installation.RemapRomsTo));
+                        string candidateRomFolder = launchboxPlatform.LaunchboxRomFolder.Replace(installation.RemapRomsFrom,
+                                                          installation.RemapRomsTo);
                         if (!Directory.Exists(candidateRomFolder))
                         {
                             updatePlatformsOutcome.SubOperationOutcomes.Add(new UpdatePlatformsSubOperationOutcome(UpdatePlatformMessageType.Error,
@@ -206,39 +217,145 @@ namespace Unibox.Services
 
                 // MEDIA FOLDERS ===============================================================================================
 
-                //foreach (PlatformFolderModel launchboxPlatformFolder in launchboxPlatform.PlatformFolders)
-                //{
-                //    PlatformFolderModel installationPlatformFolder =
-                //        installationPlatform.PlatformFolders.Where(pf => pf.MediaType == launchboxPlatformFolder.MediaType).FirstOrDefault();
+                HashSet<string> mappableMediaTypes = new HashSet<string>(databaseService.Database.Collections.LbSsMediaTypeMap
+                    .FindAll().Select(m => m.LbMediaType.Name));
 
-                //    if (installationPlatformFolder == null)
-                //    {
-                //        // ADD NEW PLATFORM FOLDER
-                //        // Does not exist, add new to the database
-                //        updatePlatformsOutcome.SubOperationOutcomes.Add(new UpdatePlatformsSubOperationOutcome(
-                //            UpdatePlatformMessageType.Information,
-                //            $"New Platform Folder detected. Adding platform folder: [{launchboxPlatformFolder.MediaType}] to the database.",
-                //            launchboxPlatform.Name));
-                //        installationPlatformFolder = new PlatformFolderModel();
-                //        installationPlatform.PlatformFolders.Add(installationPlatformFolder);
-                //    }
-                //    else
-                //    {
-                //        updatePlatformsOutcome.SubOperationOutcomes.Add(new UpdatePlatformsSubOperationOutcome(
-                //            UpdatePlatformMessageType.Information,
-                //            $"Platform Folder already in database. Updating: [{launchboxPlatformFolder.MediaType}].",
-                //            installationPlatform.Name));
-                //    }
+                foreach (PlatformFolderModel launchboxPlatformFolder in launchboxPlatform.PlatformFolders
+                    .Where(lpf => mappableMediaTypes.Contains(lpf.MediaType.Name)))
+                {
+                    PlatformFolderModel installationPlatformFolder =
+                        installationPlatform.PlatformFolders.Where(pf => pf.MediaType.Name == launchboxPlatformFolder.MediaType.Name).FirstOrDefault();
 
-                //    installationPlatformFolder.MediaType = launchboxPlatformFolder.MediaType;
+                    if (installationPlatformFolder == null)
+                    {
+                        // ADD NEW PLATFORM FOLDER
+                        // Does not exist, add new to the database
+                        updatePlatformsOutcome.SubOperationOutcomes.Add(new UpdatePlatformsSubOperationOutcome(
+                            UpdatePlatformMessageType.Information,
+                            $"New Platform Media Folder detected for {launchboxPlatform.Name}. Adding platform folder: [{launchboxPlatformFolder.MediaType}] to the database.",
+                            launchboxPlatform.Name));
+                        installationPlatformFolder = new PlatformFolderModel();
+                        installationPlatform.PlatformFolders.Add(installationPlatformFolder);
+                    }
+                    else if (installationPlatformFolder.Locked)
+                    {
+                        // Platform Folder is locked - skip
+                        updatePlatformsOutcome.SubOperationOutcomes.Add(new UpdatePlatformsSubOperationOutcome(
+                            UpdatePlatformMessageType.Warning,
+                            $"Platform Media Folder is locked. Skipping update: [{launchboxPlatform.Name}].",
+                            installationPlatform.Name));
+                        continue;
+                    }
+                    else
+                    {
+                        updatePlatformsOutcome.SubOperationOutcomes.Add(new UpdatePlatformsSubOperationOutcome(
+                            UpdatePlatformMessageType.Information,
+                            $"Platform Folder already in database for {launchboxPlatform.Name}. Updating: [{launchboxPlatformFolder.MediaType}].",
+                            installationPlatform.Name));
+                    }
 
-                //    if (!Helpers.FileSystem.IsVolumedAndRooted(launchboxPlatformFolder.LaunchboxMediaPath))
-                //    {
-                //        string lbRootRelativePath = Path.Combine(installation.InstallationPath, launchboxPlatformFolder.LaunchboxMediaPath);
-                //        string lbGamesRelativePath = Path.Combine(installation.InstallationPath, Data.Constants.Paths.LaunchboxRelGamesDir,
-                //            launchboxPlatform.Name);
-                //    }
-                //}
+                    installationPlatformFolder.MediaType = launchboxPlatformFolder.MediaType;
+                    installationPlatformFolder.LaunchboxMediaPath = launchboxPlatformFolder.LaunchboxMediaPath;
+
+                    if (!Helpers.FileSystem.IsVolumedAndRooted(launchboxPlatformFolder.LaunchboxMediaPath))
+                    {
+                        // Media folder rootless (e.g. "Games\C64 Dreams") ----------------------------------------------------
+                        string lbRootRelativePath = Path.Combine(installation.InstallationPath, launchboxPlatformFolder.LaunchboxMediaPath);
+
+                        string folder = "Images";
+
+                        switch (launchboxPlatformFolder.MediaType.Name)
+                        {
+                            case "Video":
+                                folder = "Videos"; break;
+                            case "Music":
+                                folder = "Music"; break;
+                            case "Manual":
+                                folder = "Manuals"; break;
+                        }
+                        string lbMediaRelativePath = Path.Combine(installation.InstallationPath, folder);
+
+                        if (Directory.Exists(lbRootRelativePath))
+                        {
+                            // If the Media folder is not rooted, assume it is relative to the installation path
+                            installationPlatformFolder.ResolvedMediaPath = lbRootRelativePath;
+
+                            updatePlatformsOutcome.SubOperationOutcomes.Add(new UpdatePlatformsSubOperationOutcome(
+                                UpdatePlatformMessageType.Information,
+                                $"Media Folder path is not rooted: [{launchboxPlatformFolder.LaunchboxMediaPath}]." +
+                                $" However, folder exists relative to the Launchbox Root Directory, so set to this:" +
+                                $" [{launchboxPlatform.ResolvedRomFolder}]",
+                                launchboxPlatform.Name));
+                        }
+                        else if (Directory.Exists(lbMediaRelativePath))
+                        {
+                            // If the Rom folder is not rooted, assume it is relative to the installation path
+                            installationPlatformFolder.ResolvedMediaPath = lbMediaRelativePath;
+
+                            updatePlatformsOutcome.SubOperationOutcomes.Add(new UpdatePlatformsSubOperationOutcome(
+                                UpdatePlatformMessageType.Information,
+                                $"Media Folder path is not rooted: [{launchboxPlatformFolder.LaunchboxMediaPath}]." +
+                                $" However, folder exisits in Launchbox Directory, so set to this: [{launchboxPlatform.ResolvedRomFolder}]",
+                                launchboxPlatform.Name));
+                        }
+                        else
+                        {
+                            updatePlatformsOutcome.SubOperationOutcomes.Add(new UpdatePlatformsSubOperationOutcome(
+                                UpdatePlatformMessageType.Error,
+                                $"Media Folder path is not rooted and no folder found for this in the Launchbox folder. " +
+                                $"You will have to set this manually to add Media to this Platform. " +
+                                $"Launchbox Path: [{launchboxPlatformFolder.LaunchboxMediaPath}].",
+                                launchboxPlatform.Name));
+                        }
+                    }
+                    else if (Helpers.FileSystem.IsVolumedAndRooted(launchboxPlatformFolder.LaunchboxMediaPath) &&
+                                installation.OnRemoteMachine)
+                    // Media folder has Drive letter, but installation is on a network share  --------------------------------------
+                    {
+                        if (installation.RemapMediaFrom == null)
+                        {
+                            updatePlatformsOutcome.SubOperationOutcomes.Add(new UpdatePlatformsSubOperationOutcome(UpdatePlatformMessageType.Error,
+                                $"The Installation is on a network path, but the Launchbox Media path has a drive letter and no remap specified in the Installation. " +
+                                $"Cannot set Media Folder - you will have to do this manually. Launchbox path: {launchboxPlatformFolder.LaunchboxMediaPath}",
+                                launchboxPlatform.Name));
+                        }
+                        else
+                        {
+                            //string candidateMediaFolder = Path.Combine(installation.InstallationPath,
+                            //    launchboxPlatformFolder.LaunchboxMediaPath.Replace(installation.RemapMediaFrom,
+                            //                                                installation.RemapMediaTo));
+                            string candidateMediaFolder = launchboxPlatformFolder.LaunchboxMediaPath.Replace(installation.RemapMediaFrom,
+                                                                 installation.RemapMediaTo);
+                            if (!Directory.Exists(candidateMediaFolder))
+                            {
+                                updatePlatformsOutcome.SubOperationOutcomes.Add(new UpdatePlatformsSubOperationOutcome(UpdatePlatformMessageType.Error,
+                                    $"The Installation is on a network path, but the Launchbox Media path has a drive letter. " +
+                                    $"The propsective folder constructed by the Installation Media folder Remap does not exist. " +
+                                    $"You will have to set this manually. Launchbox path: {launchboxPlatformFolder.LaunchboxMediaPath}",
+                                    launchboxPlatform.Name));
+                            }
+                            else
+                            {
+                                updatePlatformsOutcome.SubOperationOutcomes.Add(new UpdatePlatformsSubOperationOutcome(UpdatePlatformMessageType.Information,
+                                    $"The Installation is on a network path, but the Launchbox Rom path has a drive letter. " +
+                                    $"The propsective folder constructed by the Installation Rom folder Remap exists, therefore set to that. " +
+                                    $"You may be advised to check this path: {candidateMediaFolder}",
+                                    launchboxPlatform.Name));
+
+                                installationPlatformFolder.ResolvedMediaPath = candidateMediaFolder;
+                            }
+                        }
+                    }
+                    else
+                    {
+                        // Drop-out = Copy path as is  ----------------------------------------------------
+                        updatePlatformsOutcome.SubOperationOutcomes.Add(new UpdatePlatformsSubOperationOutcome(
+                                UpdatePlatformMessageType.Information,
+                                $"Media folder added as per Launchbox database entry: {launchboxPlatformFolder.LaunchboxMediaPath}",
+                                launchboxPlatform.Name));
+                        installationPlatformFolder.ResolvedMediaPath = launchboxPlatformFolder.LaunchboxMediaPath;
+                    }
+                }
             } // END of xmlPlatforms foreach
 
             // NB: Don't forget to review the xml for any REMOVED Platforms (i.e. local db PLatform.Name cannot be found in the xml)

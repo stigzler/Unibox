@@ -17,6 +17,8 @@ namespace Unibox.Data.Models
         public string ResolvedRomFolder { get; set; } = String.Empty;
         public ObservableCollection<PlatformFolderModel> PlatformFolders { get; set; } = new ObservableCollection<PlatformFolderModel>();
 
+        public bool Locked { get; set; } = false;
+
         public override string ToString()
         {
             return $"{Name} ({LaunchboxScrapeAs}): [{LaunchboxRomFolder}] | [{ResolvedRomFolder}]";

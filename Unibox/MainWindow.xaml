@@ -8,9 +8,12 @@
         xmlns:views="clr-namespace:Unibox.Views"
         xmlns:converters="clr-namespace:Unibox.Converters"
         xmlns:adonis="clr-namespace:AdonisUI.Controls;assembly=AdonisUI"
+        xmlns:properties="clr-namespace:Unibox.Properties"
         mc:Ignorable="d"
         d:DataContext="{d:DesignInstance Type=vm:MainWindowVM, IsDesignTimeCreatable=True}"
-        Title="Unibox" Height="450" Width="800"
+        Title="Unibox"
+        Height="{Binding Source={x:Static properties:Settings.Default},Path=AppMainHeight}"
+        Width="{Binding Source={x:Static properties:Settings.Default},Path=AppMainWidth}"
         WindowStartupLocation="CenterScreen" Closing="Window_Closing">
 
     <Window.Style>

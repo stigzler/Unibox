@@ -16,9 +16,12 @@ namespace Unibox.Data.LiteDb
         }
 
         public ILiteCollection<InstallationModel> Installations { get; set; }
-        public ILiteCollection<PlatformModel> Platforms { get; set; }
-        public ILiteCollection<PlatformFolderModel> PlatformFolders { get; set; }
+
+        // Below removed because do not store these via collections - rather stored in Installation record.
+        //public ILiteCollection<PlatformModel> Platforms { get; set; }
+        //public ILiteCollection<PlatformFolderModel> PlatformFolders { get; set; }
         public ILiteCollection<SsMediaType> SsMediaTypes { get; set; }
+
         public ILiteCollection<SsSystem> SsSystems { get; set; }
         public ILiteCollection<LbPlatform> LbPlatforms { get; set; }
         public ILiteCollection<LbMediaType> LbMediaTypes { get; set; }
@@ -29,8 +32,8 @@ namespace Unibox.Data.LiteDb
         {
             // ⚠️ NOTE: Don't forget to add .Include where needed!! ⚠️
 
-            PlatformFolders = Connection.GetCollection<PlatformFolderModel>("platformFolders");
-            Platforms = Connection.GetCollection<PlatformModel>("platforms").Include(p => p.PlatformFolders);
+            //PlatformFolders = Connection.GetCollection<PlatformFolderModel>("platformFolders");
+            //Platforms = Connection.GetCollection<PlatformModel>("platforms").Include(p => p.PlatformFolders);
             Installations = Connection.GetCollection<InstallationModel>("installations").Include(i => i.Platforms);
             SsMediaTypes = Connection.GetCollection<SsMediaType>("ssMediaTypes");
             SsSystems = Connection.GetCollection<SsSystem>("ssSystems");

@@ -16,5 +16,7 @@ namespace Unibox.Data.Models
         public string LaunchboxMediaPath { get; set; } = String.Empty;
 
         public string ResolvedMediaPath { get; set; } = String.Empty;
+
+        public bool Locked { get; set; } = false;
     }
 }

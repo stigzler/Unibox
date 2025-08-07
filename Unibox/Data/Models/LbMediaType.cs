@@ -11,5 +11,10 @@ namespace Unibox.Data.Models
     {
         public ObjectId ID { get; set; } = ObjectId.NewObjectId();
         public string Name { get; set; } = string.Empty;
+
+        public override string ToString()
+        {
+            return Name;
+        }
     }
 }

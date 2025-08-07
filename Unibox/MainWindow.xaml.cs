@@ -15,6 +15,8 @@ namespace Unibox
 
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
+            Properties.Settings.Default.AppMainHeight = this.Height;
+            Properties.Settings.Default.AppMainWidth = this.Width;
             Properties.Settings.Default.Save();
         }
     }

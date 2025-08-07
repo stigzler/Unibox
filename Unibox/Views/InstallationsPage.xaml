@@ -5,21 +5,26 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:local="clr-namespace:Unibox.Views"
              xmlns:vm="clr-namespace:Unibox.ViewModels"
-             mc:Ignorable="d"
+             xmlns:properties="clr-namespace:Unibox.Properties"
+             xmlns:converters="clr-namespace:Unibox.Converters"
+             mc:Ignorable="d" Cursor="{Binding Cursor}"
              d:DataContext="{d:DesignInstance Type=vm:InstallationsVM, IsDesignTimeCreatable=True}"
-             d:DesignHeight="243" d:DesignWidth="551">
+             d:DesignHeight="400" d:DesignWidth="551">
 
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="/Resources/Dictionaries/Styles.xaml" />
             </ResourceDictionary.MergedDictionaries>
+            <converters:BoolToLockConverter x:Key="BoolToLockConverter" />
         </ResourceDictionary>
     </UserControl.Resources>
 
     <Grid Margin="10">
         <Grid.RowDefinitions>
-            <RowDefinition Height="*" />
+            <RowDefinition x:Name="TopPanel" Height="{Binding Source={x:Static properties:Settings.Default},Path=AppInstallationsPgTopPanelHeight}" d:Height="auto" />
+            <RowDefinition Height="3" />
+            <RowDefinition x:Name="MidPanel" Height="{Binding Source={x:Static properties:Settings.Default},Path=AppInstallationsPgMidPanelHeight}" d:Height="auto" />
             <RowDefinition Height="3" />
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
@@ -45,23 +50,63 @@
             </Border>
         </DockPanel>
 
-        <GridSplitter Grid.Row="1"  HorizontalAlignment="Stretch"></GridSplitter>
+        <GridSplitter Grid.Row="1"  HorizontalAlignment="Stretch" DragCompleted="GridSplitter_DragCompleted"></GridSplitter>
 
         <DockPanel Grid.Row="2" Margin="2">
-            <TextBlock Text="Platforms" FontWeight="Bold" DockPanel.Dock="Top" />
+            <TextBlock Text="Installation Platforms" FontWeight="Bold" DockPanel.Dock="Top" />
             <StackPanel DockPanel.Dock="Right" Orientation="Vertical" HorizontalAlignment="Right">
-                <Button Content="Update" Command="{Binding UpdatePlatformsCommand}"  Margin="2" />
-                <Button Content="Edit" Margin="2" />
+                <Button Content="Update All" Command="{Binding UpdatePlatformsCommand}"  Margin="2" />
+                <Button Content="Change Folder" Margin="2" Command="{Binding UpdateRomFolderCommand}" />
+                <Button Content="Toggle Lock" Margin="2" Command="{Binding TogglePlatformLocksCommand}"
+                        CommandParameter="{Binding ElementName=PlatformsLV, Path=SelectedItems}" />
             </StackPanel>
             <Border BorderBrush="gray" BorderThickness="1" Margin="2">
-                <ListView ItemsSource="{Binding Platforms}" SelectedItem="{Binding SelectedPlatform}"
+                <ListView  x:Name="PlatformsLV"  ItemsSource="{Binding Platforms}" SelectedItem="{Binding SelectedPlatform}"
                   ScrollViewer.VerticalScrollBarVisibility="Auto">
                     <ListView.View>
                         <GridView>
+                            <GridViewColumn>
+                                <GridViewColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <Image Source="{Binding Locked, Converter={StaticResource BoolToLockConverter}}" Width="16" />
+                                    </DataTemplate>
+                                </GridViewColumn.CellTemplate>
+                            </GridViewColumn>
                             <GridViewColumn Header="Name" Width="auto" DisplayMemberBinding="{Binding Name}" />
-                            <GridViewColumn Header="Rom Folder" Width="auto" DisplayMemberBinding="{Binding ResolvedRomFolder}" />
-                            <GridViewColumn Header="Launchbox Database Folder" Width="auto" DisplayMemberBinding="{Binding LaunchboxRomFolder}" />
+                            <GridViewColumn Header="Resolved Rom Folder" Width="auto" DisplayMemberBinding="{Binding ResolvedRomFolder}" />
+                            <GridViewColumn Header="Launchbox Rom Folder" Width="auto" DisplayMemberBinding="{Binding LaunchboxRomFolder}" />
                             <GridViewColumn Header="Launchbox ScapeAs" Width="auto" DisplayMemberBinding="{Binding LaunchboxScrapeAs}" />
+                        </GridView>
+                    </ListView.View>
+                </ListView>
+            </Border>
+        </DockPanel>
+
+        <GridSplitter Grid.Row="3"  HorizontalAlignment="Stretch" DragCompleted="GridSplitter_DragCompleted"></GridSplitter>
+
+        <DockPanel Grid.Row="4" Margin="2">
+            <TextBlock Text="Platform Media Folders" FontWeight="Bold" DockPanel.Dock="Top" />
+            <StackPanel DockPanel.Dock="Right" Orientation="Vertical" HorizontalAlignment="Right">
+                <!--<Button Content="Update" Command="{Binding UpdatePlatformsCommand}"  Margin="2" />-->
+                <Button Content="Change Folder" Margin="2" Command="{Binding UpdatePlatformMediaFolderCommand}" />
+                <Button Content="Toggle Lock" Margin="2" Command="{Binding ToggleMediaFolderLocksCommand}"
+                        CommandParameter="{Binding ElementName=MediaFoldersLV, Path=SelectedItems}" />
+            </StackPanel>
+            <Border BorderBrush="gray" BorderThickness="1" Margin="2">
+                <ListView x:Name="MediaFoldersLV" ItemsSource="{Binding PlatformFolders}" SelectedItem="{Binding SelectedPlatformFolder}"
+                  ScrollViewer.VerticalScrollBarVisibility="Auto">
+                    <ListView.View>
+                        <GridView>
+                            <GridViewColumn>
+                                <GridViewColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <Image Source="{Binding Locked, Converter={StaticResource BoolToLockConverter}}" Width="16" />
+                                    </DataTemplate>
+                                </GridViewColumn.CellTemplate>
+                            </GridViewColumn>
+                            <GridViewColumn Header="Type" Width="auto" DisplayMemberBinding="{Binding MediaType.Name}" />
+                            <GridViewColumn Header="Resolved Media Folder" Width="auto" DisplayMemberBinding="{Binding ResolvedMediaPath}" />
+                            <GridViewColumn Header="Launchbox Media Folder" Width="auto" DisplayMemberBinding="{Binding LaunchboxMediaPath}" />
                         </GridView>
                     </ListView.View>
                 </ListView>
