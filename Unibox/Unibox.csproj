@@ -19,12 +19,14 @@
     <None Remove="Data\SsMediaTypesList.dat" />
     <None Remove="Data\SsSystemList.dat" />
     <None Remove="Resources\Images\eraser.png" />
+    <None Remove="Resources\Images\exclamation.png" />
     <None Remove="Resources\Images\folder-horizontal-open.png" />
     <None Remove="Resources\Images\GameIcon.png" />
     <None Remove="Resources\Images\information.png" />
     <None Remove="Resources\Images\LaunchboxIcon.png" />
     <None Remove="Resources\Images\lock.png" />
     <None Remove="Resources\Images\menu-burger.png" />
+    <None Remove="Resources\Images\minus-circle.png" />
     <None Remove="Resources\Images\Platform.png" />
     <None Remove="Resources\Images\Settings.png" />
     <None Remove="Resources\Images\UniboxLogo.png" />
@@ -32,6 +34,7 @@
 
   <ItemGroup>
     <Resource Include="Resources\Images\eraser.png" />
+    <Resource Include="Resources\Images\exclamation.png" />
     <Resource Include="Resources\Images\folder-horizontal-open.png" />
     <Resource Include="Resources\Images\GameIcon.png" />
     <Resource Include="Resources\Images\information.png">
@@ -57,6 +60,7 @@
     </Content>
     <Resource Include="Resources\Images\LaunchboxIcon.png" />
     <Resource Include="Resources\Images\lock.png" />
+    <Resource Include="Resources\Images\minus-circle.png" />
     <Resource Include="Resources\Images\Platform.png" />
     <Resource Include="Resources\Images\Settings.png" />
     <Resource Include="Resources\Images\UniboxLogo.png" />

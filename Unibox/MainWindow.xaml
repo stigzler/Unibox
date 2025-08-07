@@ -4,13 +4,13 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Unibox"
-        xmlns:vm="clr-namespace:Unibox.ViewModels"
         xmlns:views="clr-namespace:Unibox.Views"
-        xmlns:converters="clr-namespace:Unibox.Converters"
         xmlns:adonis="clr-namespace:AdonisUI.Controls;assembly=AdonisUI"
+        xmlns:converters="clr-namespace:Unibox.Converters"
         xmlns:properties="clr-namespace:Unibox.Properties"
-        mc:Ignorable="d"
+        xmlns:vm="clr-namespace:Unibox.ViewModels"
         d:DataContext="{d:DesignInstance Type=vm:MainWindowVM, IsDesignTimeCreatable=True}"
+        mc:Ignorable="d"
         Title="Unibox"
         Height="{Binding Source={x:Static properties:Settings.Default},Path=AppMainHeight}"
         Width="{Binding Source={x:Static properties:Settings.Default},Path=AppMainWidth}"
@@ -41,7 +41,7 @@
         <DockPanel LastChildFill="True">
 
             <!-- TITLE BAR -->
-            <Grid HorizontalAlignment="Left" Margin="0,0,0,6" DockPanel.Dock="Top">
+            <!--<Grid HorizontalAlignment="Left" Margin="0,0,0,6" DockPanel.Dock="Top">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="45" />
                     <ColumnDefinition Width="auto" />
@@ -50,20 +50,17 @@
                     <ColumnDefinition Width="*" />
                 </Grid.ColumnDefinitions>
 
-                <!-- Hamburger Icon -->
+                -->
+            <!-- Hamburger Icon -->
+            <!--
                 <Button Grid.Column="0" Width="40" Height="40" VerticalAlignment="Top" Margin="2" Command="{Binding ToggleMenuCommand}">
                     <Image Source="/Resources/Images/UniboxLogo.png" Width="24" />
                 </Button>
 
                 <Image Grid.Column="1" Source="/Resources/Images/LaunchboxIcon.png" Width="28" Margin="2"></Image>
 
-                <ComboBox Grid.Column="2" Margin="2" MinWidth="200"
-                          ItemsSource="{Binding Installations}" DisplayMemberPath="Name" />
-
                 <Image Grid.Column="3" Source="/Resources/Images/platform.png" Width="28" Margin="2"></Image>
-
-                <ComboBox Grid.Column="4" Margin="2" MinWidth="200" />
-            </Grid>
+            </Grid>-->
 
             <!-- MAIN GRID -->
             <Grid>
@@ -77,6 +74,13 @@
                 <StackPanel Grid.Column="0"  Grid.ColumnSpan="2">
 
                     <!-- Menu Buttons -->
+
+                    <StackPanel Orientation="Horizontal">
+                        <Button Padding="5" Margin="2,3,2,2" Command="{Binding ToggleMenuCommand}">
+                            <Image Source="/Resources/Images/UniboxLogo.png" Width="24" Margin="4,0,4,0" />
+                        </Button>
+                        <TextBlock Text="{Binding LogoText}" Margin="5" FontSize="24"  VerticalAlignment="Center" FontFamily="Arial Narrow" />
+                    </StackPanel>
 
                     <Button  Padding="5" Margin="2,3,2,2" Command="{Binding NavigateToGamesCommand}" HorizontalContentAlignment="Left">
                         <StackPanel Orientation="Horizontal">

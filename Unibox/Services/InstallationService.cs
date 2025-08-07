@@ -107,7 +107,7 @@ namespace Unibox.Services
             OpenFolderDialog openFolderDialog = new OpenFolderDialog
             {
                 Title = "Select the Launchbox root directory for the installation",
-                InitialDirectory = Settings.Default.InstallationInitialDirectory,
+                //InitialDirectory = Settings.Default.InstallationInitialDirectory,
             };
 
             if (openFolderDialog.ShowDialog() == true)

@@ -48,6 +48,7 @@ namespace Unibox
             // Register ViewModels
             services.AddTransient<MainWindowVM>();
             services.AddTransient<SettingsVM>();
+            services.AddTransient<GamesVM>();
             services.AddTransient<InstallationsVM>();
             services.AddTransient<EditInstallationVM>();
             services.AddTransient<InstallationPlatformDetailsVM>();

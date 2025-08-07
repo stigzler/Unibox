@@ -35,6 +35,9 @@ namespace Unibox.ViewModels
         [ObservableProperty]
         private IEnumerable<InstallationModel> installations;
 
+        [ObservableProperty]
+        private string logoText = "Unibox";
+
         public DatabaseService DatabaseService;
 
         public MainWindowVM()
@@ -78,18 +81,21 @@ namespace Unibox.ViewModels
         [RelayCommand]
         private void NavigateToGames()
         {
+            LogoText = "Games";
             CurrentPage = new Views.GamesPage();
         }
 
         [RelayCommand]
         private void NavigateToSettings()
         {
+            LogoText = "Settings";
             CurrentPage = new Views.SettingsPage();
         }
 
         [RelayCommand]
         private void NavigateToInstallations()
         {
+            LogoText = "Installations";
             CurrentPage = new Views.InstallationsPage();
         }
 
