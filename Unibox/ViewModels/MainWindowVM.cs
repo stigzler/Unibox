@@ -71,8 +71,8 @@ namespace Unibox.ViewModels
             //}
             //Debug.WriteLine(streamString);
 
-            string secrets = databaseService.ReadEmbeddedResourceFile("secrets.txt");
-            Debug.WriteLine(secrets);
+            //string secrets = databaseService.ReadEmbeddedResourceFile("secrets.txt");
+            //Debug.WriteLine(secrets);
         }
 
         [RelayCommand]

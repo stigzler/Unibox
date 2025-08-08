@@ -163,18 +163,5 @@ namespace Unibox.Services
                 Database.Collections.LbSsSystemsMap.Insert(lbSsSystemMaps);
             }
         }
-
-        public string ReadEmbeddedResourceFile(string filename)
-        {
-            var assembly = Assembly.GetExecutingAssembly();
-            string resourceName = assembly.GetManifestResourceNames()
-                    .Single(str => str.EndsWith(filename));
-
-            using (Stream stream = assembly.GetManifestResourceStream(resourceName))
-            using (StreamReader reader = new StreamReader(stream))
-            {
-                return reader.ReadToEnd();
-            }
-        }
     }
 }

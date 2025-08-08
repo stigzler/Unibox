@@ -49,35 +49,26 @@ namespace Unibox.ViewModels
             ssPassword = Helpers.Encryption.DpapiEncrypt.QuickDecrypt(Properties.Settings.Default.SsPassword);
         }
 
-        partial void OnSsApiNameChanged(string value)
-        {
-            Properties.Settings.Default.SsApiName = Helpers.Encryption.DpapiEncrypt.QuickEncrypt(value);
-        }
-
-        partial void OnSsApiPasswordChanged(string value)
-        {
-            Properties.Settings.Default.SsApiPassword = Helpers.Encryption.DpapiEncrypt.QuickEncrypt(value);
-        }
-
-        partial void OnSsApiUsernameChanged(string value)
-        {
-            Properties.Settings.Default.SsApiUsername = Helpers.Encryption.DpapiEncrypt.QuickEncrypt(value);
-        }
-
-        partial void OnSsPasswordChanged(string value)
-        {
-            Properties.Settings.Default.SsPassword = Helpers.Encryption.DpapiEncrypt.QuickEncrypt(value);
-        }
-
-        partial void OnSsUsernameChanged(string value)
-        {
-            Properties.Settings.Default.SsUsername = Helpers.Encryption.DpapiEncrypt.QuickEncrypt(value);
-        }
-
         [RelayCommand]
         private void ToggleDarkMode()
         {
             Helpers.Theming.ApplyTheme();
+        }
+
+        [RelayCommand]
+        private void SaveScreenscraperCredentials()
+        {
+            Properties.Settings.Default.SsPassword = Helpers.Encryption.DpapiEncrypt.QuickEncrypt(SsPassword);
+            Properties.Settings.Default.SsUsername = Helpers.Encryption.DpapiEncrypt.QuickEncrypt(SsUsername);
+
+            if (!String.IsNullOrWhiteSpace(SsApiName)) Properties.Settings.Default.SsApiName = Helpers.Encryption.DpapiEncrypt.QuickEncrypt(SsApiName);
+            if (!String.IsNullOrWhiteSpace(SsApiPassword)) Properties.Settings.Default.SsApiPassword = Helpers.Encryption.DpapiEncrypt.QuickEncrypt(SsApiPassword);
+            if (!String.IsNullOrWhiteSpace(SsApiUsername)) Properties.Settings.Default.SsApiUsername = Helpers.Encryption.DpapiEncrypt.QuickEncrypt(SsApiUsername);
+
+            Properties.Settings.Default.Save();
+
+            screenscraperService.UpdateCredentialsFromUserSettings();
+            // AdonisUI.Controls.MessageBox.Show("Screenscraper credentials saved successfully.", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
         }
     }
 }
