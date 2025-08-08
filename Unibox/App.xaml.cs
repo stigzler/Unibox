@@ -44,6 +44,9 @@ namespace Unibox
             services.AddSingleton<DatabaseService>(); // Register the databaseService
             services.AddSingleton<InstallationService>(); // Register the installation service
             services.AddSingleton<PlatformService>(); // Register the platform update service
+            services.AddSingleton<GameService>(); // Register the game service
+            services.AddSingleton<ScreenscraperService>(); // Register the screenscraper service
+            services.AddSingleton<LaunchboxService>(); // Register the Launchbox service
 
             // Register ViewModels
             services.AddTransient<MainWindowVM>();

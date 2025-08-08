@@ -10,7 +10,7 @@
         mc:Ignorable="d"
         d:DataContext="{d:DesignInstance Type=vm:MainWindowVM, IsDesignTimeCreatable=True}"
         Cursor="{Binding Cursor}"
-        Title="Unibox Admin" Height="450" Width="800" WindowStartupLocation="CenterScreen" Closing="Window_Closing">
+        Title="Unibox Admin" Height="606" Width="799" WindowStartupLocation="CenterScreen" Closing="Window_Closing">
 
     <Window.Style>
         <Style TargetType="Window" BasedOn="{StaticResource {x:Type Window}}" />
@@ -24,9 +24,31 @@
         <TextBlock Grid.Row="0" Text="⚠️ This is down and dirty with no data validation - be careful ⚠️" HorizontalAlignment="Center" Margin="5" />
 
         <TabControl Grid.Row="1">
+
             <TabItem Header="Settings">
                 <Grid>
-                    <GroupBox Header="File Locations">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="*" />
+                    </Grid.RowDefinitions>
+
+                    <GroupBox Grid.Row="0" Header="File Locations" Margin="5">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="auto" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="auto" />
+                            </Grid.RowDefinitions>
+
+                            <TextBlock Grid.Column="0" Grid.Row="0" Text="Launchbox Root:" Margin="5" />
+                            <TextBox x:Name="LbRootPath" Grid.Column="1" Grid.Row="0" Margin="5"
+                             Text="{Binding LbRootPath}" />
+                        </Grid>
+                    </GroupBox>
+
+                    <GroupBox Grid.Row="1" Header="Screenscraper" Margin="5">
 
                         <Grid>
                             <Grid.ColumnDefinitions>
@@ -44,9 +66,8 @@
                                 <RowDefinition Height="auto" />
                             </Grid.RowDefinitions>
 
-                            <TextBlock Grid.Column="0" Grid.Row="0" Text="Launchbox Root:" Margin="5" />
-                            <TextBox x:Name="LbRootPath" Grid.Column="1" Grid.Row="0" Margin="5"
-                             Text="{Binding LbRootPath}" />
+                            <TextBlock Grid.Column="0" Grid.Row="0" Text="Encyption Key:" Margin="5" />
+                            <TextBox Grid.Column="1" Grid.Row="0" Margin="5" Text="{Binding EncryptKey}" />
 
                             <TextBlock Grid.Column="0" Grid.Row="1" Text="Screenscraper Username:" Margin="5" />
                             <TextBox Grid.Column="1" Grid.Row="1" Margin="5"
@@ -66,9 +87,12 @@
                             <TextBox Grid.Column="1" Grid.Row="5" Margin="5" Text="{Binding SsApiPassword}" />
 
                             <StackPanel Orientation="Horizontal" Grid.Column="1" Grid.Row="6" HorizontalAlignment="Right">
-                                <Button  Content="Save" Margin="5" Command="{Binding SaveToSettingsCommand}" />
-                                <Button  Content="Test" Margin="5" />
+                                <Button  Content="Save" Margin="2" Command="{Binding SaveToSettingsCommand}" />
+                                <Button  Content="Test" Margin="2" />
+                                <Button Content="Encrypt"  Margin="2" Command="{Binding EncryptScreenscraperCredentialsCommand}" />
                             </StackPanel>
+
+                            <TextBox Grid.Column="1" Grid.Row="7" Text="{Binding EncryptOutput}" TextWrapping="NoWrap" AcceptsReturn="True" Margin="5" IsReadOnly="True" />
                         </Grid>
                     </GroupBox>
                 </Grid>
@@ -97,6 +121,46 @@
                          Text="{Binding ConsoleText}" IsReadOnly="True" />
                     <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right">
                         <Button Content="Copy Text" Margin="2" Command="{Binding CopyTextCommand}" />
+                    </StackPanel>
+                </Grid>
+            </TabItem>
+
+            <TabItem Header="Keys">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="auto" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="auto" />
+                        <RowDefinition Height="auto" />
+                        <RowDefinition Height="auto" />
+                        <RowDefinition Height="auto" />
+                        <RowDefinition Height="auto" />
+                        <RowDefinition Height="auto" />
+                        <RowDefinition Height="auto" />
+                        <RowDefinition Height="auto" />
+                    </Grid.RowDefinitions>
+
+                    <TextBlock Grid.Column="0" Grid.Row="0" Text="Encryption Root:" Margin="5" />
+                    <TextBox Grid.Column="1" Grid.Row="0" Margin="5"
+                             Text="ref" />
+
+                    <TextBlock Grid.Column="0" Grid.Row="0" Text="Encryption Key:" Margin="5" />
+                    <TextBox Grid.Column="1" Grid.Row="0" Margin="5"
+                             Text="ref" />
+
+                    <TextBlock Grid.Column="0" Grid.Row="3" Text="Screenscraper ApiName:" Margin="5" />
+                    <TextBox Grid.Column="1" Grid.Row="3" Margin="5" Text="{Binding SsApiName}" />
+
+                    <TextBlock Grid.Column="0" Grid.Row="4" Text="Screenscraper ApiUsername:" Margin="5" />
+                    <TextBox Grid.Column="1" Grid.Row="4" Margin="5" Text="{Binding SsApiUsername}" />
+
+                    <TextBlock Grid.Column="0" Grid.Row="5" Text="Screenscraper ApiPassword:" Margin="5" />
+                    <TextBox Grid.Column="1" Grid.Row="5" Margin="5" Text="{Binding SsApiPassword}" />
+
+                    <StackPanel Orientation="Horizontal" Grid.Column="1" Grid.Row="6" HorizontalAlignment="Right">
+                        <Button  Content="Get .ini text" Margin="5" Command="{Binding SaveToSettingsCommand}" />
                     </StackPanel>
                 </Grid>
             </TabItem>

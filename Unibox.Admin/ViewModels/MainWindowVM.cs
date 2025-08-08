@@ -1,6 +1,7 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using stigzler.ScreenscraperWrapper.Data.Entities.Screenscraper;
+using System.Diagnostics;
 using System.Text.Json.Serialization;
 using System.Windows;
 using System.Windows.Input;
@@ -38,6 +39,12 @@ namespace Unibox.Admin.ViewModels
         [ObservableProperty]
         private string ssUsername = String.Empty;
 
+        [ObservableProperty]
+        private string encryptKey = String.Empty;
+
+        [ObservableProperty]
+        private string encryptOutput = String.Empty;
+
         public MainWindowVM()
         {
         }
@@ -52,6 +59,21 @@ namespace Unibox.Admin.ViewModels
 
             SetSqliteFilepath();
             screenscraperService.UpdateCredentialsFromUserSettings();
+
+            string encryptedString = Helpers.AESEncrypt.Encrypt("Dave Woz Ere", "passwordbaby");
+            Debug.WriteLine($"Encrypted String: {encryptedString}");
+            string decryptedString = Helpers.AESEncrypt.Decrypt(encryptedString, "passwordbaby");
+            Debug.WriteLine($"Decrypted String: {decryptedString}");
+        }
+
+        [RelayCommand]
+        private void EncryptScreenscraperCredentials()
+        {
+            EncryptOutput = String.Empty;
+            EncryptOutput += EncryptKey + Environment.NewLine;
+            EncryptOutput += Helpers.AESEncrypt.Encrypt(SsApiName, EncryptKey) + Environment.NewLine;
+            EncryptOutput += Helpers.AESEncrypt.Encrypt(SsApiUsername, EncryptKey) + Environment.NewLine;
+            EncryptOutput += Helpers.AESEncrypt.Encrypt(SsApiPassword, EncryptKey) + Environment.NewLine;
         }
 
         [RelayCommand]

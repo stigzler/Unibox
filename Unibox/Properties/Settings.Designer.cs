@@ -106,5 +106,86 @@ namespace Unibox.Properties {
                 this["AppInstallationsPgMidPanelHeight"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("{Please set}")]
+        public string SsUsername {
+            get {
+                return ((string)(this["SsUsername"]));
+            }
+            set {
+                this["SsUsername"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("{Please set}")]
+        public string SsPassword {
+            get {
+                return ((string)(this["SsPassword"]));
+            }
+            set {
+                this["SsPassword"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string SsApiName {
+            get {
+                return ((string)(this["SsApiName"]));
+            }
+            set {
+                this["SsApiName"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string SsApiUsername {
+            get {
+                return ((string)(this["SsApiUsername"]));
+            }
+            set {
+                this["SsApiUsername"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string SsApiPassword {
+            get {
+                return ((string)(this["SsApiPassword"]));
+            }
+            set {
+                this["SsApiPassword"] = value;
+            }
+        }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("Stig Woz ere")]
+        public string Setting {
+            get {
+                return ((string)(this["Setting"]));
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("Fucker fucker")]
+        public string Fucker {
+            get {
+                return ((string)(this["Fucker"]));
+            }
+            set {
+                this["Fucker"] = value;
+            }
+        }
     }
 }

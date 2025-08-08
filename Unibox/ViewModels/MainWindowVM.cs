@@ -60,16 +60,19 @@ namespace Unibox.ViewModels
 
             // TEsts
 
-            var assembly = Assembly.GetExecutingAssembly();
-            string resourceName = "Unibox.secrets.ini";
-            string streamString = null;
+            //var assembly = Assembly.GetExecutingAssembly();
+            //string resourceName = "Unibox.secrets.ini";
+            //string streamString = null;
 
-            using (Stream stream = assembly.GetManifestResourceStream(resourceName))
-            using (StreamReader reader = new StreamReader(stream))
-            {
-                streamString = reader.ReadToEnd();
-            }
-            Debug.WriteLine(streamString);
+            //using (Stream stream = assembly.GetManifestResourceStream(resourceName))
+            //using (StreamReader reader = new StreamReader(stream))
+            //{
+            //    streamString = reader.ReadToEnd();
+            //}
+            //Debug.WriteLine(streamString);
+
+            string secrets = databaseService.ReadEmbeddedResourceFile("secrets.txt");
+            Debug.WriteLine(secrets);
         }
 
         [RelayCommand]

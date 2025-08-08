@@ -16,6 +16,7 @@ namespace Unibox.Data.LiteDb
         }
 
         public ILiteCollection<InstallationModel> Installations { get; set; }
+        public ILiteCollection<GameModel> Games { get; set; }
 
         // Below removed because do not store these via collections - rather stored in Installation record.
         //public ILiteCollection<PlatformModel> Platforms { get; set; }
@@ -34,7 +35,8 @@ namespace Unibox.Data.LiteDb
 
             //PlatformFolders = Connection.GetCollection<PlatformFolderModel>("platformFolders");
             //Platforms = Connection.GetCollection<PlatformModel>("platforms").Include(p => p.PlatformFolders);
-            Installations = Connection.GetCollection<InstallationModel>("installations").Include(i => i.Platforms);
+            Installations = Connection.GetCollection<InstallationModel>("installations");
+            Games = Connection.GetCollection<GameModel>("games");
             SsMediaTypes = Connection.GetCollection<SsMediaType>("ssMediaTypes");
             SsSystems = Connection.GetCollection<SsSystem>("ssSystems");
             LbPlatforms = Connection.GetCollection<LbPlatform>("lbPlatforms");
