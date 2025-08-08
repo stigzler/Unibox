@@ -364,3 +364,4 @@ FodyWeavers.xsd
 
 # My Ignores
 secrets.ini
+/Unibox/Resources/Files/secrets.txt
