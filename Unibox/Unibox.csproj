@@ -18,7 +18,7 @@
     <None Remove="Data\secrets.ini" />
     <None Remove="Data\SsMediaTypesList.dat" />
     <None Remove="Data\SsSystemList.dat" />
-    <None Remove="Resources\Files\secrets.txt" />
+    <None Remove="Resources\Images\AddRom.png" />
     <None Remove="Resources\Images\eraser.png" />
     <None Remove="Resources\Images\exclamation.png" />
     <None Remove="Resources\Images\folder-horizontal-open.png" />
@@ -34,6 +34,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Resource Include="Resources\Images\AddRom.png" />
     <Resource Include="Resources\Images\eraser.png" />
     <Resource Include="Resources\Images\exclamation.png" />
     <Resource Include="Resources\Images\folder-horizontal-open.png" />
@@ -71,8 +72,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <EmbeddedResource Include="Resources\Files\secrets.txt" />
-    <EmbeddedResource Include="secrets.ini" />
+    <EmbeddedResource Include="Resources\Files\info.txt" />
   </ItemGroup>
 
   <ItemGroup>

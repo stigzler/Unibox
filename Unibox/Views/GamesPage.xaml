@@ -6,43 +6,92 @@
              xmlns:local="clr-namespace:Unibox.Views"
              xmlns:vm="clr-namespace:Unibox.ViewModels"
              xmlns:converters="clr-namespace:Unibox.Converters"
-             mc:Ignorable="d"
-             d:DataContext="{d:DesignInstance Type=vm:GamesVM, IsDesignTimeCreatable=True}" d:Height="139" d:Width="574"
-             Cursor="{Binding Cursor}">
+             mc:Ignorable="d" d:Foreground="White"
+             d:DataContext="{d:DesignInstance Type=vm:GamesVM, IsDesignTimeCreatable=True}"
+             d:Height="139" d:Width="800" d:DesignHeight="202" d:DesignWidth="1000">
 
     <UserControl.Resources>
         <converters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter" />
         <converters:BoolToInverseVisibilityConverter x:Key="BoolToInverseVisibilityConverter" />
+        <converters:PathToFilenameConverter x:Key="PathToFilenameConverter" />
+        <converters:DateTimeToYearConverter x:Key="DateTimeToYearConverter" />
     </UserControl.Resources>
 
-    <DockPanel LastChildFill="True">
-        <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Height="auto" Margin="4">
-            <Image Source="/Resources/Images/LaunchboxIcon.png" Width="32" />
-            <ComboBox x:Name="InstallationsCB" MinWidth="200" ItemsSource="{Binding InstallationsView}"
-                      DisplayMemberPath="Name" SelectedItem="{Binding SelectedInstallation}" />
-            <StackPanel Orientation="Horizontal" Visibility="{Binding InstallationAvailable, Converter={StaticResource BoolToVisibilityConverter}}">
-                <Image Source="/Resources/Images/Platform.png" Width="32" />
-                <ComboBox MinWidth="200" ItemsSource="{Binding PlatformsView}" DisplayMemberPath="Name"
+    <Grid>
+
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="auto" />
+        </Grid.RowDefinitions>
+
+        <!--- TOP MENU BAR -->
+        <DockPanel Grid.Row="0" Height="auto" Margin="4" LastChildFill="True">
+
+            <StackPanel Orientation="Horizontal" DockPanel.Dock="Left" Margin="5">
+                <Image Source="/Resources/Images/LaunchboxIcon.png" Width="32" />
+                <ComboBox x:Name="InstallationsCB" MinWidth="150" ItemsSource="{Binding InstallationsView}"
+                      DisplayMemberPath="Name" SelectedItem="{Binding SelectedInstallation}" Margin="5" />
+            </StackPanel>
+
+            <StackPanel Orientation="Horizontal" DockPanel.Dock="Left" Margin="5"
+                        d:Visibility="Visible" Visibility="{Binding InstallationAvailable, Converter={StaticResource BoolToVisibilityConverter}}">
+                <Image Source="/Resources/Images/Platform.png" Width="32" Margin="5" />
+                <ComboBox MinWidth="150" ItemsSource="{Binding PlatformsView}" DisplayMemberPath="Name" Margin="5"
                       SelectedItem="{Binding SelectedPlatform}" />
             </StackPanel>
-            <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" HorizontalAlignment="left" Margin="4,0,0,0"
+
+            <Button Margin="5" Padding="10" Width="150" DockPanel.Dock="Right" Command="{Binding addRomCommand}">
+                <StackPanel Orientation="Horizontal">
+                    <Image Source="/Resources/Images/AddRom.png" Height="32" />
+                    <TextBlock Text="Add Rom" VerticalAlignment="Center" Margin="5,0,0,0" />
+                </StackPanel>
+            </Button>
+            <StackPanel DockPanel.Dock="Left" Orientation="Horizontal" HorizontalAlignment="left" Margin="4,0,0,0"
                     Visibility="{Binding InstallationAvailable, Converter={StaticResource BoolToInverseVisibilityConverter}}">
                 <Image Source="/Resources/Images/minus-circle.png" Height="24" />
                 <TextBlock Text="Installation Unreachable (is it online?)" VerticalAlignment="Center" Margin="5" />
             </StackPanel>
-        </StackPanel>
+        </DockPanel>
 
-        <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal" Margin="4">
-            <Button Content="Add Game" />
-        </StackPanel>
+        <!-- GAMES GRID -->
+        <Grid Grid.Row="1" Visibility="{Binding InstallationAvailable, Converter={StaticResource BoolToVisibilityConverter}}" d:Visibility="Visible">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="auto" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
 
-        <StackPanel Visibility="{Binding InstallationAvailable, Converter={StaticResource BoolToVisibilityConverter}}">
             <!-- Games Grid and Search -->
-            <DockPanel DockPanel.Dock="Top">
-                <TextBlock DockPanel.Dock="Left" Text="Search: " FontWeight="Bold" Margin="4" />
-                <TextBox Text="Games" FontWeight="Bold" Margin="4" />
+            <DockPanel Grid.Row="0" Margin="10,0,10,0">
+                <TextBlock DockPanel.Dock="Left" Text="Search: " FontWeight="Bold" Margin="4" VerticalAlignment="Center" />
+                <TextBox Text="{Binding SearchTerm,UpdateSourceTrigger=PropertyChanged}" FontWeight="Bold" Margin="4" />
             </DockPanel>
-            <ListView></ListView>
-        </StackPanel>
-    </DockPanel>
+
+            <Border BorderThickness="1" BorderBrush="Gray" Grid.Row="1">
+                <ListView ItemsSource="{Binding GamesView}" ScrollViewer.VerticalScrollBarVisibility="Auto" Margin="10">
+                    <ListView.View>
+                        <GridView>
+                            <GridViewColumn Header="Name" Width="auto" DisplayMemberBinding="{Binding Title}" />
+                            <GridViewColumn Header="Rom File" Width="auto" DisplayMemberBinding="{Binding ApplicationPath,
+                            Converter={StaticResource PathToFilenameConverter}}" />
+                            <GridViewColumn Header="Developer" Width="auto" DisplayMemberBinding="{Binding Developer}" />
+                            <GridViewColumn Header="Publisher" Width="auto" DisplayMemberBinding="{Binding Publisher}" />
+                            <GridViewColumn Header="Release Date" Width="auto" DisplayMemberBinding="{Binding ReleaseDate, Converter={StaticResource DateTimeToYearConverter}}" />
+                            <GridViewColumn Header="Rom Full Path" Width="auto" DisplayMemberBinding="{Binding ApplicationPath}" />
+                        </GridView>
+                    </ListView.View>
+                </ListView>
+            </Border>
+        </Grid>
+
+        <!--- BOTTOM BUTTONS -->
+        <!--<StackPanel Grid.Row="2" Orientation="Horizontal" Margin="4">
+            <Button Margin="5" Padding="10">
+                <StackPanel Orientation="Horizontal">
+                    <Image Source="/Resources/Images/AddRom.png" Height="32" />
+                    <TextBlock Text="Add Rom" VerticalAlignment="Center" Margin="5,0,0,0" />
+                </StackPanel>
+            </Button>
+        </StackPanel>-->
+    </Grid>
 </UserControl>

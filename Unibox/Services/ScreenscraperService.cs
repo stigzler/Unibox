@@ -1,5 +1,7 @@
 ﻿using stigzler.ScreenscraperWrapper.DTOs;
 using stigzler.ScreenscraperWrapper.Services;
+using stigzler.ScreenscraperWrapper.Data.Entities.Screenscraper;
+using stigzler.ScreenscraperWrapper.Data.Enums;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -9,6 +11,7 @@ using System.Security;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Media;
+using stigzler.ScreenscraperWrapper.Results;
 
 namespace Unibox.Services
 {
@@ -19,6 +22,7 @@ namespace Unibox.Services
 
         public ScreenscraperService()
         {
+            UpdateCredentialsFromUserSettings();
         }
 
         internal void UpdateCredentialsFromUserSettings()
@@ -37,13 +41,36 @@ namespace Unibox.Services
             else
             {
                 // Use API credentials from the Resources\Files\secrets.txt file (not included in the repo - see the repo README for details)
-                string secrets = Helpers.FileSystem.ReadEmbeddedResourceFile("secrets.txt");
+                string secrets = Helpers.FileSystem.ReadEmbeddedResourceFile("info.txt");
                 string[] lines = secrets.Split(new[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries);
                 string encryptionKey = lines[0];
                 SsCredentials.DeveloperSoftware = Helpers.Encryption.AESEncrypt.Decrypt(lines[1], encryptionKey);
                 SsCredentials.DeveloperID = Helpers.Encryption.AESEncrypt.Decrypt(lines[2], encryptionKey);
                 SsCredentials.DeveloperPassword = Helpers.Encryption.AESEncrypt.Decrypt(lines[3], encryptionKey);
             }
+
+            ApiGet = new ApiGet(SsCredentials, new ApiServerParameters(), MetadataOutputFormat.xml);
+            ApiGet.UserThreads = Properties.Settings.Default.ssThreads;
+        }
+
+        internal async Task<ApiGetDataOutcome> GetUser()
+        {
+            return await ApiGet.GetList(ApiListRequest.UserInfo);
+        }
+
+        internal async Task<ApiGetDataOutcome> GetGameByRomName(string romName, int systemID)
+        {
+            return await ApiGet.GetGame(ApiSearchRequest.GameRomSearch,
+                new ApiGameSearchParameters()
+                {
+                    RomName = romName,
+                    SystemID = systemID
+                });
+        }
+
+        internal async Task<List<ApiGetFileOutcome>> kllkj(List<ApiFileDownloadParameters> apiFileDownloadParameters)
+        {
+            return await ApiGet.GetFiles(apiFileDownloadParameters);
         }
     }
 }

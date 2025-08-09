@@ -187,5 +187,29 @@ namespace Unibox.Properties {
                 this["Fucker"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("1")]
+        public int ssThreads {
+            get {
+                return ((int)(this["ssThreads"]));
+            }
+            set {
+                this["ssThreads"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool UseSsForRomAdds {
+            get {
+                return ((bool)(this["UseSsForRomAdds"]));
+            }
+            set {
+                this["UseSsForRomAdds"] = value;
+            }
+        }
     }
 }

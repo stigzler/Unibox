@@ -79,6 +79,27 @@ namespace Unibox.Helpers
             return folderPath;
         }
 
+        public static List<string> GetFilePaths(string prompt = "Please select file/s", string initialDirectory = "")
+        {
+            List<string> folderPaths = new List<string>();
+            OpenFileDialog openFileDialog = new OpenFileDialog
+            {
+                Title = prompt,
+                InitialDirectory = initialDirectory
+            };
+            if (openFileDialog.ShowDialog() == true)
+            {
+                foreach (string fileName in openFileDialog.FileNames)
+                {
+                    if (File.Exists(fileName))
+                    {
+                        folderPaths.Add(fileName);
+                    }
+                }
+            }
+            return folderPaths;
+        }
+
         public static string ReadEmbeddedResourceFile(string filename)
         {
             var assembly = Assembly.GetExecutingAssembly();

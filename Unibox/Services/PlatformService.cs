@@ -92,12 +92,23 @@ namespace Unibox.Services
                 installationPlatform.LaunchboxRomFolder = launchboxPlatform.LaunchboxRomFolder;
 
                 // Check LaunchboxScrapeAs
-                if (launchboxPlatform.LaunchboxScrapeAs == null)
+                if (String.IsNullOrWhiteSpace(launchboxPlatform.LaunchboxScrapeAs))
                 {
-                    updatePlatformsOutcome.SubOperationOutcomes.Add(new UpdatePlatformsSubOperationOutcome(
-                        UpdatePlatformMessageType.Warning,
-                        $"No ScrapeAs set in Launchbox. You will have to set this manually to enable metadata/media scrapes.",
-                        launchboxPlatform.Name));
+                    if (databaseService.Database.Collections.LbPlatforms.Exists(lbp => lbp.Name == installationPlatform.Name))
+                    {
+                        updatePlatformsOutcome.SubOperationOutcomes.Add(new UpdatePlatformsSubOperationOutcome(
+                            UpdatePlatformMessageType.Warning,
+                            $"No ScrapeAs set in Launchbox Platform but the Name is a standard Platfrom Name. Thus, setting ScrapeAs to the Platform name.",
+                            installationPlatform.Name));
+                        installationPlatform.LaunchboxScrapeAs = launchboxPlatform.Name;
+                    }
+                    else
+                    {
+                        updatePlatformsOutcome.SubOperationOutcomes.Add(new UpdatePlatformsSubOperationOutcome(
+                            UpdatePlatformMessageType.Warning,
+                            $"No ScrapeAs set in Launchbox. You will have to set this manually to enable metadata/media scrapes.",
+                            launchboxPlatform.Name));
+                    }
                 }
 
                 // ROM FOLDER OPS ------------------------------------------------------------------------------------------
@@ -359,6 +370,22 @@ namespace Unibox.Services
             } // END of xmlPlatforms foreach
 
             // NB: Don't forget to review the xml for any REMOVED Platforms (i.e. local db PLatform.Name cannot be found in the xml)
+            List<PlatformModel> platformsToRemove = new List<PlatformModel>();
+            foreach (var uniboxPlatforms in installation.Platforms)
+            {
+                if (!xmlPlatforms.Any(p => p.Name == uniboxPlatforms.Name))
+                {
+                    updatePlatformsOutcome.SubOperationOutcomes.Add(new UpdatePlatformsSubOperationOutcome(
+                        UpdatePlatformMessageType.Information,
+                        $"Platform not found in the XML file. Removing: [{uniboxPlatforms.Name}] from the database.",
+                        uniboxPlatforms.Name));
+                    platformsToRemove.Add(uniboxPlatforms);
+                }
+            }
+            foreach (var platformToRemove in platformsToRemove)
+            {
+                installation.Platforms.Remove(platformToRemove);
+            }
 
             installationService.Update(installation);
 

@@ -10,7 +10,7 @@ namespace Unibox.Data.Models
     public class GameModel
     {
         public ObjectId ID { get; set; } = ObjectId.NewObjectId();
-        public string Name { get; set; } = string.Empty;
+        public string Title { get; set; } = string.Empty;
         public PlatformModel Platform { get; set; } = null;
         public string ApplicationPath { get; set; } = string.Empty;
         public string Developer { get; set; } = string.Empty;
