@@ -83,6 +83,7 @@ namespace Unibox.Services
                 }
                 else
                 {
+                    // USE SCREENSCRAPER
                     SsSystem? ssSystem = databaseService.Database.Collections.LbSsSystemsMap.FindOne(
                         sm => sm.LbPlatform.Name == platformModel.LaunchboxScrapeAs).SsSystem;
 
@@ -121,13 +122,7 @@ namespace Unibox.Services
                             // yeah - running out of steam at this point...
                             foreach (var mappedSsMediaType in databaseService.Database.Collections.LbSsMediaTypeMap.FindAll())
                             {
-                                if (mappedSsMediaType.SsMediaType.Count() > 0)
-                                {
-                                    foreach (var ssMediaType in mappedSsMediaType.SsMediaType)
-                                    {
-                                        ssSystemMediaThatMapped.Add(ssMediaType.Name);
-                                    }
-                                }
+                                ssSystemMediaThatMapped.Add(mappedSsMediaType.SsMediaType.Name);
                             }
 
                             List<ApiFileDownloadParameters> mediaList = new List<ApiFileDownloadParameters>();
@@ -141,12 +136,12 @@ namespace Unibox.Services
                                     SsMediaType ssMediaType = databaseService.Database.Collections.SsMediaTypes
                                         .Find(s => s.Name == gameMediaDetails.MediaType.ToString()).FirstOrDefault();
 
-                                    var mediaMapRow = databaseService.Database.Collections.LbSsMediaTypeMap.FindAll()
-                                        .Where(mmr => mmr.SsMediaType == ssMediaType);
+                                    LbSsMediaTypeMap mediaMapRow = (LbSsMediaTypeMap)databaseService.Database.Collections.LbSsMediaTypeMap.FindAll()
+                                        .Where(mmr => mmr.SsMediaType.Name == ssMediaType.Name).FirstOrDefault();
 
-                                    var lbMediaType = mediaMapRow?.LbMediaType;
+                                    var lbMediaType = mediaMapRow.LbMediaType;
 
-                                    var lbPlatformFolder = platformModel.PlatformFolders.Where(pf => pf.MediaType == lbMediaType).FirstOrDefault();
+                                    var lbPlatformFolder = platformModel.PlatformFolders.Where(pf => pf.MediaType.Name == lbMediaType.Name).FirstOrDefault();
 
                                     mediaList.Add(new ApiFileDownloadParameters
                                     {
@@ -156,8 +151,9 @@ namespace Unibox.Services
                                         Url = gameMediaDetails.Uri
                                     });
                                 }
-                                //await screenscraperService.kllkj(mediaList);
                             }
+
+                            await screenscraperService.kllkj(mediaList);
                         }
                     }
 

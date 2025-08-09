@@ -11,6 +11,6 @@ namespace Unibox.Data.Models
     {
         public ObjectId ID { get; set; } = ObjectId.NewObjectId();
         public LbMediaType? LbMediaType { get; set; } = null;
-        public List<SsMediaType>? SsMediaType { get; set; } = new List<SsMediaType>();
+        public SsMediaType? SsMediaType { get; set; } = null;
     }
 }

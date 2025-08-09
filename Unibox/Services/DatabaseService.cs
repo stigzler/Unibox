@@ -127,10 +127,12 @@ namespace Unibox.Services
                             LbMediaType = Database.Collections.LbMediaTypes.FindAll().Where(m => m.Name == parts[0]).FirstOrDefault(),
                         };
 
-                        foreach (string ssMediaType in parts[1].Split(','))
-                        {
-                            lbSsMediaTypeMap.SsMediaType.Add(Database.Collections.SsMediaTypes.FindAll().Where(m => m.Name == ssMediaType).FirstOrDefault());
-                        }
+                        lbSsMediaTypeMap.SsMediaType = Database.Collections.SsMediaTypes.FindAll().Where(m => m.Name == parts[1]).FirstOrDefault();
+
+                        //foreach (string ssMediaType in parts[1].Split(','))
+                        //{
+                        //    lbSsMediaTypeMap.SsMediaType.Add(Database.Collections.SsMediaTypes.FindAll().Where(m => m.Name == ssMediaType).FirstOrDefault());
+                        //}
 
                         lbSsMediaTypeMaps.Add(lbSsMediaTypeMap);
                     }
