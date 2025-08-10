@@ -17,6 +17,8 @@ namespace Unibox.Data.Constants
         // Files
         public const string LaunchboxPlatformsXmlFile = @"Platforms.xml";
 
+        public const string LaunchboxEmulatorsXmlFile = @"Emulators.xml";
+
         public const string MediaMapFile = @"LbToSsMediaMap.dat";
         public const string PlatformMapFile = @"LbToSsSystemsMap.dat";
         public const string SsMediaTypesFile = @"SsMediaTypesList.dat";

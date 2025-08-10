@@ -12,6 +12,7 @@ using stigzler.ScreenscraperWrapper.Data;
 using stigzler.ScreenscraperWrapper.Services;
 using stigzler.ScreenscraperWrapper.DTOs;
 using stigzler.ScreenscraperWrapper.Data.Entities.Supplemental;
+using Unibox.Data.Constants;
 
 namespace Unibox.Services
 {
@@ -48,6 +49,18 @@ namespace Unibox.Services
             return lbGames;
         }
 
+        internal string GetEmulatorIdForPlatform(string platformName)
+        {
+            string emulatorXmlFilepath = Path.Combine(Paths.LaunchboxRelDataDir, Paths.LaunchboxEmulatorsXmlFile);
+            System.Xml.Linq.XDocument doc = System.Xml.Linq.XDocument.Load(emulatorXmlFilepath);
+            var platformElement = doc.Root.Elements("Platform").FirstOrDefault(p => p.Element("Name")?.Value == platformName);
+            if (platformElement != null)
+            {
+                return platformElement.Element("Emulator")?.Value;
+            }
+            return string.Empty;
+        }
+
         /// <summary>
         /// Asumes target path has already been checked for duplicate file
         /// </summary>
@@ -63,8 +76,6 @@ namespace Unibox.Services
             AddGameOutcome outcome = new AddGameOutcome();
 
             System.Xml.Linq.XDocument xmlDoc = System.Xml.Linq.XDocument.Load(xmlFilepath);
-
-            //File.Copy(romFilePath, Path.Combine(romFolder, Path.GetFileName(romFilePath)));
 
             GameModel newGameModel = new GameModel
             {
@@ -163,12 +174,15 @@ namespace Unibox.Services
                         new XElement("Developer", newGameModel.Developer),
                         new XElement("Publisher", newGameModel.Publisher),
                         new XElement("ReleaseDate", ""),
-                        new XElement("Notes", newGameModel.Notes)
+                        new XElement("Notes", newGameModel.Notes),
+                        new XElement("Platform", platformModel.Name),
+                        new XElement("Emulator", GetEmulatorIdForPlatform(platformModel.Name))
                     );
 
                     if (newGameModel.ReleaseDate.ToString() != "01/01/0001 00:00:00") newGameElement.Element("ReleaseDate").Value =
                             newGameModel.ReleaseDate.ToString();
 
+                    File.Copy(romFilePath, Path.Combine(romFolder, Path.GetFileName(romFilePath)));
                     xmlDoc.Root.Add(newGameElement);
                     xmlDoc.Save(xmlFilepath);
                 }
