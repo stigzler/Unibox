@@ -21,6 +21,7 @@ In order to get Platforms.xml to show the right Platform for PlatformFolders, th
 1. Change the Platform name in Launchbox + choose to update Platform Folder names
 2. Close Lauchbox.
 3. Open Launchbox. Choose to edit the Platform again (you don't need to change anything). Then click OK. This will update the Platforms.xml file correctly and Unibox will then be able to detect the media folders for that Platform.
+4. You can then update Platforms in Unibox.
 
 
 
