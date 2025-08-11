@@ -18,9 +18,10 @@ namespace Unibox.Services
     public class ScreenscraperService
     {
         private ApiCredentials SsCredentials { get; set; } = new ApiCredentials();
+
         private ApiGet ApiGet { get; set; } = new ApiGet();
 
-        public ScreenscraperService()
+        public ScreenscraperService(FileService fileService)
         {
             UpdateCredentialsFromUserSettings();
         }
@@ -40,7 +41,7 @@ namespace Unibox.Services
             }
             else
             {
-                // Use API credentials from the Resources\Files\secrets.txt file (not included in the repo - see the repo README for details)
+                // Use API credentials from the Resources\Files\info.txt file (not included in the repo - see the repo README for details)
                 string secrets = Helpers.FileSystem.ReadEmbeddedResourceFile("info.txt");
                 string[] lines = secrets.Split(new[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries);
                 string encryptionKey = lines[0];

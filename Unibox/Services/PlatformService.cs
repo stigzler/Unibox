@@ -182,7 +182,7 @@ namespace Unibox.Services
                     installation.OnRemoteMachine)
                 // Rom folder has Drive letter, but installation is on a network share  --------------------------------------
                 {
-                    if (installation.RemapRomsFrom == null)
+                    if (String.IsNullOrWhiteSpace(installation.RemapRomsFrom))
                     {
                         updatePlatformsOutcome.SubOperationOutcomes.Add(new UpdatePlatformsSubOperationOutcome(UpdatePlatformMessageType.Error,
                             $"The Installation is on a network path, but the Launchbox Rom path has a drive letter and no remap specified in the Installation. " +
@@ -323,7 +323,7 @@ namespace Unibox.Services
                                 installation.OnRemoteMachine)
                     // Media folder has Drive letter, but installation is on a network share  --------------------------------------
                     {
-                        if (installation.RemapMediaFrom == null)
+                        if (String.IsNullOrWhiteSpace(installation.RemapMediaFrom))
                         {
                             updatePlatformsOutcome.SubOperationOutcomes.Add(new UpdatePlatformsSubOperationOutcome(UpdatePlatformMessageType.Error,
                                 $"The Installation is on a network path, but the Launchbox Media path has a drive letter and no remap specified in the Installation. " +
@@ -332,9 +332,6 @@ namespace Unibox.Services
                         }
                         else
                         {
-                            //string candidateMediaFolder = Path.Combine(installation.InstallationPath,
-                            //    launchboxPlatformFolder.LaunchboxMediaPath.Replace(installation.RemapMediaFrom,
-                            //                                                installation.RemapMediaTo));
                             string candidateMediaFolder = launchboxPlatformFolder.LaunchboxMediaPath.Replace(installation.RemapMediaFrom,
                                                                  installation.RemapMediaTo);
                             if (!Directory.Exists(candidateMediaFolder))

@@ -200,6 +200,8 @@ namespace Unibox.ViewModels
             UpdatePlatformsList();
 
             Cursor = Cursors.Arrow;
+
+            WeakReferenceMessenger.Default.Send(new InstallationChangedMessage(SelectedInstallation));
         }
 
         [RelayCommand]

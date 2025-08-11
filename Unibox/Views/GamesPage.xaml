@@ -79,7 +79,7 @@
                             <GridViewColumn Header="Developer" Width="auto" DisplayMemberBinding="{Binding Developer}" />
                             <GridViewColumn Header="Publisher" Width="auto" DisplayMemberBinding="{Binding Publisher}" />
                             <GridViewColumn Header="Release Date" Width="auto" DisplayMemberBinding="{Binding ReleaseDate, Converter={StaticResource DateTimeToYearConverter}}" />
-                            <GridViewColumn Header="Rom Full Path" Width="auto" DisplayMemberBinding="{Binding ApplicationPath}" />
+                            <GridViewColumn Header="Launchbox Rom Path" Width="auto" DisplayMemberBinding="{Binding ApplicationPath}" />
                         </GridView>
                     </ListView.View>
                 </ListView>

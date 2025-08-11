@@ -10,6 +10,7 @@ using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Xml.Linq;
 using Unibox.Data.Constants;
@@ -23,11 +24,13 @@ namespace Unibox.Services
     {
         private DatabaseService databaseService;
         private ScreenscraperService screenscraperService;
+        private FileService fileService;
 
-        public GameService(DatabaseService databaseService, ScreenscraperService screenscraperService)
+        public GameService(DatabaseService databaseService, ScreenscraperService screenscraperService, FileService fileService)
         {
             this.databaseService = databaseService;
             this.screenscraperService = screenscraperService;
+            this.fileService = fileService;
         }
 
         internal ObservableCollection<GameModel> GetGamesFromXml(string xmlFilepath)
@@ -164,7 +167,7 @@ namespace Unibox.Services
 
                             WeakReferenceMessenger.Default.Send(new ProgressMessage(new ProgressMessageArgs
                             {
-                                SecondaryMessage = "Downloading any game media.."
+                                SecondaryMessage = "Discerning valid game Media"
                             }));
 
                             outcome.Outcomes.Add("Attempting to download any media for game...");
@@ -204,7 +207,13 @@ namespace Unibox.Services
                                     count += 1;
                                 }
                             }
+
+                            WeakReferenceMessenger.Default.Send(new ProgressMessage(new ProgressMessageArgs
+                            {
+                                SecondaryMessage = $"Downloading {mediaList.Count()} media items. This can take a bit of time..."
+                            }));
                             var mediaResults = await screenscraperService.GetMediaFiles(mediaList);
+
                             outcome.Outcomes.Add("Attempted media downloads. Results:");
 
                             count = 1;
@@ -241,10 +250,11 @@ namespace Unibox.Services
                         new XElement("ReleaseDate", ""),
                         new XElement("Notes", newGameModel.Notes),
                         new XElement("Platform", platformModel.Name),
+                        new XElement("DateAdded", DateTime.Now.ToString("o")),
                         new XElement("Emulator", GetEmulatorIdForPlatform(platformModel.Name, installationModel.InstallationPath))
                     );
                     if (newGameModel.ReleaseDate.ToString() != "01/01/0001 00:00:00") newGameElement.Element("ReleaseDate").Value =
-                            newGameModel.ReleaseDate.ToString();
+                            newGameModel.ReleaseDate.ToString(@"yyyy-MM-dd");
 
                     xmlDoc.Root.Add(newGameElement);
                 }
@@ -262,7 +272,17 @@ namespace Unibox.Services
                     SecondaryMessage = "Copying Rom file and updating metadata..."
                 }));
 
-                File.Copy(romFilePath, Path.Combine(romFolder, Path.GetFileName(romFilePath)));
+                //File.Copy(romFilePath, Path.Combine(romFolder, Path.GetFileName(romFilePath)));
+
+                await fileService.CopyFileAsync(
+                    romFilePath,
+                    Path.Combine(romFolder, Path.GetFileName(romFilePath)),
+                    percentMsg => WeakReferenceMessenger.Default.Send(
+                        new ProgressMessage(new ProgressMessageArgs { SecondaryMessage = $"Copying file. {percentMsg} Completed." })
+                        ),
+                    CancellationToken.None // supply a CancellationToken if you have one, or use CancellationToken.None
+                        );
+
                 outcome.Outcomes.Add($"Copied rom to: {Path.Combine(romFolder, Path.GetFileName(romFilePath))}");
 
                 xmlDoc.Save(xmlFilepath);

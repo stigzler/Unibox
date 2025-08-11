@@ -31,7 +31,6 @@
     <None Remove="Resources\Images\information.png" />
     <None Remove="Resources\Images\LaunchboxIcon.png" />
     <None Remove="Resources\Images\lock.png" />
-    <None Remove="Resources\Images\menu-burger.png" />
     <None Remove="Resources\Images\minus-circle.png" />
     <None Remove="Resources\Images\Platform.png" />
     <None Remove="Resources\Images\Settings.png" />
@@ -72,9 +71,6 @@
     <Resource Include="Resources\Images\Platform.png" />
     <Resource Include="Resources\Images\Settings.png" />
     <Resource Include="Resources\Images\UniboxLogo.png" />
-    <Content Include="Resources\Images\menu-burger.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
   </ItemGroup>
 
   <ItemGroup>
