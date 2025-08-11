@@ -15,13 +15,11 @@ using Unibox.Data.LiteDb;
 using Unibox.Data.Models;
 using Unibox.Messages;
 using Unibox.Services;
+using Unibox.Views;
 
 namespace Unibox.ViewModels
 {
-    public partial class MainWindowVM : ObservableObject,
-        IRecipient<InstallationAddedMessage>,
-        IRecipient<InstallationDeletedMessage>,
-        IRecipient<InstallationUpdatedMessage>
+    public partial class MainWindowVM : ObservableObject, IRecipient<ProgressMessage>
     {
         [ObservableProperty]
         private string title = "Unibox";
@@ -38,7 +36,20 @@ namespace Unibox.ViewModels
         [ObservableProperty]
         private string logoText = "Unibox";
 
+        [ObservableProperty]
+        private string statusBarText = "No current Operation.";
+
+        [ObservableProperty]
+        private bool statusBarProgressBarIndeterminate = false;
+
+        [ObservableProperty]
+        private int statusBarProgressBarPercentage = 0;
+
         public DatabaseService DatabaseService;
+
+        private SettingsPage settingsPage = new SettingsPage();
+        private GamesPage gamesPage = new GamesPage();
+        private InstallationsPage installationsPage = new InstallationsPage();
 
         public MainWindowVM()
         {
@@ -50,29 +61,11 @@ namespace Unibox.ViewModels
 
             Helpers.Theming.ApplyTheme();
 
-            WeakReferenceMessenger.Default.Register<InstallationAddedMessage>(this);
-            WeakReferenceMessenger.Default.Register<InstallationDeletedMessage>(this);
-            WeakReferenceMessenger.Default.Register<InstallationUpdatedMessage>(this);
+            WeakReferenceMessenger.Default.Register<ProgressMessage>(this);
 
             UpdateIstallationsFromDatabase();
 
-            NavigateToInstallations();
-
-            // TEsts
-
-            //var assembly = Assembly.GetExecutingAssembly();
-            //string resourceName = "Unibox.secrets.ini";
-            //string streamString = null;
-
-            //using (Stream stream = assembly.GetManifestResourceStream(resourceName))
-            //using (StreamReader reader = new StreamReader(stream))
-            //{
-            //    streamString = reader.ReadToEnd();
-            //}
-            //Debug.WriteLine(streamString);
-
-            //string secrets = databaseService.ReadEmbeddedResourceFile("secrets.txt");
-            //Debug.WriteLine(secrets);
+            NavigateToGames();
         }
 
         [RelayCommand]
@@ -85,21 +78,21 @@ namespace Unibox.ViewModels
         private void NavigateToGames()
         {
             LogoText = "Games";
-            CurrentPage = new Views.GamesPage();
+            CurrentPage = gamesPage;
         }
 
         [RelayCommand]
         private void NavigateToSettings()
         {
             LogoText = "Settings";
-            CurrentPage = new Views.SettingsPage();
+            CurrentPage = settingsPage;
         }
 
         [RelayCommand]
         private void NavigateToInstallations()
         {
             LogoText = "Installations";
-            CurrentPage = new Views.InstallationsPage();
+            CurrentPage = installationsPage;
         }
 
         private void UpdateIstallationsFromDatabase()
@@ -107,19 +100,25 @@ namespace Unibox.ViewModels
             Installations = new ObservableCollection<InstallationModel>(DatabaseService.Database.Collections.Installations.FindAll());
         }
 
-        void IRecipient<InstallationDeletedMessage>.Receive(InstallationDeletedMessage message)
+        void IRecipient<ProgressMessage>.Receive(ProgressMessage message)
         {
-            UpdateIstallationsFromDatabase();
-        }
+            StatusBarText = message.Value.PrimaryMessage;
 
-        void IRecipient<InstallationAddedMessage>.Receive(InstallationAddedMessage message)
-        {
-            UpdateIstallationsFromDatabase();
-        }
+            if (message.Value.ProgressBarIndeterminate)
+            {
+                StatusBarProgressBarIndeterminate = true;
+            }
 
-        void IRecipient<InstallationUpdatedMessage>.Receive(InstallationUpdatedMessage message)
-        {
-            UpdateIstallationsFromDatabase();
+            if (!String.IsNullOrWhiteSpace(message.Value.SecondaryMessage))
+            {
+                StatusBarText += " | " + message.Value.SecondaryMessage;
+            }
+
+            if (message.Value.PercentageComplete >= 0)
+            {
+                StatusBarProgressBarIndeterminate = false;
+                StatusBarProgressBarPercentage = message.Value.PercentageComplete;
+            }
         }
     }
 }

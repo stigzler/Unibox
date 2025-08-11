@@ -68,7 +68,7 @@ namespace Unibox.Services
                 });
         }
 
-        internal async Task<List<ApiGetFileOutcome>> kllkj(List<ApiFileDownloadParameters> apiFileDownloadParameters)
+        internal async Task<List<ApiGetFileOutcome>> GetMediaFiles(List<ApiFileDownloadParameters> apiFileDownloadParameters)
         {
             return await ApiGet.GetFiles(apiFileDownloadParameters);
         }

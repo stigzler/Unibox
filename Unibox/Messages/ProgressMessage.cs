@@ -14,12 +14,20 @@ namespace Unibox.Messages
         {
         }
 
-        public ProgressMessage(string primaryMessage, string secondaryMessage, int percentageComplete)
+        public ProgressMessage(string primaryMessage, string secondaryMessage, int percentageComplete, bool progressBarIndeterminate)
             : base(new ProgressMessageArgs
             {
                 PrimaryMessage = primaryMessage,
                 SecondaryMessage = secondaryMessage,
                 PercentageComplete = percentageComplete
+            })
+        {
+        }
+
+        public ProgressMessage(string primaryMessage)
+            : base(new ProgressMessageArgs
+            {
+                PrimaryMessage = primaryMessage,
             })
         {
         }

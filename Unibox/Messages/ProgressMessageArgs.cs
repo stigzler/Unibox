@@ -10,6 +10,7 @@ namespace Unibox.Messages
     {
         public string PrimaryMessage { get; set; } = string.Empty;
         public string SecondaryMessage { get; set; } = string.Empty;
-        public int PercentageComplete { get; set; } = 0;
+        public int PercentageComplete { get; set; } = -1;
+        public bool ProgressBarIndeterminate { get; set; } = false;
     }
 }

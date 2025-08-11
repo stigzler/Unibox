@@ -26,33 +26,35 @@
         </Grid.RowDefinitions>
 
         <!--- TOP MENU BAR -->
-        <DockPanel Grid.Row="0" Height="auto" Margin="4" LastChildFill="True">
+        <Grid Grid.Row="0" Height="auto" Margin="5,0,5,0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="auto" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="auto" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="auto" />
+            </Grid.ColumnDefinitions>
 
-            <StackPanel Orientation="Horizontal" DockPanel.Dock="Left" Margin="5">
-                <Image Source="/Resources/Images/LaunchboxIcon.png" Width="32" />
-                <ComboBox x:Name="InstallationsCB" MinWidth="150" ItemsSource="{Binding InstallationsView}"
+            <Image Grid.Column="0" Source="/Resources/Images/LaunchboxIcon.png" Width="32" />
+            <ComboBox Grid.Column="1" x:Name="InstallationsCB" MinWidth="150" ItemsSource="{Binding InstallationsView}"
                       DisplayMemberPath="Name" SelectedItem="{Binding SelectedInstallation}" Margin="5" />
-            </StackPanel>
 
-            <StackPanel Orientation="Horizontal" DockPanel.Dock="Left" Margin="5"
-                        d:Visibility="Visible" Visibility="{Binding InstallationAvailable, Converter={StaticResource BoolToVisibilityConverter}}">
-                <Image Source="/Resources/Images/Platform.png" Width="32" Margin="5" />
-                <ComboBox MinWidth="150" ItemsSource="{Binding PlatformsView}" DisplayMemberPath="Name" Margin="5"
-                      SelectedItem="{Binding SelectedPlatform}" />
-            </StackPanel>
+            <Image Grid.Column="2" Source="/Resources/Images/Platform.png" Width="32" Margin="5" />
+            <ComboBox Grid.Column="3" MinWidth="150" ItemsSource="{Binding PlatformsView}" DisplayMemberPath="Name" Margin="5"
+                      SelectedItem="{Binding SelectedPlatform}" Visibility="{Binding InstallationAvailable, Converter={StaticResource BoolToVisibilityConverter}}" />
 
-            <Button Margin="5" Padding="10" Width="150" DockPanel.Dock="Right" Command="{Binding addRomCommand}">
+            <Button Grid.Column="4" Margin="5" Padding="5" Width="150" DockPanel.Dock="Right" Command="{Binding addRomCommand}">
                 <StackPanel Orientation="Horizontal">
-                    <Image Source="/Resources/Images/AddRom.png" Height="32" />
-                    <TextBlock Text="Add Rom" VerticalAlignment="Center" Margin="5,0,0,0" />
+                    <Image Source="/Resources/Images/AddRom.png" Height="28" />
+                    <TextBlock Text="Add Rom/s" VerticalAlignment="Center" Margin="5,0,0,0" />
                 </StackPanel>
             </Button>
-            <StackPanel DockPanel.Dock="Left" Orientation="Horizontal" HorizontalAlignment="left" Margin="4,0,0,0"
+            <StackPanel Grid.Column="3" DockPanel.Dock="Left" Orientation="Horizontal" HorizontalAlignment="left" Margin="4,0,0,0"
                     Visibility="{Binding InstallationAvailable, Converter={StaticResource BoolToInverseVisibilityConverter}}">
                 <Image Source="/Resources/Images/minus-circle.png" Height="24" />
-                <TextBlock Text="Installation Unreachable (is it online?)" VerticalAlignment="Center" Margin="5" />
+                <TextBlock Text="Installation Unreachable" VerticalAlignment="Center" Margin="5" />
             </StackPanel>
-        </DockPanel>
+        </Grid>
 
         <!-- GAMES GRID -->
         <Grid Grid.Row="1" Visibility="{Binding InstallationAvailable, Converter={StaticResource BoolToVisibilityConverter}}" d:Visibility="Visible">
@@ -62,12 +64,12 @@
             </Grid.RowDefinitions>
 
             <!-- Games Grid and Search -->
-            <DockPanel Grid.Row="0" Margin="10,0,10,0">
+            <DockPanel Grid.Row="0" Margin="5,0,5,5">
                 <TextBlock DockPanel.Dock="Left" Text="Search: " FontWeight="Bold" Margin="4" VerticalAlignment="Center" />
                 <TextBox Text="{Binding SearchTerm,UpdateSourceTrigger=PropertyChanged}" FontWeight="Bold" Margin="4" />
             </DockPanel>
 
-            <Border BorderThickness="1" BorderBrush="Gray" Grid.Row="1">
+            <Border BorderThickness="1" BorderBrush="Gray" Grid.Row="1" Margin="5">
                 <ListView ItemsSource="{Binding GamesView}" ScrollViewer.VerticalScrollBarVisibility="Auto" Margin="10">
                     <ListView.View>
                         <GridView>

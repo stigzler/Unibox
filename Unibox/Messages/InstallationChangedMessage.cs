@@ -8,9 +8,9 @@ using Unibox.Data.Models;
 
 namespace Unibox.Messages
 {
-    class InstallationDeletedMessage : ValueChangedMessage<InstallationModel>
+    class InstallationChangedMessage : ValueChangedMessage<InstallationModel>
     {
-        public InstallationDeletedMessage(InstallationModel value) : base(value)
+        public InstallationChangedMessage(InstallationModel value) : base(value)
         {
         }
     }

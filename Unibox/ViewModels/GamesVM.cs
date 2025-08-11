@@ -1,5 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using CommunityToolkit.Mvvm.Messaging;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -9,19 +10,23 @@ using System.Runtime.InteropServices;
 using System.Security.Authentication;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Controls.Primitives;
 using System.Windows.Data;
 using System.Windows.Input;
 using Unibox.Data.Models;
+using Unibox.Data.ServiceOperationOutcomes;
+using Unibox.Messages;
 using Unibox.Services;
+using Unibox.Views;
 
 namespace Unibox.ViewModels
 {
-    internal partial class GamesVM : ObservableObject
+    internal partial class GamesVM : ObservableObject, IRecipient<InstallationChangedMessage>
     {
         private DatabaseService databaseService;
 
-        private ObservableCollection<GameModel> games;
+        private ObservableCollection<GameModel> games = new ObservableCollection<GameModel>();
         private GameService gameService;
 
         [ObservableProperty]
@@ -56,6 +61,8 @@ namespace Unibox.ViewModels
 
             installations = new ObservableCollection<InstallationModel>(databaseService.Database.Collections.Installations.FindAll());
             InstallationsView = (CollectionView)CollectionViewSource.GetDefaultView(installations);
+
+            WeakReferenceMessenger.Default.Register<InstallationChangedMessage>(this);
         }
 
         public GamesVM()
@@ -63,7 +70,7 @@ namespace Unibox.ViewModels
         }
 
         [RelayCommand]
-        private void addRom()
+        private async Task addRom()
         {
             // Checks:
             // Platform Selected
@@ -108,22 +115,61 @@ namespace Unibox.ViewModels
             // Get rom file/s to add
             List<string> romFiles = Helpers.FileSystem.GetFilePaths("Please select the rom file/s to add");
 
+            if (romFiles is null || romFiles.Count == 0)
+            {
+                AdonisUI.Controls.MessageBox.Show("No Rom files selected. Please select at least one Rom file to add.", "No Rom Files Selected",
+                    AdonisUI.Controls.MessageBoxButton.OK, AdonisUI.Controls.MessageBoxImage.Warning);
+                return;
+            }
+
+            ObservableCollection<AddGameOutcome> addGameOutcomes = new ObservableCollection<AddGameOutcome>();
+
+            PleaseWaitWindow pleaseWaitWindow = new PleaseWaitWindow();
+            pleaseWaitWindow.ViewModel.Text = "Please wait whilst the selected Roms are processed...";
+            pleaseWaitWindow.Show();
+
             foreach (string romFile in romFiles)
             {
+                WeakReferenceMessenger.Default.Send(new ProgressMessage(
+                    new ProgressMessageArgs
+                    {
+                        PrimaryMessage = $"Processing Rom: {Path.GetFileName(romFile)}",
+                        SecondaryMessage = "Starting process."
+                    }
+                ));
+
                 string candidateFilePath = Path.Combine(SelectedPlatform.ResolvedRomFolder, Path.GetFileName(romFile));
                 if (File.Exists(candidateFilePath))
                 {
-                    AdonisUI.Controls.MessageBox.Show(
-                        $"There is already a rom called [{Path.GetFileName(romFile)}] in the roms folder. Not adding rom.",
-                        "Rom already in folder", AdonisUI.Controls.MessageBoxButton.OK, AdonisUI.Controls.MessageBoxImage.Warning);
+                    addGameOutcomes.Add(new AddGameOutcome
+                    {
+                        RomPath = romFile,
+                        Outcomes = new List<string> { "Rom already exists in folder. Not adding." },
+                    });
                     continue;
                 }
-                gameService.AddRoms(candidateXmlPath, SelectedPlatform.ResolvedRomFolder, romFile, SelectedPlatform);
+
+                var addGameOutcome = await gameService.AddRoms(candidateXmlPath, SelectedPlatform.ResolvedRomFolder, romFile, SelectedPlatform, SelectedInstallation);
+                addGameOutcome.RomPath = romFile;
+
+                addGameOutcomes.Add(addGameOutcome);
+
+                if (addGameOutcome.RomAdded) games.Add(addGameOutcome.Game);
             }
+
+            pleaseWaitWindow.CloseWindow();
+
+            AddGameResultsWindow addGameResultsWindow = new AddGameResultsWindow();
+            addGameResultsWindow.ViewModel.AddGameResults = addGameOutcomes;
+            addGameResultsWindow.ShowDialog();
+
+            // Update User on outcomes
         }
 
         partial void OnSearchTermChanged(string value)
         {
+            if (SelectedInstallation is null || SelectedPlatform is null) return;
+
             GamesView.Filter = game =>
             {
                 if (string.IsNullOrWhiteSpace(value))
@@ -136,6 +182,8 @@ namespace Unibox.ViewModels
 
         partial void OnSelectedInstallationChanged(InstallationModel value)
         {
+            if (value == null) return;
+
             Mouse.OverrideCursor = Cursors.Wait;
             InstallationAvailable = Directory.Exists(value.InstallationPath);
             Mouse.OverrideCursor = Cursors.Arrow;
@@ -143,6 +191,8 @@ namespace Unibox.ViewModels
             platforms = value.Platforms;
             PlatformsView = (CollectionView)CollectionViewSource.GetDefaultView(platforms);
             PlatformsView.SortDescriptions.Add(new System.ComponentModel.SortDescription("Name", System.ComponentModel.ListSortDirection.Ascending));
+
+            games.Clear();
         }
 
         partial void OnSelectedPlatformChanged(PlatformModel value)
@@ -171,6 +221,12 @@ namespace Unibox.ViewModels
             Mouse.OverrideCursor = Cursors.Wait;
             games = gameService.GetGamesFromXml(candidateXmlPath);
             Mouse.OverrideCursor = Cursors.Arrow;
+        }
+
+        public void Receive(InstallationChangedMessage message)
+        {
+            installations = new ObservableCollection<InstallationModel>(databaseService.Database.Collections.Installations.FindAll());
+            InstallationsView = (CollectionView)CollectionViewSource.GetDefaultView(installations);
         }
     }
 }

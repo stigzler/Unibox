@@ -13,23 +13,19 @@
              d:Background="#606060" d:Foreground="#f0f0f0"
              d:DesignHeight="450" d:DesignWidth="800">
 
-    <StackPanel Margin="10">
+    <UserControl.Resources>
+        <Style TargetType="Image">
+            <Setter Property="RenderOptions.BitmapScalingMode" Value="HighQuality" />
+        </Style>
+    </UserControl.Resources>
+
+    <Grid Margin="10">
 
         <TabControl>
-            <TabItem Header="Application Settings">
-                <GroupBox Header="UI">
-                    <StackPanel Orientation="Vertical">
-                        <CheckBox Content="Dark Theme" Margin="10"
-                          IsChecked="{Binding Source={x:Static properties:Settings.Default},Path=AppDarkMode}"
-                          Command="{Binding ToggleDarkModeCommand}" />
-                    </StackPanel>
-                </GroupBox>
-            </TabItem>
 
             <TabItem Header="Screenscraper">
                 <StackPanel>
-
-                    <GroupBox Header="Connection" Margin="5">
+                    <GroupBox Header="Connection">
                         <Grid>
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="auto" />
@@ -74,30 +70,55 @@
                             <TextBlock Grid.Column="1" Grid.Row="3" VerticalAlignment="Center" Margin="5" Text="{Binding Source={x:Static properties:Settings.Default},Path=ssThreads}" />
 
                             <StackPanel Grid.Column="2" Grid.Row="3" Orientation="Horizontal">
-                                <Button  HorizontalAlignment="Right"  Content="Test Connection" Margin="5" Command="{Binding TestScreenscraperConnectionCommand}" />
-                                <Button  HorizontalAlignment="Right"   Content="Save" Margin="5" Command="{Binding SaveScreenscraperCredentialsCommand}" />
+                                <Button  HorizontalAlignment="Right"  Content="Test Connection" Margin="5" Height="40" Width="100"
+                                         Command="{Binding TestScreenscraperConnectionCommand}"
+                                         ToolTip="Test Connection and set thread count" />
+                                <Button  HorizontalAlignment="Right"   Content="Save" Margin="5" Height="40" Width="100"
+                                         Command="{Binding SaveScreenscraperCredentialsCommand}"
+                                         ToolTip="Save credentials" />
                             </StackPanel>
                         </Grid>
                     </GroupBox>
 
-                    <GroupBox Header="Setup" Margin="5">
+                    <GroupBox Header="Setup" Margin="0,10,0,0">
                         <StackPanel>
-                            <CheckBox Content="Use Screenscraper when adding Roms"
+                            <CheckBox Content="Use Screenscraper when adding Roms" Margin="5"
                                       IsChecked="{Binding Source={x:Static properties:Settings.Default},Path=UseSsForRomAdds}" />
+                            <CheckBox Content="Do not add Rom if no Screenscraper match found" Margin="5"
+                                      IsChecked="{Binding Source={x:Static properties:Settings.Default},Path=StopRomAddOnNoScreenscraperMatch}" />
                         </StackPanel>
                     </GroupBox>
                 </StackPanel>
             </TabItem>
 
-            <TabItem Header="Maps">
-                <StackPanel>
-                    <GroupBox Header="Media Types Map" Margin="5">
-                    </GroupBox>
+            <TabItem Header="Application Settings">
+                <GroupBox Header="UI" Height="90" VerticalAlignment="Top">
+                    <StackPanel Orientation="Vertical">
+                        <Grid>
+                            <CheckBox Content="Dark Theme" Margin="5"
+                          IsChecked="{Binding Source={x:Static properties:Settings.Default},Path=AppDarkMode}"
+                          Command="{Binding ToggleDarkModeCommand}" />
+                        </Grid>
+                    </StackPanel>
+                </GroupBox>
+            </TabItem>
 
-                    <GroupBox Header="Platforms Map" Margin="5">
-                    </GroupBox>
-                </StackPanel>
+            <TabItem Header="About">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="auto" />
+                        <RowDefinition Height="auto" />
+                        <RowDefinition Height="auto" />
+                        <RowDefinition Height="auto" />
+                    </Grid.RowDefinitions>
+
+                    <Image Grid.Row="0" Source="/Resources/Images/UniboxLogo.png" Width="128" Margin="0,50,0,0" />
+                    <TextBlock Grid.Row="1" FontFamily="Arial Narrow" Text="Unibox" FontSize="24" FontWeight="Bold" Margin="10,0,0,0" HorizontalAlignment="Center" />
+                    <TextBlock Grid.Row="2"  Text="by stigzler" FontFamily="Agency FB" FontSize="20" FontWeight="Bold" Margin="10,
+                               10,0,0" HorizontalAlignment="Center" />
+                    <TextBlock Grid.Row="3" Text="{Binding AssemblyVersion}" HorizontalAlignment="Center" />
+                </Grid>
             </TabItem>
         </TabControl>
-    </StackPanel>
+    </Grid>
 </UserControl>

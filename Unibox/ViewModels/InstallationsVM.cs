@@ -11,8 +11,16 @@ using Unibox.Views;
 
 namespace Unibox.ViewModels
 {
-    internal partial class InstallationsVM : ObservableObject, IRecipient<InstallationUpdatedMessage>
+    internal partial class InstallationsVM : ObservableObject, IRecipient<InstallationChangedMessage>
     {
+        private const string ViewModelName = "InstallationsVM";
+
+        [ObservableProperty]
+        private string title = "Installations";
+
+        [ObservableProperty]
+        private string description = "Manage your Launchbox Installations and Platforms.";
+
         [ObservableProperty]
         private Cursor cursor = Cursors.Arrow;
 
@@ -53,13 +61,13 @@ namespace Unibox.ViewModels
             this.installationService = installationService;
             this.platformService = platformService;
 
-            WeakReferenceMessenger.Default.Register<InstallationUpdatedMessage>(this);
+            WeakReferenceMessenger.Default.Register<InstallationChangedMessage>(this);
 
             UpdateIstallationsFromDatabase();
             this.platformService = platformService;
         }
 
-        void IRecipient<InstallationUpdatedMessage>.Receive(InstallationUpdatedMessage message)
+        void IRecipient<InstallationChangedMessage>.Receive(InstallationChangedMessage message)
         {
             UpdateIstallationsFromDatabase();
         }
@@ -118,7 +126,9 @@ namespace Unibox.ViewModels
                     $"now proceed to Update Platforms below.",
                     "New Installaiton created",
                     AdonisUI.Controls.MessageBoxButton.OK, AdonisUI.Controls.MessageBoxImage.Information);
-                WeakReferenceMessenger.Default.Send(new Messages.InstallationAddedMessage(newInstallation));
+
+                WeakReferenceMessenger.Default.Send(new Messages.InstallationChangedMessage(newInstallation));
+
                 UpdateIstallationsFromDatabase();
             }
 
@@ -137,7 +147,7 @@ namespace Unibox.ViewModels
                        == AdonisUI.Controls.MessageBoxResult.Yes)
             {
                 installationService.Delete(selectedInstallation);
-                WeakReferenceMessenger.Default.Send(new InstallationDeletedMessage(selectedInstallation));
+                WeakReferenceMessenger.Default.Send(new InstallationChangedMessage(SelectedInstallation));
                 UpdateIstallationsFromDatabase();
             }
         }
@@ -150,6 +160,7 @@ namespace Unibox.ViewModels
             EditInstallationWindow editInstallationWindow = new EditInstallationWindow();
             editInstallationWindow.ViewModel.Installation = SelectedInstallation;
             editInstallationWindow.ShowDialog();
+            WeakReferenceMessenger.Default.Send(new InstallationChangedMessage(SelectedInstallation));
         }
 
         partial void OnSelectedInstallationChanged(InstallationModel value)

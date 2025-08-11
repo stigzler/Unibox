@@ -13,6 +13,11 @@ Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "Documentation", "Documentat
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Unibox.Admin", "Unibox.Admin\Unibox.Admin.csproj", "{D57D21FD-D47E-4EEF-95BA-70058ED69252}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{47307DCC-B18F-46D6-97C7-EA93A124337D}"
+	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU

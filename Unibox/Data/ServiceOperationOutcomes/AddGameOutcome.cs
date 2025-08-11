@@ -7,9 +7,11 @@ using Unibox.Data.Models;
 
 namespace Unibox.Data.ServiceOperationOutcomes
 {
-    internal class AddGameOutcome
+    public class AddGameOutcome
     {
+        public string RomPath { get; set; } = null;
         public GameModel Game { get; set; } = null;
         public List<string> Outcomes { get; set; } = new List<string>();
+        public bool RomAdded { get; set; } = false;
     }
 }

@@ -7,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -36,6 +37,9 @@ namespace Unibox.ViewModels
 
         [ObservableProperty]
         private Cursor cursor = Cursors.Arrow;
+
+        [ObservableProperty]
+        private string assemblyVersion = $"V{Assembly.GetExecutingAssembly().GetName().Version?.ToString() ?? "{irretrievable}"}";
 
         private ScreenscraperService screenscraperService;
 

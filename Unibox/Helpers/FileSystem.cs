@@ -70,7 +70,8 @@ namespace Unibox.Helpers
             OpenFolderDialog openFolderDialog = new OpenFolderDialog
             {
                 Title = prompt,
-                InitialDirectory = initialDirectory
+                InitialDirectory = initialDirectory,
+                Multiselect = true
             };
             if (openFolderDialog.ShowDialog() == true)
             {
@@ -85,7 +86,8 @@ namespace Unibox.Helpers
             OpenFileDialog openFileDialog = new OpenFileDialog
             {
                 Title = prompt,
-                InitialDirectory = initialDirectory
+                InitialDirectory = initialDirectory,
+                Multiselect = true,
             };
             if (openFileDialog.ShowDialog() == true)
             {

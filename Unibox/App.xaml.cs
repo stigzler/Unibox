@@ -55,6 +55,8 @@ namespace Unibox
             services.AddTransient<InstallationsVM>();
             services.AddTransient<EditInstallationVM>();
             services.AddTransient<InstallationPlatformDetailsVM>();
+            services.AddTransient<PleaseWaitVM>();
+            services.AddTransient<AddGameResultsVM>();
 
             // Add other necessary services here
             // e.g., services.AddSingleton<IDataService, DataService>();

@@ -40,6 +40,16 @@
 
         <DockPanel LastChildFill="True">
 
+            <!-- STATUS BAR -->
+            <!--<StatusBar DockPanel.Dock="Bottom" Background="#202020" Foreground="#f0f0f0">
+                <StatusBarItem>
+                    <ProgressBar Width="100" Height="5" Margin="5" VerticalAlignment="Center"
+                                 Value="{Binding StatusBarProgressBarPercentage}" IsIndeterminate="{Binding StatusBarProgressBarIndeterminate}" />
+                </StatusBarItem>
+                <StatusBarItem>
+                    <TextBlock Text="{Binding StatusBarText}" Margin="5,0,0,0" />
+                </StatusBarItem>
+            </StatusBar>-->
             <!-- TITLE BAR -->
             <!--<Grid HorizontalAlignment="Left" Margin="0,0,0,6" DockPanel.Dock="Top">
                 <Grid.ColumnDefinitions>
@@ -51,16 +61,6 @@
                 </Grid.ColumnDefinitions>
 
                 -->
-            <!-- Hamburger Icon -->
-            <!--
-                <Button Grid.Column="0" Width="40" Height="40" VerticalAlignment="Top" Margin="2" Command="{Binding ToggleMenuCommand}">
-                    <Image Source="/Resources/Images/UniboxLogo.png" Width="24" />
-                </Button>
-
-                <Image Grid.Column="1" Source="/Resources/Images/LaunchboxIcon.png" Width="28" Margin="2"></Image>
-
-                <Image Grid.Column="3" Source="/Resources/Images/platform.png" Width="28" Margin="2"></Image>
-            </Grid>-->
 
             <!-- MAIN GRID -->
             <Grid>

@@ -10,6 +10,10 @@
     <ApplicationIcon>UniboxLogo.ico</ApplicationIcon>
   </PropertyGroup>
 
+	<PropertyGroup>
+		<GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+	</PropertyGroup>
+
   <ItemGroup>
     <None Remove="Data\LbMediaTypesList.dat" />
     <None Remove="Data\LbPlatfomList.dat" />
@@ -19,6 +23,7 @@
     <None Remove="Data\SsMediaTypesList.dat" />
     <None Remove="Data\SsSystemList.dat" />
     <None Remove="Resources\Images\AddRom.png" />
+    <None Remove="Resources\Images\clock.png" />
     <None Remove="Resources\Images\eraser.png" />
     <None Remove="Resources\Images\exclamation.png" />
     <None Remove="Resources\Images\folder-horizontal-open.png" />
@@ -35,6 +40,7 @@
 
   <ItemGroup>
     <Resource Include="Resources\Images\AddRom.png" />
+    <Resource Include="Resources\Images\clock.png" />
     <Resource Include="Resources\Images\eraser.png" />
     <Resource Include="Resources\Images\exclamation.png" />
     <Resource Include="Resources\Images\folder-horizontal-open.png" />

@@ -211,5 +211,17 @@ namespace Unibox.Properties {
                 this["UseSsForRomAdds"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool StopRomAddOnNoScreenscraperMatch {
+            get {
+                return ((bool)(this["StopRomAddOnNoScreenscraperMatch"]));
+            }
+            set {
+                this["StopRomAddOnNoScreenscraperMatch"] = value;
+            }
+        }
     }
 }

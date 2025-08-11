@@ -180,7 +180,7 @@ namespace Unibox.ViewModels
         {
             UpdateInstallation();
 
-            WeakReferenceMessenger.Default.Send(new InstallationUpdatedMessage(installation));
+            WeakReferenceMessenger.Default.Send(new InstallationChangedMessage(installation));
 
             DialogResult = Data.Enums.DialogResult.OK;
             window.Close();
