@@ -78,6 +78,18 @@ namespace Unibox.Services
                 Database.Collections.SsMediaTypes.Insert(ssMediaTypesCollection);
             }
 
+            // Screenscraper Regions
+            if (Properties.Settings.Default.SsRegionPriorities.Count == 0)
+            {
+                var file = File.ReadAllLinesAsync(Path.Combine(AppContext.BaseDirectory,
+                    Data.Constants.Paths.LaunchboxRelDataDir, Data.Constants.Paths.SsRegionsFile));
+                string[] lines = file.Result;
+                foreach (var line in lines)
+                {
+                    Properties.Settings.Default.SsRegionPriorities.Add(line);
+                }
+            }
+
             // Launchbox Platforms
             if (Database.Collections.LbPlatforms.Count() == 0)
             {

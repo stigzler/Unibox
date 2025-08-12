@@ -112,6 +112,7 @@
                     <StackPanel Grid.Row="0" Orientation="Horizontal">
                         <Button Content="LB Platforms" Margin="2" Command="{Binding GetLaunchboxPlatformsCommand}" />
                         <Button Content="LB Media Types" Margin="2" Command="{Binding GetLaunchboxMediaTypesCommand}" />
+                        <Button Content="SS Regions" Margin="2" Command="{Binding GetScreenscraperRegionsCommand}" />
                         <Button Content="SS Systems" Margin="2" Command="{Binding GetScreenscraperSystemsCommand}" />
                         <Button Content="SS Media Type Enum Names" Margin="2" Command="{Binding GetScreenscraperGameMediaTypeEnumsCommand}" />
                     </StackPanel>

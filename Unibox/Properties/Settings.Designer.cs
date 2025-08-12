@@ -167,27 +167,6 @@ namespace Unibox.Properties {
             }
         }
         
-        [global::System.Configuration.ApplicationScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("Stig Woz ere")]
-        public string Setting {
-            get {
-                return ((string)(this["Setting"]));
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("Fucker fucker")]
-        public string Fucker {
-            get {
-                return ((string)(this["Fucker"]));
-            }
-            set {
-                this["Fucker"] = value;
-            }
-        }
-        
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("1")]
@@ -221,6 +200,19 @@ namespace Unibox.Properties {
             }
             set {
                 this["StopRomAddOnNoScreenscraperMatch"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("<?xml version=\"1.0\" encoding=\"utf-16\"?>\r\n<ArrayOfString xmlns:xsd=\"http://www.w3." +
+            "org/2001/XMLSchema\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" />")]
+        public global::System.Collections.Specialized.StringCollection SsRegionPriorities {
+            get {
+                return ((global::System.Collections.Specialized.StringCollection)(this["SsRegionPriorities"]));
+            }
+            set {
+                this["SsRegionPriorities"] = value;
             }
         }
     }

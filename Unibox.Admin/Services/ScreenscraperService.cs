@@ -1,4 +1,5 @@
-﻿using stigzler.ScreenscraperWrapper;
+﻿using Microsoft.Extensions.DependencyInjection;
+using stigzler.ScreenscraperWrapper;
 using stigzler.ScreenscraperWrapper.DTOs;
 using stigzler.ScreenscraperWrapper.Results;
 using stigzler.ScreenscraperWrapper.Services;
@@ -37,6 +38,11 @@ namespace Unibox.Admin.Services
         internal async Task<ApiGetDataOutcome> GetScreenscraperGameMediaTypes()
         {
             return await Task.Run(() => ApiGet.GetList(stigzler.ScreenscraperWrapper.Data.Enums.ApiListRequest.GameMediaTypeList));
+        }
+
+        internal async Task<ApiGetDataOutcome> GetScreenscraperRegions()
+        {
+            return await Task.Run(() => ApiGet.GetList(stigzler.ScreenscraperWrapper.Data.Enums.ApiListRequest.RegionList));
         }
     }
 }

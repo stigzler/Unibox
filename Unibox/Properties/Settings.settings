@@ -38,12 +38,6 @@
     <Setting Name="SsApiPassword" Type="System.String" Scope="User">
       <Value Profile="(Default)" />
     </Setting>
-    <Setting Name="Setting" Type="System.String" Scope="Application">
-      <Value Profile="(Default)">Stig Woz ere</Value>
-    </Setting>
-    <Setting Name="Fucker" Type="System.String" Scope="User">
-      <Value Profile="(Default)">Fucker fucker</Value>
-    </Setting>
     <Setting Name="ssThreads" Type="System.Int32" Scope="User">
       <Value Profile="(Default)">1</Value>
     </Setting>
@@ -52,6 +46,10 @@
     </Setting>
     <Setting Name="StopRomAddOnNoScreenscraperMatch" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">True</Value>
+    </Setting>
+    <Setting Name="SsRegionPriorities" Type="System.Collections.Specialized.StringCollection" Scope="User">
+      <Value Profile="(Default)">&lt;?xml version="1.0" encoding="utf-16"?&gt;
+&lt;ArrayOfString xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" /&gt;</Value>
     </Setting>
   </Settings>
 </SettingsFile>

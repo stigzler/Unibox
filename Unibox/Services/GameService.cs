@@ -188,6 +188,10 @@ namespace Unibox.Services
 
                             List<ApiFileDownloadParameters> mediaList = new List<ApiFileDownloadParameters>();
                             int count = 1;
+
+                            var dave = databaseService.Database.Collections.LbMediaTypes.FindAll()
+                                .Where(mt => mt.Name == "Box Front").FirstOrDefault();
+
                             foreach (GameMediaDetails gameMediaDetails in ssGame.MediaList)
                             {
                                 if (ssSystemMediaThatMapped.Contains(gameMediaDetails.MediaType.ToString()))

@@ -21,8 +21,12 @@
     <None Remove="Data\LbToSsSystemsMap.dat" />
     <None Remove="Data\secrets.ini" />
     <None Remove="Data\SsMediaTypesList.dat" />
+    <None Remove="Data\SsRegionsList.dat" />
     <None Remove="Data\SsSystemList.dat" />
     <None Remove="Resources\Images\AddRom.png" />
+    <None Remove="Resources\Images\arrowDown.png" />
+    <None Remove="Resources\Images\arrowTop.png" />
+    <None Remove="Resources\Images\arrowUp.png" />
     <None Remove="Resources\Images\clock.png" />
     <None Remove="Resources\Images\eraser.png" />
     <None Remove="Resources\Images\exclamation.png" />
@@ -39,6 +43,9 @@
 
   <ItemGroup>
     <Resource Include="Resources\Images\AddRom.png" />
+    <Resource Include="Resources\Images\arrowDown.png" />
+    <Resource Include="Resources\Images\arrowTop.png" />
+    <Resource Include="Resources\Images\arrowUp.png" />
     <Resource Include="Resources\Images\clock.png" />
     <Resource Include="Resources\Images\eraser.png" />
     <Resource Include="Resources\Images\exclamation.png" />
@@ -60,6 +67,9 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Data\SsMediaTypesList.dat">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Data\SsRegionsList.dat">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Data\SsSystemList.dat">

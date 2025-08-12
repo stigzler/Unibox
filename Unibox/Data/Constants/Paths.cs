@@ -23,6 +23,7 @@ namespace Unibox.Data.Constants
         public const string PlatformMapFile = @"LbToSsSystemsMap.dat";
         public const string SsMediaTypesFile = @"SsMediaTypesList.dat";
         public const string SsSystemsFile = @"SsSystemList.dat";
+        public const string SsRegionsFile = @"SsRegionsList.dat";
         public const string LbPlatformsFile = @"LbPlatfomList.dat";
         public const string LbMediaTypesFile = @"LbMediaTypesList.dat";
     }

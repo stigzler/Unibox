@@ -1,6 +1,7 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using stigzler.ScreenscraperWrapper.Data.Entities.Screenscraper;
+using stigzler.ScreenscraperWrapper.Results;
 using System.Diagnostics;
 using System.Text.Json.Serialization;
 using System.Windows;
@@ -98,6 +99,17 @@ namespace Unibox.Admin.ViewModels
             ConsoleText += "Video" + Environment.NewLine;
             ConsoleText += "Music" + Environment.NewLine;
             ConsoleText += "Manual";
+        }
+
+        [RelayCommand]
+        private async void GetScreenscraperRegions()
+        {
+            var dave = await screenscraperService.GetScreenscraperRegions();
+            ConsoleText = String.Empty;
+            foreach (var region in (List<Region>)dave.DataObject)
+            {
+                ConsoleText += $"{region.NameEnglish}|{region.NameShort}" + Environment.NewLine;
+            }
         }
 
         [RelayCommand]

@@ -10,13 +10,16 @@
              xmlns:controls="clr-namespace:Unibox.Controls"
              d:DataContext="{d:DesignInstance Type=vm:SettingsVM, IsDesignTimeCreatable=True}"
              mc:Ignorable="d" Cursor="{Binding Cursor}"
+             xmlns:converters="clr-namespace:Unibox.Converters"
              d:Background="#606060" d:Foreground="#f0f0f0"
-             d:DesignHeight="450" d:DesignWidth="800">
+             d:DesignHeight="700" d:DesignWidth="800">
 
     <UserControl.Resources>
         <Style TargetType="Image">
             <Setter Property="RenderOptions.BitmapScalingMode" Value="HighQuality" />
         </Style>
+        <converters:RegionToFullNameConverter x:Key="RegionToFullNameConverter" />
+        <converters:RegionToShortNameConverter x:Key="RegionToShortNameConverter" />
     </UserControl.Resources>
 
     <Grid Margin="10">
@@ -87,6 +90,26 @@
                             <CheckBox Content="Do not add Rom if no Screenscraper match found" Margin="5"
                                       IsChecked="{Binding Source={x:Static properties:Settings.Default},Path=StopRomAddOnNoScreenscraperMatch}" />
                         </StackPanel>
+                    </GroupBox>
+
+                    <GroupBox Header="Priorities" Margin="0,10,0,0">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="auto" />
+                            </Grid.ColumnDefinitions>
+                            <ListView Grid.Column="0" ItemsSource="{Binding Source={x:Static properties:Settings.Default},Path=SsRegionPriorities}">
+                                <ListView.View>
+                                    <GridView>
+                                        <GridViewColumn Header="Name" Width="auto" DisplayMemberBinding="{Binding Converter={StaticResource RegionToFullNameConverter}}" />
+                                    </GridView>
+                                </ListView.View>
+                                <StackPanel Orientation="Vertical">
+                                    <Button>
+                                    </Button>
+                                </StackPanel>
+                            </ListView>
+                        </Grid>
                     </GroupBox>
                 </StackPanel>
             </TabItem>
