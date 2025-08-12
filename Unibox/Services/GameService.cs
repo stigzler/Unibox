@@ -81,6 +81,13 @@ namespace Unibox.Services
             // NESTED IFS FOR THE WIN BABY! YEAH!
             AddGameOutcome outcome = new AddGameOutcome();
 
+            outcome.Outcomes.Add($"Starting Add Game Rom routine with: \r\n" +
+                $"Rom Filepath: {romFilePath} \r\n" +
+                $"Rom Folder: {romFolder} \r\n" +
+                $"Launchbox XML Filepath: {xmlFilepath} \r\n" +
+                $"Platform Model: {platformModel.Name} \r\n" +
+                $"Installation Model: {installationModel.InstallationPath}");
+
             System.Xml.Linq.XDocument xmlDoc = System.Xml.Linq.XDocument.Load(xmlFilepath);
 
             GameModel newGameModel = new GameModel
@@ -144,7 +151,7 @@ namespace Unibox.Services
                         }
                         else
                         {
-                            // METADATA
+                            // METADATA ---------------------------------------------------------------------------------------------------
                             WeakReferenceMessenger.Default.Send(new ProgressMessage(new ProgressMessageArgs
                             {
                                 SecondaryMessage = "Game data retrieved. Populating Metadata.."
@@ -163,7 +170,7 @@ namespace Unibox.Services
 
                             outcome.Outcomes.Add($"Metadata scraped successfully for game. Game name now: {newGameModel.Title}");
 
-                            // MEDIA
+                            // MEDIA ---------------------------------------------------------------------------------------------------
 
                             WeakReferenceMessenger.Default.Send(new ProgressMessage(new ProgressMessageArgs
                             {
@@ -241,26 +248,28 @@ namespace Unibox.Services
                             }
                         }
                     }
-
-                    XElement newGameElement = new XElement("Game",
-                        new XElement("Title", newGameModel.Title),
-                        new XElement("ApplicationPath", newGameModel.ApplicationPath),
-                        new XElement("Developer", newGameModel.Developer),
-                        new XElement("Publisher", newGameModel.Publisher),
-                        new XElement("ReleaseDate", ""),
-                        new XElement("Notes", newGameModel.Notes),
-                        new XElement("Platform", platformModel.Name),
-                        new XElement("DateAdded", DateTime.Now.ToString("o")),
-                        new XElement("Emulator", GetEmulatorIdForPlatform(platformModel.Name, installationModel.InstallationPath))
-                    );
-                    if (newGameModel.ReleaseDate.ToString() != "01/01/0001 00:00:00") newGameElement.Element("ReleaseDate").Value =
-                            newGameModel.ReleaseDate.ToString(@"yyyy-MM-dd");
-
-                    xmlDoc.Root.Add(newGameElement);
                 }
             }
 
-            if (Properties.Settings.Default.StopRomAddOnNoScreenscraperMatch && noMatchFoundInScreenscraper)
+            XElement newGameElement = new XElement("Game",
+                new XElement("Title", newGameModel.Title),
+                new XElement("ApplicationPath", newGameModel.ApplicationPath),
+                new XElement("Developer", newGameModel.Developer),
+                new XElement("Publisher", newGameModel.Publisher),
+                new XElement("ReleaseDate", ""),
+                new XElement("Notes", newGameModel.Notes),
+                new XElement("Platform", platformModel.Name),
+                new XElement("DateAdded", DateTime.Now.ToString("o")),
+                new XElement("Emulator", GetEmulatorIdForPlatform(platformModel.Name, installationModel.InstallationPath)));
+
+            if (newGameModel.ReleaseDate.ToString() != "01/01/0001 00:00:00") newGameElement.Element("ReleaseDate").Value =
+                    newGameModel.ReleaseDate.ToString(@"yyyy-MM-dd");
+
+            xmlDoc.Root.Add(newGameElement);
+
+            if (Properties.Settings.Default.UseSsForRomAdds &&
+                Properties.Settings.Default.StopRomAddOnNoScreenscraperMatch &&
+                noMatchFoundInScreenscraper)
             {
                 outcome.Outcomes.Add($"No screenscraper match found for this rom/Platform combination and Settings dictate " +
                     $"not to add Roms in this situation. Not adding rom. Rom: \r\n \r\n {romFilePath}");
