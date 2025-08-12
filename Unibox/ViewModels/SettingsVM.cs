@@ -11,6 +11,7 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Data;
 using System.Windows.Input;
 using Unibox.Services;
 using static System.Runtime.InteropServices.JavaScript.JSType;
@@ -41,6 +42,9 @@ namespace Unibox.ViewModels
         [ObservableProperty]
         private string assemblyVersion = $"V{Assembly.GetExecutingAssembly().GetName().Version?.ToString() ?? "{irretrievable}"}";
 
+        [ObservableProperty]
+        private string selectedRegion;
+
         private ScreenscraperService screenscraperService;
 
         public SettingsVM()
@@ -63,6 +67,41 @@ namespace Unibox.ViewModels
             SsApiName = Helpers.Encryption.DpapiEncrypt.QuickDecrypt(Properties.Settings.Default.SsApiName);
             SsApiUsername = Helpers.Encryption.DpapiEncrypt.QuickDecrypt(Properties.Settings.Default.SsApiUsername);
             SsApiPassword = Helpers.Encryption.DpapiEncrypt.QuickDecrypt(Properties.Settings.Default.SsApiPassword);
+        }
+
+        [RelayCommand]
+        private void MoveSelectedRegionToTop()
+        {
+            Properties.Settings.Default.SsRegionPriorities.Remove(SelectedRegion);
+            Properties.Settings.Default.SsRegionPriorities.Insert(0, SelectedRegion);
+            Properties.Settings.Default.Save();
+            CollectionViewSource.GetDefaultView(Properties.Settings.Default.SsRegionPriorities).Refresh();
+        }
+
+        [RelayCommand]
+        private void MoveSelectedRegionUp()
+        {
+            int index = Properties.Settings.Default.SsRegionPriorities.IndexOf(SelectedRegion);
+            if (index > 0)
+            {
+                Properties.Settings.Default.SsRegionPriorities.Remove(SelectedRegion);
+                Properties.Settings.Default.SsRegionPriorities.Insert(index - 1, SelectedRegion);
+                Properties.Settings.Default.Save();
+                CollectionViewSource.GetDefaultView(Properties.Settings.Default.SsRegionPriorities).Refresh();
+            }
+        }
+
+        [RelayCommand]
+        private void MoveSelectedRegionDown()
+        {
+            int index = Properties.Settings.Default.SsRegionPriorities.IndexOf(SelectedRegion);
+            if (index < Properties.Settings.Default.SsRegionPriorities.Count - 1)
+            {
+                Properties.Settings.Default.SsRegionPriorities.Remove(SelectedRegion);
+                Properties.Settings.Default.SsRegionPriorities.Insert(index + 1, SelectedRegion);
+                Properties.Settings.Default.Save();
+                CollectionViewSource.GetDefaultView(Properties.Settings.Default.SsRegionPriorities).Refresh();
+            }
         }
 
         [RelayCommand]

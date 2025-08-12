@@ -43,7 +43,7 @@
             <ComboBox Grid.Column="3" MinWidth="150" ItemsSource="{Binding PlatformsView}" DisplayMemberPath="Name" Margin="5"
                       SelectedItem="{Binding SelectedPlatform}" Visibility="{Binding InstallationAvailable, Converter={StaticResource BoolToVisibilityConverter}}" />
 
-            <Button Grid.Column="4" Margin="5" Padding="5" Width="150" DockPanel.Dock="Right" Command="{Binding addRomCommand}">
+            <Button Grid.Column="4" Margin="5" Padding="5" Width="150" DockPanel.Dock="Right" Command="{Binding AddRomCommand}">
                 <StackPanel Orientation="Horizontal">
                     <Image Source="/Resources/Images/AddRom.png" Height="28" />
                     <TextBlock Text="Add Rom/s" VerticalAlignment="Center" Margin="5,0,0,0" />

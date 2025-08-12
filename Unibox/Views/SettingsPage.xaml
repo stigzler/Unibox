@@ -27,8 +27,15 @@
         <TabControl>
 
             <TabItem Header="Screenscraper">
-                <StackPanel>
-                    <GroupBox Header="Connection">
+
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="auto" />
+                        <RowDefinition Height="auto" />
+                        <RowDefinition Height="*" />
+                    </Grid.RowDefinitions>
+
+                    <GroupBox Grid.Row="0" Header="Connection">
                         <Grid>
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="auto" />
@@ -83,35 +90,44 @@
                         </Grid>
                     </GroupBox>
 
-                    <GroupBox Header="Setup" Margin="0,10,0,0">
+                    <GroupBox Grid.Row="1"  Header="Setup" Margin="0,10,0,0">
                         <StackPanel>
                             <CheckBox Content="Use Screenscraper when adding Roms" Margin="5"
                                       IsChecked="{Binding Source={x:Static properties:Settings.Default},Path=UseSsForRomAdds}" />
                             <CheckBox Content="Do not add Rom if no Screenscraper match found" Margin="5"
-                                      IsChecked="{Binding Source={x:Static properties:Settings.Default},Path=StopRomAddOnNoScreenscraperMatch}" />
+                                      IsChecked="{Binding Source
+                                ={x:Static properties:Settings.Default},Path=StopRomAddOnNoScreenscraperMatch}" />
                         </StackPanel>
                     </GroupBox>
 
-                    <GroupBox Header="Priorities" Margin="0,10,0,0">
+                    <GroupBox Grid.Row="2"  Header="Priorities" Margin="0,10,0,0">
                         <Grid>
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="*" />
                                 <ColumnDefinition Width="auto" />
                             </Grid.ColumnDefinitions>
-                            <ListView Grid.Column="0" ItemsSource="{Binding Source={x:Static properties:Settings.Default},Path=SsRegionPriorities}">
+                            <ListView Grid.Column="0"  SelectedItem="{Binding SelectedRegion}"
+                                      ItemsSource="{Binding Source={x:Static properties:Settings.Default},Path=SsRegionPriorities, Mode=TwoWay}">
                                 <ListView.View>
                                     <GridView>
-                                        <GridViewColumn Header="Name" Width="auto" DisplayMemberBinding="{Binding Converter={StaticResource RegionToFullNameConverter}}" />
+                                        <GridViewColumn Header="Regions" Width="200" DisplayMemberBinding="{Binding Converter={StaticResource RegionToFullNameConverter}}" />
                                     </GridView>
                                 </ListView.View>
-                                <StackPanel Orientation="Vertical">
-                                    <Button>
-                                    </Button>
-                                </StackPanel>
                             </ListView>
+                            <StackPanel Grid.Column="1" Orientation="Vertical">
+                                <Button Margin="2" Command="{Binding MoveSelectedRegionToTopCommand}">
+                                    <Image Source="/Resources/Images/arrowTop.png" />
+                                </Button>
+                                <Button Margin="2" Command="{Binding MoveSelectedRegionUpCommand}">
+                                    <Image Source="/Resources/Images/arrowUp.png" />
+                                </Button>
+                                <Button Margin="2" Command="{Binding MoveSelectedRegionDownCommand}">
+                                    <Image Source="/Resources/Images/arrowDown.png" />
+                                </Button>
+                            </StackPanel>
                         </Grid>
                     </GroupBox>
-                </StackPanel>
+                </Grid>
             </TabItem>
 
             <TabItem Header="Application Settings">

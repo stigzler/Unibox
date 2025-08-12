@@ -7,6 +7,7 @@ using stigzler.ScreenscraperWrapper.Services;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -157,10 +158,9 @@ namespace Unibox.Services
                                 SecondaryMessage = "Game data retrieved. Populating Metadata.."
                             }));
 
-                            List<stigzler.ScreenscraperWrapper.Data.Entities.Screenscraper.Game> ssGames =
-                                ssResult.DataObject as List<stigzler.ScreenscraperWrapper.Data.Entities.Screenscraper.Game>;
+                            List<Game> ssGames = ssResult.DataObject as List<Game>;
 
-                            stigzler.ScreenscraperWrapper.Data.Entities.Screenscraper.Game ssGame = ssGames.FirstOrDefault();
+                            Game ssGame = ssGames.FirstOrDefault();
 
                             newGameModel.Title = ssGame.Names.First().Value;
                             newGameModel.Publisher = ssGame.Publisher.Value;
@@ -177,7 +177,7 @@ namespace Unibox.Services
                                 SecondaryMessage = "Discerning valid game Media"
                             }));
 
-                            outcome.Outcomes.Add("Attempting to download any media for game...");
+                            outcome.Outcomes.Add("Calculating Media downloads:");
 
                             HashSet<string> ssSystemMediaThatMapped = new HashSet<string>();
                             // yeah - running out of steam at this point...
@@ -189,33 +189,57 @@ namespace Unibox.Services
                             List<ApiFileDownloadParameters> mediaList = new List<ApiFileDownloadParameters>();
                             int count = 1;
 
-                            var dave = databaseService.Database.Collections.LbMediaTypes.FindAll()
-                                .Where(mt => mt.Name == "Box Front").FirstOrDefault();
-
-                            foreach (GameMediaDetails gameMediaDetails in ssGame.MediaList)
+                            foreach (string ssMediaType in ssSystemMediaThatMapped)
                             {
-                                if (ssSystemMediaThatMapped.Contains(gameMediaDetails.MediaType.ToString()))
+                                GameMediaDetails ssGameMediaDetails = null;
+                                var ssMedias = ssGame.MediaList.Where(m => m.MediaType.ToString() == ssMediaType);
+                                if (ssMedias.Count() == 0)
                                 {
-                                    outcome.Outcomes.Add($"Adding media to download list: {count}. {gameMediaDetails.MediaType}");
-
-                                    SsMediaType ssMediaType = databaseService.Database.Collections.SsMediaTypes
-                                        .Find(s => s.Name == gameMediaDetails.MediaType.ToString()).FirstOrDefault();
-
-                                    LbSsMediaTypeMap mediaMapRow = (LbSsMediaTypeMap)databaseService.Database.Collections.LbSsMediaTypeMap.FindAll()
-                                        .Where(mmr => mmr.SsMediaType.Name == ssMediaType.Name).FirstOrDefault();
-
-                                    var lbMediaType = mediaMapRow.LbMediaType;
-
-                                    var lbPlatformFolder = platformModel.PlatformFolders.Where(pf => pf.MediaType.Name == lbMediaType.Name).FirstOrDefault();
-
-                                    mediaList.Add(new ApiFileDownloadParameters
+                                    // do not add
+                                    //outcome.Outcomes.Add($"Found media type: {ssMediaType}.");
+                                }
+                                else if (ssMedias.Count() > 1)
+                                {
+                                    foreach (string region in Properties.Settings.Default.SsRegionPriorities)
                                     {
-                                        AssociatedUserDataObject = ssGame,
-                                        Filename = Path.Combine(lbPlatformFolder.ResolvedMediaPath,
-                                        $"{Path.GetFileNameWithoutExtension(romFilePath)}[0].{gameMediaDetails.Format}"),
-                                        Url = gameMediaDetails.Uri
-                                    });
+                                        string shortRegionName = region.Split('|')[1];
+                                        ssGameMediaDetails = ssMedias.Where(m => m.Region == region.Split('|')[1]).FirstOrDefault();
+
+                                        if (ssGameMediaDetails != null)
+                                        {
+                                            outcome.Outcomes.Add($"{count}. {ssMediaType} Found. " +
+                                                $"Prioritisation routine chose to use [{region.Split('|')[0]}]");
+                                            count += 1;
+                                            break;
+                                        }
+                                    }
+                                }
+                                else // count = 1
+                                {
+                                    ssGameMediaDetails = ssMedias.First();
+                                    outcome.Outcomes.Add($"{count}. {ssMediaType} Found. " +
+                                    $"Screenscraper region: [{ssGameMediaDetails.Region}]");
                                     count += 1;
+                                }
+
+                                if (ssGameMediaDetails != null)
+                                {
+                                    var mediaTypeMap = databaseService.Database.Collections.LbSsMediaTypeMap.
+                                        FindOne(mtm => mtm.SsMediaType.Name == ssMediaType);
+
+                                    var lbPlatformFolder = platformModel.PlatformFolders.
+                                        Where(pf => pf.MediaType.Name == mediaTypeMap.LbMediaType.Name).FirstOrDefault();
+
+                                    if (lbPlatformFolder != null)
+                                    {
+                                        mediaList.Add(new ApiFileDownloadParameters()
+                                        {
+                                            AssociatedUserDataObject = ssGame,
+                                            Url = ssGameMediaDetails.Uri,
+                                            Filename = Path.Combine(lbPlatformFolder.ResolvedMediaPath,
+                                                $"{Path.GetFileNameWithoutExtension(romFilePath)}[0].{ssGameMediaDetails.Format}")
+                                        });
+                                    }
                                 }
                             }
 
@@ -223,6 +247,7 @@ namespace Unibox.Services
                             {
                                 SecondaryMessage = $"Downloading {mediaList.Count()} media items. This can take a bit of time..."
                             }));
+
                             var mediaResults = await screenscraperService.GetMediaFiles(mediaList);
 
                             outcome.Outcomes.Add("Attempted media downloads. Results:");

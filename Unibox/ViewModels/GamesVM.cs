@@ -70,7 +70,7 @@ namespace Unibox.ViewModels
         }
 
         [RelayCommand]
-        private async Task addRom()
+        private async Task AddRom()
         {
             // Checks:
             // Platform Selected
@@ -128,12 +128,14 @@ namespace Unibox.ViewModels
             pleaseWaitWindow.ViewModel.Text = "Please wait whilst the selected Roms are processed...";
             pleaseWaitWindow.Show();
 
+            int count = 1;
+
             foreach (string romFile in romFiles)
             {
                 WeakReferenceMessenger.Default.Send(new ProgressMessage(
                     new ProgressMessageArgs
                     {
-                        PrimaryMessage = $"Processing Rom: {Path.GetFileName(romFile)}",
+                        PrimaryMessage = $"Processing Rom ({count}/{romFiles.Count()}): {Path.GetFileName(romFile)}",
                         SecondaryMessage = "Starting process."
                     }
                 ));
@@ -155,6 +157,7 @@ namespace Unibox.ViewModels
                 addGameOutcomes.Add(addGameOutcome);
 
                 if (addGameOutcome.RomAdded) games.Add(addGameOutcome.Game);
+                count += 1;
             }
 
             pleaseWaitWindow.CloseWindow();
