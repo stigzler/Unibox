@@ -6,7 +6,6 @@
              xmlns:local="clr-namespace:Unibox.Views"
              xmlns:properties="clr-namespace:Unibox.Properties"
              xmlns:vm="clr-namespace:Unibox.ViewModels"
-             xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
              xmlns:controls="clr-namespace:Unibox.Controls"
              d:DataContext="{d:DesignInstance Type=vm:SettingsVM, IsDesignTimeCreatable=True}"
              mc:Ignorable="d" Cursor="{Binding Cursor}"
