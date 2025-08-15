@@ -290,6 +290,7 @@ namespace Unibox.Services
                 EmulatorID = GetEmulatorIdForPlatform(platformModel.Name, installationModel.InstallationPath)
             };
 
+            // Below kept in just in case decide to allow add games in offline mode (i.e. doesn't require launchbox/bb to be running)
             //Unbroken.LaunchBox.Plugins.Data.IGame game = new Unbroken.LaunchBox.Plugins.Data.IGame
             //{
             //    Title = gameDTO.Title,
@@ -333,15 +334,6 @@ namespace Unibox.Services
                     SecondaryMessage = "Copying Rom file and updating metadata..."
                 }));
 
-                await fileService.CopyFileAsync(
-                    romFilePath,
-                    Path.Combine(romFolder, Path.GetFileName(romFilePath)),
-                    percentMsg => WeakReferenceMessenger.Default.Send(
-                        new ProgressMessage(new ProgressMessageArgs { SecondaryMessage = $"Copying file. {percentMsg} Completed." })
-                        ), CancellationToken.None);
-
-                outcome.Outcomes.Add($"Copied rom to: {Path.Combine(romFolder, Path.GetFileName(romFilePath))}");
-
                 //xmlDoc.Save(xmlFilepath);
 
                 AddGameResponse addGameResponse = await messagingService.SendAddGameRequest(installationModel.InstallationPath, gameDTO);
@@ -350,13 +342,24 @@ namespace Unibox.Services
                 {
                     outcome.Outcomes.Add($"Game added to Launchbox database successfully. Game: {gameDTO.Title}");
                     Log.WriteLine($"Game added to Launchbox database successfully. Game: {gameDTO.Title}");
+
+                    // db unpdate successful, therefore do file copy
+                    await fileService.CopyFileAsync(
+                        romFilePath,
+                        Path.Combine(romFolder, Path.GetFileName(romFilePath)),
+                        percentMsg => WeakReferenceMessenger.Default.Send(
+                            new ProgressMessage(new ProgressMessageArgs { SecondaryMessage = $"Copying file. {percentMsg} Completed." })
+                            ), CancellationToken.None);
+
+                    outcome.Outcomes.Add($"Copied rom to: {Path.Combine(romFolder, Path.GetFileName(romFilePath))}");
+                    outcome.RomAdded = true;
                 }
                 else
                 {
-                    outcome.Outcomes.Add($"Game NOT added to Launchbox database. Error: {addGameResponse.TextResult}");
+                    outcome.Outcomes.Add($"Failed to add game to Launchbox database. Therefore, not copying rom. Error: {addGameResponse.TextResult}");
                     Log.WriteLine($"Game NOT added to Launchbox database. Error: {addGameResponse.TextResult}");
+                    outcome.RomAdded = false;
                 }
-                outcome.RomAdded = true;
             }
 
             return outcome;
