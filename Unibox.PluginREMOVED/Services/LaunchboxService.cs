@@ -3,11 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Unbroken.LaunchBox.Plugins;
-using Unbroken.LaunchBox.Plugins.Data;
-using Unibox.Messaging.DTOs;
 
-namespace Unibox.Services
+namespace Unibox.Plugin.Services
 {
     internal class LaunchboxService
     {

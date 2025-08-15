@@ -1,23 +1,17 @@
 ﻿using CommunityToolkit.Mvvm.Messaging;
-using stigzler.ScreenscraperWrapper.Data;
 using stigzler.ScreenscraperWrapper.Data.Entities.Screenscraper;
 using stigzler.ScreenscraperWrapper.Data.Entities.Supplemental;
 using stigzler.ScreenscraperWrapper.DTOs;
-using stigzler.ScreenscraperWrapper.Services;
-using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Drawing;
 using System.IO;
-using System.Linq;
 using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
-using System.Xml.Linq;
 using Unibox.Data.Constants;
 using Unibox.Data.Models;
 using Unibox.Data.ServiceOperationOutcomes;
+using Unibox.Helpers;
 using Unibox.Messages;
+using Unibox.Messaging.DTOs;
+using Unibox.Messaging.Responses;
 
 namespace Unibox.Services
 {
@@ -26,12 +20,15 @@ namespace Unibox.Services
         private DatabaseService databaseService;
         private ScreenscraperService screenscraperService;
         private FileService fileService;
+        private MessagingService messagingService;
 
-        public GameService(DatabaseService databaseService, ScreenscraperService screenscraperService, FileService fileService)
+        public GameService(DatabaseService databaseService, ScreenscraperService screenscraperService, FileService fileService,
+            MessagingService messagingService)
         {
             this.databaseService = databaseService;
             this.screenscraperService = screenscraperService;
             this.fileService = fileService;
+            this.messagingService = messagingService;
         }
 
         internal ObservableCollection<GameModel> GetGamesFromXml(string xmlFilepath)
@@ -280,21 +277,47 @@ namespace Unibox.Services
                 }
             }
 
-            XElement newGameElement = new XElement("Game",
-                new XElement("Title", newGameModel.Title),
-                new XElement("ApplicationPath", newGameModel.ApplicationPath),
-                new XElement("Developer", newGameModel.Developer),
-                new XElement("Publisher", newGameModel.Publisher),
-                new XElement("ReleaseDate", ""),
-                new XElement("Notes", newGameModel.Notes),
-                new XElement("Platform", platformModel.Name),
-                new XElement("DateAdded", DateTime.Now.ToString("o")),
-                new XElement("Emulator", GetEmulatorIdForPlatform(platformModel.Name, installationModel.InstallationPath)));
+            GameDTO gameDTO = new GameDTO
+            {
+                Title = newGameModel.Title,
+                ApplicationPath = newGameModel.ApplicationPath,
+                Developer = newGameModel.Developer,
+                Publisher = newGameModel.Publisher,
+                ReleaseDate = newGameModel.ReleaseDate,
+                Notes = newGameModel.Notes,
+                Platform = platformModel.Name,
+                DateAdded = DateTime.Now,
+                EmulatorID = GetEmulatorIdForPlatform(platformModel.Name, installationModel.InstallationPath)
+            };
 
-            if (newGameModel.ReleaseDate.ToString() != "01/01/0001 00:00:00") newGameElement.Element("ReleaseDate").Value =
-                    newGameModel.ReleaseDate.ToString(@"yyyy-MM-dd");
+            //Unbroken.LaunchBox.Plugins.Data.IGame game = new Unbroken.LaunchBox.Plugins.Data.IGame
+            //{
+            //    Title = gameDTO.Title,
+            //    ApplicationPath = gameDTO.ApplicationPath,
+            //    Developer = gameDTO.Developer,
+            //    Publisher = gameDTO.Publisher,
+            //    ReleaseDate = gameDTO.ReleaseDate,
+            //    Notes = gameDTO.Notes,
+            //    Platform = gameDTO.Platform,
+            //    DateAdded = gameDTO.DateAdded,
+            //    EmulatorId = gameDTO.EmulatorID
+            //};
 
-            xmlDoc.Root.Add(newGameElement);
+            //XElement newGameElement = new XElement("Game",
+            //    new XElement("Title", newGameModel.Title),
+            //    new XElement("ApplicationPath", newGameModel.ApplicationPath),
+            //    new XElement("Developer", newGameModel.Developer),
+            //    new XElement("Publisher", newGameModel.Publisher),
+            //    new XElement("ReleaseDate", ""),
+            //    new XElement("Notes", newGameModel.Notes),
+            //    new XElement("Platform", platformModel.Name),
+            //    new XElement("DateAdded", DateTime.Now.ToString("o")),
+            //    new XElement("Emulator", GetEmulatorIdForPlatform(platformModel.Name, installationModel.InstallationPath)));
+
+            //if (newGameModel.ReleaseDate.ToString() != "01/01/0001 00:00:00") newGameElement.Element("ReleaseDate").Value =
+            //        newGameModel.ReleaseDate.ToString(@"yyyy-MM-dd");
+
+            // xmlDoc.Root.Add(newGameElement);
 
             if (Properties.Settings.Default.UseSsForRomAdds &&
                 Properties.Settings.Default.StopRomAddOnNoScreenscraperMatch &&
@@ -310,22 +333,29 @@ namespace Unibox.Services
                     SecondaryMessage = "Copying Rom file and updating metadata..."
                 }));
 
-                //File.Copy(romFilePath, Path.Combine(romFolder, Path.GetFileName(romFilePath)));
-
                 await fileService.CopyFileAsync(
                     romFilePath,
                     Path.Combine(romFolder, Path.GetFileName(romFilePath)),
                     percentMsg => WeakReferenceMessenger.Default.Send(
                         new ProgressMessage(new ProgressMessageArgs { SecondaryMessage = $"Copying file. {percentMsg} Completed." })
-                        ),
-                    CancellationToken.None // supply a CancellationToken if you have one, or use CancellationToken.None
-                        );
+                        ), CancellationToken.None);
 
                 outcome.Outcomes.Add($"Copied rom to: {Path.Combine(romFolder, Path.GetFileName(romFilePath))}");
 
-                xmlDoc.Save(xmlFilepath);
-                outcome.Outcomes.Add("Added Game to Launchbox database");
+                //xmlDoc.Save(xmlFilepath);
 
+                AddGameResponse addGameResponse = await messagingService.SendAddGameRequest(installationModel.InstallationPath, gameDTO);
+
+                if (addGameResponse.IsSuccessful)
+                {
+                    outcome.Outcomes.Add($"Game added to Launchbox database successfully. Game: {gameDTO.Title}");
+                    Log.WriteLine($"Game added to Launchbox database successfully. Game: {gameDTO.Title}");
+                }
+                else
+                {
+                    outcome.Outcomes.Add($"Game NOT added to Launchbox database. Error: {addGameResponse.TextResult}");
+                    Log.WriteLine($"Game NOT added to Launchbox database. Error: {addGameResponse.TextResult}");
+                }
                 outcome.RomAdded = true;
             }
 

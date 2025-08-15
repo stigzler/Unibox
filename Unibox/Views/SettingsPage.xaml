@@ -148,6 +148,7 @@
                         <RowDefinition Height="auto" />
                         <RowDefinition Height="auto" />
                         <RowDefinition Height="auto" />
+                        <RowDefinition Height="auto" />
                     </Grid.RowDefinitions>
 
                     <Image Grid.Row="0" Source="/Resources/Images/UniboxLogo.png" Width="128" Margin="0,50,0,0" />
@@ -155,6 +156,9 @@
                     <TextBlock Grid.Row="2"  Text="by stigzler" FontFamily="Agency FB" FontSize="20" FontWeight="Bold" Margin="10,
                                10,0,0" HorizontalAlignment="Center" />
                     <TextBlock Grid.Row="3" Text="{Binding AssemblyVersion}" HorizontalAlignment="Center" />
+                    <GroupBox Grid.Row="4" Header="Debug">
+                        <Button Content="Test" Command="{Binding TestCommand}" />
+                    </GroupBox>
                 </Grid>
             </TabItem>
         </TabControl>

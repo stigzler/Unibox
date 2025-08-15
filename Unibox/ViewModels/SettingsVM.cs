@@ -1,10 +1,13 @@
 ﻿using AdonisUI;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using NetMessage;
+using NetMessage.Base;
 using stigzler.ScreenscraperWrapper.Data.Entities.Screenscraper;
 using stigzler.ScreenscraperWrapper.Results;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Net;
 using System.Reflection;
@@ -13,6 +16,9 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Data;
 using System.Windows.Input;
+using Unbroken.LaunchBox.Plugins.Data;
+using Unibox.Data.Messages;
+using Unibox.Messaging.Requests;
 using Unibox.Services;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 using String = System.String;
@@ -55,6 +61,56 @@ namespace Unibox.ViewModels
         {
             this.screenscraperService = screenscraperService;
             LoadSettings();
+        }
+
+        [RelayCommand]
+        private async void Test()
+        {
+            // Extract hostname from UNC path
+            string uncPath = @"C:\Users\stigz";
+            string host = uncPath.TrimStart('\\').Split('\\')[0];
+
+            string iPAddress = "127.0.0.1";
+
+            //Get IP addresses for the hostname
+
+            IPHostEntry entry = Dns.GetHostEntry(host);
+            foreach (var ip in entry.AddressList)
+            {
+                if (Helpers.String.IsValidIPv4Address(ip.ToString()))
+                {
+                    // Do something with the valid IPv4 address
+                    Debug.WriteLine($"Valid IPv4 Address: {ip}");
+                    iPAddress = ip.ToString();
+                }
+            }
+
+            var client = new NetMessageClient();
+            client.OnError += OnError;
+            client.Connected += OnConnected;
+            client.Disconnected += OnDisconnected;
+            await client.ConnectAsync(iPAddress, 1234);
+
+            // await client.SendMessageAsync("Hello World!");
+            // following line sends a request and waits for the corresponding response
+            var response = await client.SendRequestAsync(new Messaging.Requests.AddGameRequest { Game = new Messaging.DTOs.GameDTO("Dave") });
+
+            MessageBox.Show($"RESPONSE: {response.TextResult}");
+        }
+
+        private void OnDisconnected(NetMessageClient client, SessionClosedArgs args)
+        {
+            Debug.WriteLine($"Disconnected: {args.Reason.ToString()}");
+        }
+
+        private void OnConnected(NetMessageClient client)
+        {
+            //throw new NotImplementedException();
+        }
+
+        private void OnError(NetMessageClient client, string arg2, Exception? exception)
+        {
+            Debug.WriteLine($"Error: {arg2}: {exception?.ToString()}");
         }
 
         /// <summary>

@@ -215,5 +215,17 @@ namespace Unibox.Properties {
                 this["SsRegionPriorities"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("51723")]
+        public int MessagingPort {
+            get {
+                return ((int)(this["MessagingPort"]));
+            }
+            set {
+                this["MessagingPort"] = value;
+            }
+        }
     }
 }

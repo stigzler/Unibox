@@ -1,0 +1,12 @@
+{
+  "profiles": {
+    "Plugin.Bigbox": {
+      "commandName": "Executable",
+      "executablePath": "C:\\Users\\stigz\\LaunchBoxDevelopmentInstall\\Core\\BigBox.exe"
+    },
+    "Plugin.Launchbox": {
+      "commandName": "Executable",
+      "executablePath": "C:\\Users\\stigz\\LaunchBoxDevelopmentInstall\\Core\\LaunchBox.exe"
+    }
+  }
+}

@@ -25,9 +25,9 @@ namespace Unibox.ViewModels
     internal partial class GamesVM : ObservableObject, IRecipient<InstallationChangedMessage>
     {
         private DatabaseService databaseService;
+        private GameService gameService;
 
         private ObservableCollection<GameModel> games = new ObservableCollection<GameModel>();
-        private GameService gameService;
 
         [ObservableProperty]
         private CollectionView gamesView;
@@ -151,7 +151,9 @@ namespace Unibox.ViewModels
                     continue;
                 }
 
+                // >>>>>>>>>>>>>>>>>>>>>> ADDROM <<<<<<<<<<<<<<<<<<<<<<<<<<<<
                 var addGameOutcome = await gameService.AddRoms(candidateXmlPath, SelectedPlatform.ResolvedRomFolder, romFile, SelectedPlatform, SelectedInstallation);
+
                 addGameOutcome.RomPath = romFile;
 
                 addGameOutcomes.Add(addGameOutcome);
