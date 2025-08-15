@@ -15,6 +15,7 @@
         <converters:BoolToInverseVisibilityConverter x:Key="BoolToInverseVisibilityConverter" />
         <converters:PathToFilenameConverter x:Key="PathToFilenameConverter" />
         <converters:DateTimeToYearConverter x:Key="DateTimeToYearConverter" />
+        <converters:NullToVisibilityConverter x:Key="NullToVisibilityConverter" />
     </UserControl.Resources>
 
     <Grid>
@@ -39,9 +40,22 @@
             <ComboBox Grid.Column="1" x:Name="InstallationsCB" MinWidth="150" ItemsSource="{Binding InstallationsView}"
                       DisplayMemberPath="Name" SelectedItem="{Binding SelectedInstallation}" Margin="5" />
 
-            <Image Grid.Column="2" Source="/Resources/Images/Platform.png" Width="32" Margin="5" />
-            <ComboBox Grid.Column="3" MinWidth="150" ItemsSource="{Binding PlatformsView}" DisplayMemberPath="Name" Margin="5"
+            <Grid Grid.Column="2" Grid.ColumnSpan="2"
+                  Visibility="{Binding SelectedInstallation, Converter={StaticResource NullToVisibilityConverter}}"
+                  d:Visibility="Visible">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="auto" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <Image Grid.Column="0" Source="/Resources/Images/Platform.png" Width="32" Margin="5" />
+                <ComboBox Grid.Column="1" MinWidth="150" ItemsSource="{Binding PlatformsView}" DisplayMemberPath="Name" Margin="5"
                       SelectedItem="{Binding SelectedPlatform}" Visibility="{Binding InstallationAvailable, Converter={StaticResource BoolToVisibilityConverter}}" />
+                <StackPanel Grid.Column="1" DockPanel.Dock="Left" Orientation="Horizontal" HorizontalAlignment="left" Margin="4,0,0,0"
+                    Visibility="{Binding InstallationAvailable, Converter={StaticResource BoolToInverseVisibilityConverter}}">
+                    <Image Source="/Resources/Images/minus-circle.png" Height="24" />
+                    <TextBlock Text="Installation Unreachable" VerticalAlignment="Center" Margin="5" />
+                </StackPanel>
+            </Grid>
 
             <Button Grid.Column="4" Margin="5" Padding="5" Width="150" DockPanel.Dock="Right" Command="{Binding AddRomCommand}">
                 <StackPanel Orientation="Horizontal">
@@ -49,11 +63,6 @@
                     <TextBlock Text="Add Rom/s" VerticalAlignment="Center" Margin="5,0,0,0" />
                 </StackPanel>
             </Button>
-            <StackPanel Grid.Column="3" DockPanel.Dock="Left" Orientation="Horizontal" HorizontalAlignment="left" Margin="4,0,0,0"
-                    Visibility="{Binding InstallationAvailable, Converter={StaticResource BoolToInverseVisibilityConverter}}">
-                <Image Source="/Resources/Images/minus-circle.png" Height="24" />
-                <TextBlock Text="Installation Unreachable" VerticalAlignment="Center" Margin="5" />
-            </StackPanel>
         </Grid>
 
         <!-- GAMES GRID -->

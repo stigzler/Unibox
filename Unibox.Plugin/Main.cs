@@ -1,4 +1,6 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using Bluegrams.Application;
+using Microsoft.Extensions.DependencyInjection;
+using System.IO;
 using Unibox.Plugin.Services;
 
 namespace Unibox.Plugin
@@ -7,6 +9,11 @@ namespace Unibox.Plugin
     {
         public Main()
         {
+            PortableSettingsProvider.SettingsFileName = Path.Combine(
+               Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location), "unibox.plugin.config");
+
+            PortableSettingsProvider.ApplyProvider(Properties.Settings.Default);
+
             Services = ConfigureServices();
             MessagingService messageService = (MessagingService)Services.GetService(typeof(MessagingService));
         }

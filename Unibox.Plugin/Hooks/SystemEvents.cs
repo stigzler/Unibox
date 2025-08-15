@@ -6,6 +6,9 @@ namespace Unibox.Plugin.Hooks
 {
     internal class SystemEvents : ISystemEventsPlugin
     {
+        // Carefull with accessing Settings here - Not implemented unitl Main
+        // see PortableSettingProvider: https://github.com/Bluegrams/SettingsProviders
+
         public void OnEventRaised(string eventType)
         {
             switch (eventType)

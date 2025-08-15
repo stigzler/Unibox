@@ -22,7 +22,7 @@ namespace Unibox.Plugin.Services
 
             Log.WriteLine("Starting MessagingService on port: " + Properties.Settings.Default.Port);
 
-            var server = new NetMessageServer(Unibox.Plugin.Properties.Settings.Default.Port);
+            var server = new NetMessageServer(Properties.Settings.Default.Port);
             server.OnError += OnError;
             server.SessionOpened += OnSessionOpened;
             server.SessionClosed += OnSessionClosed;

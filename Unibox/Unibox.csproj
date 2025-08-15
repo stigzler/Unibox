@@ -39,6 +39,7 @@
     <None Remove="Resources\Images\Platform.png" />
     <None Remove="Resources\Images\Settings.png" />
     <None Remove="Resources\Images\UniboxLogo.png" />
+    <None Remove="Resources\Images\WillyRound.png" />
   </ItemGroup>
 
   <ItemGroup>
@@ -81,6 +82,7 @@
     <Resource Include="Resources\Images\Platform.png" />
     <Resource Include="Resources\Images\Settings.png" />
     <Resource Include="Resources\Images\UniboxLogo.png" />
+    <Resource Include="Resources\Images\WillyRound.png" />
   </ItemGroup>
 
   <ItemGroup>

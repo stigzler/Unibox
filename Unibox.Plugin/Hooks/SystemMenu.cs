@@ -13,10 +13,8 @@ namespace Unibox.Plugin.Hooks
 {
     internal class SystemMenu : ISystemMenuItemPlugin
     {
-        //public SystemMenu()
-        //{
-        //    mainWindow = new MainWindow(mainWindowVM);
-        //}
+        // Carefull with accessing Settings here - Not implemented unitl Main
+        // see PortableSettingProvider: https://github.com/Bluegrams/SettingsProviders
 
         public string Caption => "Unibox Settings";
 
