@@ -15,8 +15,6 @@ namespace Unibox.Plugin.Hooks
             {
                 case SystemEventTypes.PluginInitialized:
                     // Handle LaunchBox startup event
-                    Log.StartLog();
-                    Log.WriteLine("Plugin initialized. Starting server..");
                     Main main = new Main();
                     break;
             }

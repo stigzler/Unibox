@@ -8,11 +8,12 @@ using Unibox.Data.Models;
 
 namespace Unibox.Data.ServiceOperationOutcomes
 {
-    internal class UpdatePlatformsSubOperationOutcome
+    public class UpdatePlatformsSubOperationOutcome
     {
         public UpdatePlatformMessageType UpdatePlatformMessageType { get; set; }
         public string PlatformName { get; set; } = null;
         public string Summary { get; set; } = String.Empty;
+        public DateTime Timestamp { get; set; }
 
         public UpdatePlatformsSubOperationOutcome(UpdatePlatformMessageType updatePlatformMessageType,
             string summary, string platformName)
@@ -20,6 +21,7 @@ namespace Unibox.Data.ServiceOperationOutcomes
             UpdatePlatformMessageType = updatePlatformMessageType;
             Summary = summary;
             PlatformName = platformName;
+            Timestamp = DateTime.Now;
         }
     }
 }

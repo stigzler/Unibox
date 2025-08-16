@@ -15,12 +15,14 @@ namespace Unibox.Plugin.Services
     internal class MessagingService
     {
         private LaunchboxService launchboxService;
+        private LoggingService loggingService;
 
-        public MessagingService(LaunchboxService launchboxService)
+        public MessagingService(LaunchboxService launchboxService, LoggingService loggingService)
         {
             this.launchboxService = launchboxService;
+            this.loggingService = loggingService;
 
-            Log.WriteLine("Starting MessagingService on port: " + Properties.Settings.Default.Port);
+            loggingService.WriteLine("Starting MessagingService on port: " + Properties.Settings.Default.Port);
 
             var server = new NetMessageServer(Properties.Settings.Default.Port);
             server.OnError += OnError;
@@ -30,14 +32,14 @@ namespace Unibox.Plugin.Services
 
             server.Start();
 
-            Log.WriteLine("MessagingService started successfully.");
+            loggingService.WriteLine("MessagingService started successfully.");
         }
 
         private void AddGameRequestHandler(NetMessageSession session, TypedRequest<AddGameRequest, AddGameResponse> request)
         {
-            Log.WriteLine($"Received AddGameRequest for game: {request.Request.Game.Title}");
+            loggingService.WriteLine($"Received AddGameRequest for game: {request.Request.Game.Title} ({request.Request.Game.Platform})");
 
-            Log.WriteLine("Attempting add to Launchbox Database");
+            loggingService.WriteLine("Attempting add to Launchbox Database");
 
             Exception anyException = launchboxService.AddGame(request.Request.Game);
 
@@ -45,12 +47,12 @@ namespace Unibox.Plugin.Services
 
             if (anyException != null)
             {
-                Log.WriteLine($"Error adding game: {anyException.Message}");
+                loggingService.WriteLine($"Error adding game: {anyException.Message}");
                 response.TextResult = $"Error whilst adding game to Launchbox Database: '{anyException.Message}'";
             }
             else
             {
-                Log.WriteLine($"Game [{request.Request.Game.Title}] added successfully!");
+                loggingService.WriteLine($"Game [{request.Request.Game.Title}] added successfully!");
                 response.TextResult = $"Game [{request.Request.Game.Title}] added successfully to Launchbox Database.";
                 response.IsSuccessful = true;
             }
@@ -60,17 +62,17 @@ namespace Unibox.Plugin.Services
 
         private void OnSessionClosed(NetMessageSession session, SessionClosedArgs args)
         {
-            Log.WriteLine($"Session closed. Session ID: [{session.Guid}] Reason: {args.Reason}");
+            loggingService.WriteLine($"Session closed. Session ID: [{session.Guid}] Reason: {args.Reason}");
         }
 
         private void OnSessionOpened(NetMessageSession session)
         {
-            Log.WriteLine($"Session opened. Session ID: [{session.Guid}].");
+            loggingService.WriteLine($"Session opened. Session ID: [{session.Guid}].");
         }
 
         private void OnError(NetMessageServer server, NetMessageSession? session, string arg3, Exception? exception)
         {
-            Log.WriteLine($"Error occurred in MessagingService. Session ID: [{session?.Guid}]. Error: {arg3}. Exception: {exception?.Message}");
+            loggingService.WriteLine($"Error occurred in MessagingService. Session ID: [{session?.Guid}]. Error: {arg3}. Exception: {exception?.Message}");
         }
     }
 }

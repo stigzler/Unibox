@@ -17,6 +17,8 @@
                 <ResourceDictionary Source="/Resources/Dictionaries/Styles.xaml" />
             </ResourceDictionary.MergedDictionaries>
             <converters:BoolToLockConverter x:Key="BoolToLockConverter" />
+            <converters:NullToVisibilityConverter x:Key="NullToVisibilityConverter" />
+            <converters:NullToBoolConverter x:Key="NullToBoolConverter" />
         </ResourceDictionary>
     </UserControl.Resources>
 
@@ -57,13 +59,16 @@
 
         <DockPanel Grid.Row="2" Margin="2">
             <TextBlock Text="Installation Platforms" FontWeight="Bold" DockPanel.Dock="Top" />
-            <StackPanel DockPanel.Dock="Right" Orientation="Vertical" HorizontalAlignment="Right">
+            <StackPanel DockPanel.Dock="Right" Orientation="Vertical" HorizontalAlignment="Right"
+                        IsEnabled="{Binding SelectedInstallation, Converter={StaticResource NullToBoolConverter}}">
                 <Button Content="Update All" Command="{Binding UpdatePlatformsCommand}"  Height="25" Width="100" Margin="2"
                         ToolTip="Automatically generate all Rom and Media folder paths from the settings for the Installation." />
                 <Button Content="Change Folder"  Command="{Binding UpdateRomFolderCommand}" Height="25" Width="100" Margin="2"
-                        ToolTip="Change the Rom Folder for the selected Platform" />
+                        ToolTip="Change the Rom Folder for the selected Platform"
+                        IsEnabled="{Binding SelectedPlatform, Converter={StaticResource NullToBoolConverter}}" />
                 <Button Content="Toggle Lock"  Command="{Binding TogglePlatformLocksCommand}" Height="25" Width="100" Margin="2"
                         CommandParameter="{Binding ElementName=PlatformsLV, Path=SelectedItems}"
+                        IsEnabled="{Binding SelectedPlatform, Converter={StaticResource NullToBoolConverter}}"
                         ToolTip="Lock the PLatform settings from change during the automatic processes in Update." />
             </StackPanel>
             <Border BorderBrush="gray" BorderThickness="1" Margin="5">
@@ -92,7 +97,8 @@
 
         <DockPanel Grid.Row="4" Margin="2">
             <TextBlock Text="Platform Media Folders" FontWeight="Bold" DockPanel.Dock="Top" />
-            <StackPanel DockPanel.Dock="Right" Orientation="Vertical" HorizontalAlignment="Right">
+            <StackPanel DockPanel.Dock="Right" Orientation="Vertical" HorizontalAlignment="Right"
+                        IsEnabled="{Binding SelectedPlatformFolder, Converter={StaticResource NullToBoolConverter}}">
                 <!--<Button Content="Update" Command="{Binding UpdatePlatformsCommand}"  Margin="2" />-->
                 <Button Content="Change Folder"  Command="{Binding UpdatePlatformMediaFolderCommand}" Height="25" Width="100" Margin="2"
                         ToolTip="Change the selected item's Media folder " />

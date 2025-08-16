@@ -33,7 +33,7 @@ namespace Unibox.Services
             // Check can access Installaiton Path Directory
             if (!Directory.Exists(installation.InstallationPath))
             {
-                updatePlatformsOutcome.UpdatePlatformOutcome = UpdatePlatformOutcome.CannotAccessInstallationDirectory;
+                updatePlatformsOutcome.OverallOutcome = UpdatePlatformOutcome.CannotAccessInstallationDirectory;
                 return updatePlatformsOutcome;
             }
 
@@ -43,7 +43,7 @@ namespace Unibox.Services
             // Check if the XML Platforms file was found and parsed successfully
             if (xmlPlatforms == null)
             {
-                updatePlatformsOutcome.UpdatePlatformOutcome = UpdatePlatformOutcome.XmlFileDoesNotExist;
+                updatePlatformsOutcome.OverallOutcome = UpdatePlatformOutcome.XmlFileDoesNotExist;
                 updatePlatformsOutcome.OutcomeSummary = $"The XML Platforms xml file does not exist at: " +
                     $"{Path.Combine(installation.InstallationPath, Data.Constants.Paths.LaunchboxRelDataDir,
                 Data.Constants.Paths.LaunchboxPlatformsXmlFile)}";
@@ -98,7 +98,7 @@ namespace Unibox.Services
                     {
                         updatePlatformsOutcome.SubOperationOutcomes.Add(new UpdatePlatformsSubOperationOutcome(
                             UpdatePlatformMessageType.Warning,
-                            $"No ScrapeAs set in Launchbox Platform but the Name is a standard Platfrom Name. Thus, setting ScrapeAs to the Platform name.",
+                            $"No ScrapeAs set in Launchbox Platform but the Name is a standard Platform Name. Thus, setting ScrapeAs to the Platform name: [{launchboxPlatform.Name}]. Do check.",
                             installationPlatform.Name));
                         installationPlatform.LaunchboxScrapeAs = launchboxPlatform.Name;
                     }
@@ -106,7 +106,7 @@ namespace Unibox.Services
                     {
                         updatePlatformsOutcome.SubOperationOutcomes.Add(new UpdatePlatformsSubOperationOutcome(
                             UpdatePlatformMessageType.Warning,
-                            $"No ScrapeAs set in Launchbox. You will have to set this manually to enable metadata/media scrapes.",
+                            $"No ScrapeAs set in Launchbox and couldn't establish it as a a standard Platform Name. You may have to set this manually to enable metadata/media scrapes.",
                             launchboxPlatform.Name));
                     }
                 }
@@ -124,7 +124,7 @@ namespace Unibox.Services
                         updatePlatformsOutcome.SubOperationOutcomes.Add(new UpdatePlatformsSubOperationOutcome(
                             UpdatePlatformMessageType.Warning,
                             $"No Rom Folder set in Launchbox, but folder for this Platform exists in the Launchbox Games folder." +
-                            $" Setting to this. It may be wise to check this is the right path.",
+                            $" Setting to this. It may be wise to check this is the right path: [{candidatePath}]",
                             launchboxPlatform.Name));
 
                         installationPlatform.ResolvedRomFolder = candidatePath;
@@ -295,7 +295,7 @@ namespace Unibox.Services
                                 UpdatePlatformMessageType.Information,
                                 $"Media Folder path is not rooted: [{launchboxPlatformFolder.LaunchboxMediaPath}]." +
                                 $" However, folder exists relative to the Launchbox Root Directory, so set to this:" +
-                                $" [{launchboxPlatform.ResolvedRomFolder}]",
+                                $" [{installationPlatformFolder.ResolvedMediaPath}]",
                                 launchboxPlatform.Name));
                         }
                         else if (Directory.Exists(lbMediaRelativePath))
@@ -366,19 +366,27 @@ namespace Unibox.Services
                 }
             } // END of xmlPlatforms foreach
 
-            // NB: Don't forget to review the xml for any REMOVED Platforms (i.e. local db PLatform.Name cannot be found in the xml)
+            // review the xml for any REMOVED Platforms (i.e. local db PLatform.Name cannot be found in the xml)
+            updatePlatformsOutcome.SubOperationOutcomes.Add(new UpdatePlatformsSubOperationOutcome(
+                        UpdatePlatformMessageType.Information,
+                        $"CHECKING FOR ANY REMOVED PLATFORMS", ""));
             List<PlatformModel> platformsToRemove = new List<PlatformModel>();
             foreach (var uniboxPlatforms in installation.Platforms)
             {
                 if (!xmlPlatforms.Any(p => p.Name == uniboxPlatforms.Name))
                 {
                     updatePlatformsOutcome.SubOperationOutcomes.Add(new UpdatePlatformsSubOperationOutcome(
-                        UpdatePlatformMessageType.Information,
+                        UpdatePlatformMessageType.Warning,
                         $"Platform not found in the XML file. Removing: [{uniboxPlatforms.Name}] from the database.",
                         uniboxPlatforms.Name));
                     platformsToRemove.Add(uniboxPlatforms);
                 }
             }
+
+            updatePlatformsOutcome.SubOperationOutcomes.Add(new UpdatePlatformsSubOperationOutcome(
+            UpdatePlatformMessageType.Information,
+            $"{platformsToRemove.Count()} Platform/s identified for removal from Unibox database.", ""));
+
             foreach (var platformToRemove in platformsToRemove)
             {
                 installation.Platforms.Remove(platformToRemove);
@@ -386,7 +394,14 @@ namespace Unibox.Services
 
             installationService.Update(installation);
 
-            updatePlatformsOutcome.UpdatePlatformOutcome = UpdatePlatformOutcome.Success;
+            updatePlatformsOutcome.SubOperationOutcomes.Add(new UpdatePlatformsSubOperationOutcome(
+                UpdatePlatformMessageType.Information,
+                $"Operation completed successfully.", ""));
+
+            updatePlatformsOutcome.OverallOutcome = UpdatePlatformOutcome.Success;
+            updatePlatformsOutcome.OutcomeSummary = $"The operation completed successfully with " +
+                $"{updatePlatformsOutcome.SubOperationOutcomes.Where(so => so.UpdatePlatformMessageType == UpdatePlatformMessageType.Warning).Count()} Warnings and " +
+                $"{updatePlatformsOutcome.SubOperationOutcomes.Where(so => so.UpdatePlatformMessageType == UpdatePlatformMessageType.Error).Count()} Errors.";
             return updatePlatformsOutcome;
         }
 

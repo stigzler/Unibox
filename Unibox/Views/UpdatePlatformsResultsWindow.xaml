@@ -1,0 +1,61 @@
+﻿<Window x:Class="Unibox.Views.UpdatePlatformsResultsWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Unibox.Views"
+        xmlns:converters="clr-namespace:Unibox.Converters"
+        mc:Ignorable="d"
+        xmlns:vm="clr-namespace:Unibox.ViewModels"
+        d:DataContext="{d:DesignInstance Type=vm:UpdatePlatformsResultsVM, IsDesignTimeCreatable=True}"
+        Title="Update Platforms Results" Height="450" Width="800" WindowStartupLocation="CenterOwner">
+
+    <Window.Style>
+        <Style TargetType="Window" BasedOn="{StaticResource {x:Type Window}}" />
+    </Window.Style>
+
+    <Window.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="/Resources/Dictionaries/Styles.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+            <converters:UpdatePlatformMessageTypeConverter x:Key="UpdatePlatformMessageTypeConverter" />
+            <converters:DateTimeToMinutesConverter x:Key="DateTimeToMinutesConverter" />
+        </ResourceDictionary>
+    </Window.Resources>
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="auto" />
+        </Grid.RowDefinitions>
+        <StackPanel>
+            <TextBlock Grid.Row="0" Text="Update Platforms Results" Style="{DynamicResource PageHeader}" Margin="5" />
+            <StackPanel Orientation="Horizontal" Margin="10,5,5,0">
+                <TextBlock Text="Overall Outcome: " FontWeight="Bold" />
+                <TextBlock Text="{Binding UpdatePlatformsOutcome.OverallOutcome}" d:Text="Successful" />
+            </StackPanel>
+            <StackPanel Orientation="Vertical" Margin="10">
+                <TextBlock Text="Outcome Summary: " FontWeight="Bold" />
+                <TextBlock Text="{Binding UpdatePlatformsOutcome.OutcomeSummary}" TextWrapping="Wrap" d:Text="Summary here" />
+            </StackPanel>
+        </StackPanel>
+        <Border Grid.Row="1"  BorderThickness="1" BorderBrush="Gray" Margin="10">
+            <ListView ItemsSource="{Binding UpdatePlatformsOutcome.SubOperationOutcomes}" ScrollViewer.VerticalScrollBarVisibility="Auto"
+                  SelectedItem="{Binding SelectedOutcome}">
+                <ListView.View>
+                    <GridView>
+                        <GridViewColumn Header="Timestamp" Width="auto" DisplayMemberBinding="{Binding Timestamp, Converter={StaticResource DateTimeToMinutesConverter}}" />
+                        <GridViewColumn Width="auto" Header="Result" DisplayMemberBinding="{Binding UpdatePlatformMessageType, Converter={StaticResource UpdatePlatformMessageTypeConverter}}" />
+                        <GridViewColumn Header="Platform" Width="auto" DisplayMemberBinding="{Binding PlatformName}" />
+                        <GridViewColumn Header="Details" Width="auto" DisplayMemberBinding="{Binding Summary}" />
+                    </GridView>
+                </ListView.View>
+            </ListView>
+        </Border>
+        <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right" Margin="5">
+            <Button x:Name="CloseBT" Content="Close" Command="{Binding CloseCommand}" Margin="5" Width="100" Click="CloseBT_Click" />
+        </StackPanel>
+    </Grid>
+</Window>

@@ -15,6 +15,7 @@ namespace Unibox.Plugin
             PortableSettingsProvider.ApplyProvider(Properties.Settings.Default);
 
             Services = ConfigureServices();
+
             MessagingService messageService = (MessagingService)Services.GetService(typeof(MessagingService));
         }
 
@@ -32,6 +33,7 @@ namespace Unibox.Plugin
 
             // Register Services
             services.AddSingleton<LaunchboxService>(); // Register the LaunchboxService
+            services.AddSingleton<LoggingService>(); // Register the LoggingService
             services.AddSingleton<MessagingService>(); // Register the messageService
 
             // Add other necessary services here

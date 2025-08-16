@@ -2,6 +2,7 @@
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
 using LiteDB;
+using stigzler.ScreenscraperWrapper.Data.Entities.Screenscraper;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -66,6 +67,12 @@ namespace Unibox.ViewModels
             UpdateIstallationsFromDatabase();
 
             NavigateToGames();
+
+            // Tests
+
+            string pluginFilePath = @"C:\Users\stigz\LaunchBoxDevelopmentInstall\Plugins\Unibox\Debug\net9.0-windows\Unibox.Plugin.dll";
+            var versionInfo = FileVersionInfo.GetVersionInfo(pluginFilePath);
+            string version = versionInfo.FileVersion;
         }
 
         [RelayCommand]

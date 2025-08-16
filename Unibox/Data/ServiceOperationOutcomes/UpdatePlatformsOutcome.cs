@@ -7,9 +7,9 @@ using Unibox.Data.Enums;
 
 namespace Unibox.Data.ServiceOperationOutcomes
 {
-    internal class UpdatePlatformsOutcome
+    public class UpdatePlatformsOutcome
     {
-        public UpdatePlatformOutcome UpdatePlatformOutcome { get; set; } = UpdatePlatformOutcome.Indeterminate;
+        public UpdatePlatformOutcome OverallOutcome { get; set; } = UpdatePlatformOutcome.Indeterminate;
         public string OutcomeSummary { get; set; } = string.Empty;
         public List<UpdatePlatformsSubOperationOutcome> SubOperationOutcomes { get; set; } = new List<UpdatePlatformsSubOperationOutcome>();
     }

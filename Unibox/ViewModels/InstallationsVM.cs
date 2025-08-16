@@ -5,6 +5,7 @@ using System.Collections;
 using System.Collections.ObjectModel;
 using System.Windows.Input;
 using Unibox.Data.Models;
+using Unibox.Data.ServiceOperationOutcomes;
 using Unibox.Messages;
 using Unibox.Services;
 using Unibox.Views;
@@ -186,22 +187,37 @@ namespace Unibox.ViewModels
         {
             if (SelectedPlatform == null) return;
             PlatformFolders = new ObservableCollection<PlatformFolderModel>(SelectedPlatform.PlatformFolders);
+            if (PlatformFolders.Count > 0) SelectedPlatformFolder = PlatformFolders.First();
         }
 
         [RelayCommand]
         private void UpdatePlatforms()
         {
-            if (selectedInstallation == null) return;
+            if (SelectedInstallation == null) return;
 
             Cursor = Cursors.Wait;
 
-            platformService.UpdateInstallationPlatforms(selectedInstallation);
+            var selectedInstallation = SelectedInstallation;
 
-            UpdatePlatformsList();
+            UpdatePlatformsOutcome updatePlatformsOutcome = platformService.UpdateInstallationPlatforms(selectedInstallation);
+
+            UpdatePlatformsResultsWindow updatePlatformsResultsWindow = new UpdatePlatformsResultsWindow();
+            updatePlatformsResultsWindow.ViewModel.UpdatePlatformsOutcome = updatePlatformsOutcome;
+            updatePlatformsResultsWindow.ShowDialog();
+
+            // UpdatePlatformsList();
+
+            SelectedInstallation = selectedInstallation;
 
             Cursor = Cursors.Arrow;
 
             WeakReferenceMessenger.Default.Send(new InstallationChangedMessage(SelectedInstallation));
+        }
+
+        private void ShowInfoBox(string title, string message, AdonisUI.Controls.MessageBoxImage image = AdonisUI.Controls.MessageBoxImage.Information)
+        {
+            AdonisUI.Controls.MessageBox.Show($"{message}", $"{title}",
+                   AdonisUI.Controls.MessageBoxButton.OK, image);
         }
 
         [RelayCommand]
@@ -230,6 +246,7 @@ namespace Unibox.ViewModels
         {
             if (SelectedInstallation == null) return;
             Platforms = new ObservableCollection<PlatformModel>(SelectedInstallation.Platforms);
+            if (Platforms.Count > 0) SelectedPlatform = Platforms.First();
         }
     }
 }

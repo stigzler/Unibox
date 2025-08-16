@@ -6,8 +6,7 @@ using System.Threading.Tasks;
 
 namespace Unibox.Data.Enums
 {
-
-    internal enum UpdatePlatformMessageType
+    public enum UpdatePlatformMessageType
     {
         Success,
         Warning,
@@ -18,16 +17,13 @@ namespace Unibox.Data.Enums
     internal enum UpdatePlatformErrors
     {
         InstallationDirectoryDoesntExist,
-
     }
 
-    internal enum UpdatePlatformOutcome
+    public enum UpdatePlatformOutcome
     {
         Success,
         Indeterminate,
         CannotAccessInstallationDirectory,
         XmlFileDoesNotExist,
-        
     }
 }
-
