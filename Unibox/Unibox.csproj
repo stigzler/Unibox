@@ -13,10 +13,18 @@
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(Configuration)'=='Debug'">
-		<OutputPath>bin\Debug\</OutputPath>
+		<OutputPath>..\Builds\Debug\Unibox</OutputPath>
 	</PropertyGroup>
 
-	<PropertyGroup Condition="'$(Configuration)'=='Release'">
+	<PropertyGroup Condition="'$(Configuration)'=='ReleaseBuild'">
+		<OutputPath>..\Builds\Release\Unibox</OutputPath>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(Configuration)'=='ReleaseMinor'">
+		<OutputPath>..\Builds\Release\Unibox</OutputPath>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(Configuration)'=='ReleaseMajor'">
 		<OutputPath>..\Builds\Release\Unibox</OutputPath>
 	</PropertyGroup>
 

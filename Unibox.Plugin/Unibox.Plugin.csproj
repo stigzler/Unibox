@@ -1,31 +1,29 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-	<PropertyGroup>
-		<TargetFramework>net9.0-windows</TargetFramework>
-		<ImplicitUsings>enable</ImplicitUsings>
-		<Nullable>enable</Nullable>
-		<ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
-		<UseWPF>true</UseWPF>
-		<BaseOutputPath>C:\Users\stigz\LaunchBoxDevelopmentInstall\Plugins\Unibox</BaseOutputPath>
-		<CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
-		<AssemblyVersion>0.8.2.0</AssemblyVersion>
-		<FileVersion>0.8.2.0</FileVersion>
-	</PropertyGroup>
+  <PropertyGroup>
+    <TargetFramework>net9.0-windows</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <UseWPF>true</UseWPF>
+  </PropertyGroup>
 
 	<PropertyGroup Condition="'$(Configuration)'=='Debug'">
-		<OutputPath>bin\Debug\</OutputPath>
+		<OutputPath>..\Builds\Debug\Unibox\net9.0-windows7.0\Plugin</OutputPath>
 	</PropertyGroup>
 
-	<PropertyGroup Condition="'$(Configuration)'=='Release'">
-		<OutputPath>..\Builds\Release\Unibox\net9.0-windows7.0\Unibox.Plugin</OutputPath>
+	<PropertyGroup Condition="'$(Configuration)'=='ReleaseBuild'">
+		<OutputPath>..\Builds\Release\Unibox\net9.0-windows7.0\Plugin</OutputPath>
 	</PropertyGroup>
 
-	<ItemGroup>
-	  <None Remove="Resources\DarkMode.png" />
-	  <None Remove="Resources\UniboxLogo64px.png" />
-	</ItemGroup>
+	<PropertyGroup Condition="'$(Configuration)'=='ReleaseMinor'">
+		<OutputPath>..\Builds\Release\Unibox\net9.0-windows7.0\Plugin</OutputPath>
+	</PropertyGroup>
 
-	<ItemGroup>
+	<PropertyGroup Condition="'$(Configuration)'=='ReleaseMajor'">
+		<OutputPath>..\Builds\Release\Unibox\net9.0-windows7.0\Plugin</OutputPath>
+	</PropertyGroup>
+
+  <ItemGroup>
 	  <PackageReference Include="AdonisUI" Version="1.17.1" />
 	  <PackageReference Include="AdonisUI.ClassicTheme" Version="1.17.1" />
 	  <PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.0" />
@@ -43,11 +41,6 @@
 	  <Reference Include="Unbroken.LaunchBox.Plugins">
 	    <HintPath>..\..\..\..\..\..\..\LaunchBox\Core\Unbroken.LaunchBox.Plugins.dll</HintPath>
 	  </Reference>
-	</ItemGroup>
-
-	<ItemGroup>
-	  <Resource Include="Resources\DarkMode.png" />
-	  <Resource Include="Resources\UniboxLogo64px.png" />
 	</ItemGroup>
 
 	<ItemGroup>

@@ -4,10 +4,11 @@
     <TargetFramework>net9.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
+    <Configurations>Debug;Release;ReleaseMinor;ReleaseBuild</Configurations>
   </PropertyGroup>
 
-  <ItemGroup>
-    <PackageReference Include="NetMessage" Version="1.0.0" />
-  </ItemGroup>
+	<ItemGroup>
+		<PackageReference Include="NetMessage" Version="1.0.0" />
+	</ItemGroup>
 
 </Project>
