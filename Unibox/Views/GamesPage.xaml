@@ -38,7 +38,7 @@
 
             <Image Grid.Column="0" Source="/Resources/Images/LaunchboxIcon.png" Width="32" />
             <ComboBox Grid.Column="1" x:Name="InstallationsCB" MinWidth="150" ItemsSource="{Binding InstallationsView}"
-                      DisplayMemberPath="Name" SelectedItem="{Binding SelectedInstallation}" Margin="5" />
+                      DisplayMemberPath="Name" SelectedItem="{Binding SelectedInstallation, Mode=TwoWay}" Margin="5" />
 
             <Grid Grid.Column="2" Grid.ColumnSpan="2"
                   Visibility="{Binding SelectedInstallation, Converter={StaticResource NullToVisibilityConverter}}"
@@ -57,7 +57,8 @@
                 </StackPanel>
             </Grid>
 
-            <Button Grid.Column="4" Margin="5" Padding="5" Width="150" DockPanel.Dock="Right" Command="{Binding AddRomCommand}">
+            <Button Grid.Column="4" Margin="5" Padding="5" Width="150" DockPanel.Dock="Right" Command="{Binding AddRomCommand}"
+                    IsEnabled="{Binding CanAddRoms}">
                 <StackPanel Orientation="Horizontal">
                     <Image Source="/Resources/Images/AddRom.png" Height="28" />
                     <TextBlock Text="Add Rom/s" VerticalAlignment="Center" Margin="5,0,0,0" />

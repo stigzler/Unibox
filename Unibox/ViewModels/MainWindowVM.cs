@@ -68,11 +68,9 @@ namespace Unibox.ViewModels
 
             NavigateToGames();
 
-            // Tests
+            // Testsrefredsss
 
-            string pluginFilePath = @"C:\Users\stigz\LaunchBoxDevelopmentInstall\Plugins\Unibox\Debug\net9.0-windows\Unibox.Plugin.dll";
-            var versionInfo = FileVersionInfo.GetVersionInfo(pluginFilePath);
-            string version = versionInfo.FileVersion;
+            var localVersion = Helpers.Plugin.GetApplicationPluginVersion();
         }
 
         [RelayCommand]

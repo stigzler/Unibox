@@ -4,8 +4,12 @@
     <TargetFramework>net9.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
-    <Configurations>Debug;Release;ReleaseMinor;ReleaseBuild</Configurations>
+    <Configurations>Debug;ReleaseMinor;ReleaseBuild;ReleaseMajor</Configurations>
   </PropertyGroup>
+
+	<PropertyGroup>
+		<AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+	</PropertyGroup>
 
 	<ItemGroup>
 		<PackageReference Include="NetMessage" Version="1.0.0" />

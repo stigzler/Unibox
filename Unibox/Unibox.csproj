@@ -10,6 +10,11 @@
 		<ApplicationIcon>UniboxLogo.ico</ApplicationIcon>
 		<AssemblyVersion>0.8.2.0</AssemblyVersion>
 		<FileVersion>0.8.2.0</FileVersion>
+		<Configurations>Debug;ReleaseBuild;ReleaseMinor;ReleaseMajor</Configurations>
+	</PropertyGroup>
+
+	<PropertyGroup>
+		<AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(Configuration)'=='Debug'">
@@ -27,6 +32,64 @@
 	<PropertyGroup Condition="'$(Configuration)'=='ReleaseMajor'">
 		<OutputPath>..\Builds\Release\Unibox</OutputPath>
 	</PropertyGroup>
+
+	<PropertyGroup>
+		<VersionFile>$(TEMP)\Unibox.version.txt</VersionFile>
+		<DefaultVersion>0.8.2.0</DefaultVersion>
+	</PropertyGroup>
+
+	<Target Name="UpdateVersion" BeforeTargets="BeforeBuild">
+	  <!-- Read existing version or set default -->
+	  <ReadLinesFromFile File="$(VersionFile)">
+	    <Output TaskParameter="Lines" ItemName="VersionLines" />
+	  </ReadLinesFromFile>
+	  <PropertyGroup>
+	    <CurrentVersion Condition="'@(VersionLines)' == ''">$(DefaultVersion)</CurrentVersion>
+	    <CurrentVersion Condition="'@(VersionLines)' != ''">@(VersionLines)</CurrentVersion>
+	  </PropertyGroup>
+
+	  <!-- Split version into parts safely -->
+	  <PropertyGroup>
+	    <Major>$([System.String]::Copy('$(CurrentVersion)').Split('.')[0])</Major>
+	    <Minor>$([System.String]::Copy('$(CurrentVersion)').Split('.')[1])</Minor>
+	    <Build>$([System.String]::Copy('$(CurrentVersion)').Split('.')[2])</Build>
+	    <Revision>$([System.String]::Copy('$(CurrentVersion)').Split('.')[3])</Revision>
+	  </PropertyGroup>
+
+	  <!-- Increment correct part based on configuration -->
+	  <PropertyGroup Condition="'$(Configuration)' == 'Debug'">
+	    <Revision>$([MSBuild]::Add($(Revision), 1))</Revision>
+	  </PropertyGroup>
+	  <PropertyGroup Condition="'$(Configuration)' == 'ReleaseBuild'">
+	    <Build>$([MSBuild]::Add($(Build), 1))</Build>
+	    <Revision>0</Revision>
+	  </PropertyGroup>
+	  <PropertyGroup Condition="'$(Configuration)' == 'ReleaseMinor'">
+	    <Minor>$([MSBuild]::Add($(Minor), 1))</Minor>
+	    <Build>0</Build>
+	    <Revision>0</Revision>
+	  </PropertyGroup>
+	  <PropertyGroup Condition="'$(Configuration)' == 'ReleaseMajor'">
+	    <Major>$([MSBuild]::Add($(Major), 1))</Major>
+	    <Minor>0</Minor>
+	    <Build>0</Build>
+	    <Revision>0</Revision>
+	  </PropertyGroup>
+
+	  <!-- Compose new version -->
+	  <PropertyGroup>
+	    <NewVersion>$(Major).$(Minor).$(Build).$(Revision)</NewVersion>
+	  </PropertyGroup>
+
+	  <!-- Write new version to temp file -->
+	  <WriteLinesToFile File="$(VersionFile)" Lines="$(NewVersion)" Overwrite="true" />
+
+	  <!-- Set assembly and file version -->
+	  <PropertyGroup>
+	    <AssemblyVersion>$(NewVersion)</AssemblyVersion>
+	    <FileVersion>$(NewVersion)</FileVersion>
+	  </PropertyGroup>
+	</Target>
 
 	<ItemGroup>
 		<None Remove="Data\LbMediaTypesList.dat" />

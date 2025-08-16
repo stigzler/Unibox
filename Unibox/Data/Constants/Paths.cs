@@ -13,6 +13,7 @@ namespace Unibox.Data.Constants
 
         public const string LaunchboxRelGamesDir = @"Games";
         public const string LaunchboxRelGamesXmlDir = @"Data\Platforms";
+        public const string LaunchboxUniboxPluginDll = @"Plugins\Unibox\Unibox.Plugin.dll";
 
         // Files
         public const string LaunchboxPlatformsXmlFile = @"Platforms.xml";
@@ -26,5 +27,7 @@ namespace Unibox.Data.Constants
         public const string SsRegionsFile = @"SsRegionsList.dat";
         public const string LbPlatformsFile = @"LbPlatfomList.dat";
         public const string LbMediaTypesFile = @"LbMediaTypesList.dat";
+
+        public const string UniboxRelApplicationPluginDllPath = @"Plugin\Unibox.Plugin.dll";
     }
 }

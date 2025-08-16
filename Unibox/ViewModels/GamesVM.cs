@@ -46,6 +46,9 @@ namespace Unibox.ViewModels
         private CollectionView platformsView;
 
         [ObservableProperty]
+        private bool canAddRoms = false;
+
+        [ObservableProperty]
         private string searchTerm;
 
         [ObservableProperty]
@@ -189,9 +192,77 @@ namespace Unibox.ViewModels
         {
             if (value == null) return;
 
+            // wait cursor due to potential waits on non-available network paths
             Mouse.OverrideCursor = Cursors.Wait;
             InstallationAvailable = Directory.Exists(value.InstallationPath);
             Mouse.OverrideCursor = Cursors.Arrow;
+
+            CanAddRoms = false;
+
+            // now check if latest version of plugin installed on remote launchbox installation
+            if (!Helpers.Plugin.IsUniboxPluginInstalled(value))
+            {
+                var result = AdonisUI.Controls.MessageBox.Show(
+                   $"Unibox requires a plugin to be running on the target installation and has detected it requires installing. " +
+                   $"Unibox cannot operate without this plugin. Would you like to install this now?",
+                   "Plugin Installation Required", AdonisUI.Controls.MessageBoxButton.YesNo, AdonisUI.Controls.MessageBoxImage.Warning);
+                if (result == AdonisUI.Controls.MessageBoxResult.Yes)
+                {
+                    Exception install = Helpers.Plugin.UpdatePlugin(value);
+                    if (install is null)
+                    {
+                        AdonisUI.Controls.MessageBox.Show(
+                           $"The plugin was installed successfully. You now need to restart BigBox or Launchbox on the selected installation:\r\n{value.InstallationPath}",
+                           "Plugin Installed Successfully", AdonisUI.Controls.MessageBoxButton.OK, AdonisUI.Controls.MessageBoxImage.Information);
+                    }
+                    else
+                    {
+                        AdonisUI.Controls.MessageBox.Show(
+                            $"Unibox couldn't install the plugin. Returned exception: {install.Message}",
+                            "Error installing plugin", AdonisUI.Controls.MessageBoxButton.OK, AdonisUI.Controls.MessageBoxImage.Error);
+                        SelectedInstallation = null;
+                        return;
+                    }
+                }
+                else
+                {
+                    SelectedInstallation = null;
+                    return;
+                }
+            }
+            else if (Helpers.Plugin.PluginRequiresUpdating(value))
+            {
+                var result = AdonisUI.Controls.MessageBox.Show(
+                       $"The Unibox plugin on the selected installation requires an update. It is STRONGLY recommended that this is done now as " +
+                       $"there is a risk of the universe ending with mismatched versions (and that's bad). " +
+                       $"You will need to restart Launchbox or Bigbox on this installation once this is done. Would you like to update the plugin now?",
+                       "Unibox Plugin requires update", AdonisUI.Controls.MessageBoxButton.YesNo, AdonisUI.Controls.MessageBoxImage.Warning);
+                if (result == AdonisUI.Controls.MessageBoxResult.Yes)
+                {
+                    Exception update = Helpers.Plugin.UpdatePlugin(value);
+                    if (update is null)
+                    {
+                        AdonisUI.Controls.MessageBox.Show(
+                           $"The plugin was updated successfully. You now need to restart BigBox or Launchbox on the selected installation\r\n{value.InstallationPath}",
+                           "Plugin Updated Successfully", AdonisUI.Controls.MessageBoxButton.OK, AdonisUI.Controls.MessageBoxImage.Information);
+                    }
+                    else
+                    {
+                        AdonisUI.Controls.MessageBox.Show(
+                            $"Unibox couldn't update the plugin. Returned exception: {update.Message}",
+                            "Error updating plugin", AdonisUI.Controls.MessageBoxButton.OK, AdonisUI.Controls.MessageBoxImage.Error);
+                        SelectedInstallation = null;
+                        return;
+                    }
+                }
+                else
+                {
+                    SelectedInstallation = null;
+                    return;
+                }
+            }
+
+            CanAddRoms = true;
 
             platforms = value.Platforms;
             PlatformsView = (CollectionView)CollectionViewSource.GetDefaultView(platforms);

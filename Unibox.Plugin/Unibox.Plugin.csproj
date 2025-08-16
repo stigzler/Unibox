@@ -1,73 +1,141 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <TargetFramework>net9.0-windows</TargetFramework>
-    <ImplicitUsings>enable</ImplicitUsings>
-    <Nullable>enable</Nullable>
-    <UseWPF>true</UseWPF>
-  </PropertyGroup>
+	<PropertyGroup>
+		<TargetFramework>net9.0-windows</TargetFramework>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<Nullable>enable</Nullable>
+		<UseWPF>true</UseWPF>
+		<Configurations>Debug;ReleaseBuild;ReleaseMinor;ReleaseMajor</Configurations>
+		<CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
+
+	</PropertyGroup>
+
+	<PropertyGroup>
+		<AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(Configuration)'=='Debug'">
-		<OutputPath>..\Builds\Debug\Unibox\net9.0-windows7.0\Plugin</OutputPath>
+		<OutputPath>..\Builds\Debug\Unibox\Plugin</OutputPath>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(Configuration)'=='ReleaseBuild'">
-		<OutputPath>..\Builds\Release\Unibox\net9.0-windows7.0\Plugin</OutputPath>
+		<OutputPath>..\Builds\Release\Unibox\Plugin</OutputPath>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(Configuration)'=='ReleaseMinor'">
-		<OutputPath>..\Builds\Release\Unibox\net9.0-windows7.0\Plugin</OutputPath>
+		<OutputPath>..\Builds\Release\Unibox\Plugin</OutputPath>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(Configuration)'=='ReleaseMajor'">
-		<OutputPath>..\Builds\Release\Unibox\net9.0-windows7.0\Plugin</OutputPath>
+		<OutputPath>..\Builds\Release\Unibox\Plugin</OutputPath>
 	</PropertyGroup>
 
-  <ItemGroup>
-	  <PackageReference Include="AdonisUI" Version="1.17.1" />
-	  <PackageReference Include="AdonisUI.ClassicTheme" Version="1.17.1" />
-	  <PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.0" />
-	  <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="9.0.8" />
-	  <PackageReference Include="NetMessage" Version="1.0.0" />
-	  <PackageReference Include="PortableSettingsProvider" Version="0.2.5" />
-	  <PackageReference Include="System.Drawing.Common" Version="9.0.8" />
+	<PropertyGroup>
+		<VersionFile>$(TEMP)\Unibox.Plugin.version.txt</VersionFile>
+		<DefaultVersion>0.8.2.0</DefaultVersion>
+	</PropertyGroup>
+
+	<Target Name="UpdateVersion" BeforeTargets="BeforeBuild">
+		<!-- Read existing version or set default -->
+		<ReadLinesFromFile File="$(VersionFile)">
+			<Output TaskParameter="Lines" ItemName="VersionLines" />
+		</ReadLinesFromFile>
+		<PropertyGroup>
+			<CurrentVersion Condition="'@(VersionLines)' == ''">$(DefaultVersion)</CurrentVersion>
+			<CurrentVersion Condition="'@(VersionLines)' != ''">@(VersionLines)</CurrentVersion>
+		</PropertyGroup>
+
+		<!-- Split version into parts safely -->
+		<PropertyGroup>
+			<Major>$([System.String]::Copy('$(CurrentVersion)').Split('.')[0])</Major>
+			<Minor>$([System.String]::Copy('$(CurrentVersion)').Split('.')[1])</Minor>
+			<Build>$([System.String]::Copy('$(CurrentVersion)').Split('.')[2])</Build>
+			<Revision>$([System.String]::Copy('$(CurrentVersion)').Split('.')[3])</Revision>
+		</PropertyGroup>
+
+		<!-- Increment correct part based on configuration -->
+		<PropertyGroup Condition="'$(Configuration)' == 'Debug'">
+			<Revision>$([MSBuild]::Add($(Revision), 1))</Revision>
+		</PropertyGroup>
+		<PropertyGroup Condition="'$(Configuration)' == 'ReleaseBuild'">
+			<Build>$([MSBuild]::Add($(Build), 1))</Build>
+			<Revision>0</Revision>
+		</PropertyGroup>
+		<PropertyGroup Condition="'$(Configuration)' == 'ReleaseMinor'">
+			<Minor>$([MSBuild]::Add($(Minor), 1))</Minor>
+			<Build>0</Build>
+			<Revision>0</Revision>
+		</PropertyGroup>
+		<PropertyGroup Condition="'$(Configuration)' == 'ReleaseMajor'">
+			<Major>$([MSBuild]::Add($(Major), 1))</Major>
+			<Minor>0</Minor>
+			<Build>0</Build>
+			<Revision>0</Revision>
+		</PropertyGroup>
+
+		<!-- Compose new version -->
+		<PropertyGroup>
+			<NewVersion>$(Major).$(Minor).$(Build).$(Revision)</NewVersion>
+		</PropertyGroup>
+
+		<!-- Write new version to temp file -->
+		<WriteLinesToFile File="$(VersionFile)" Lines="$(NewVersion)" Overwrite="true" />
+
+		<!-- Set assembly and file version -->
+		<PropertyGroup>
+			<AssemblyVersion>$(NewVersion)</AssemblyVersion>
+			<FileVersion>$(NewVersion)</FileVersion>
+		</PropertyGroup>
+	</Target>
+
+
+
+
+	<ItemGroup>
+		<PackageReference Include="AdonisUI" Version="1.17.1" />
+		<PackageReference Include="AdonisUI.ClassicTheme" Version="1.17.1" />
+		<PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.0" />
+		<PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="9.0.8" />
+		<PackageReference Include="NetMessage" Version="1.0.0" />
+		<PackageReference Include="PortableSettingsProvider" Version="0.2.5" />
+		<PackageReference Include="System.Drawing.Common" Version="9.0.8" />
 	</ItemGroup>
 
 	<ItemGroup>
-	  <ProjectReference Include="..\Unibox.Messaging\Unibox.Messaging.csproj" />
+		<ProjectReference Include="..\Unibox.Messaging\Unibox.Messaging.csproj" />
 	</ItemGroup>
 
 	<ItemGroup>
-	  <Reference Include="Unbroken.LaunchBox.Plugins">
-	    <HintPath>..\..\..\..\..\..\..\LaunchBox\Core\Unbroken.LaunchBox.Plugins.dll</HintPath>
-	  </Reference>
+		<Reference Include="Unbroken.LaunchBox.Plugins">
+			<HintPath>..\..\..\..\..\..\..\LaunchBox\Core\Unbroken.LaunchBox.Plugins.dll</HintPath>
+		</Reference>
 	</ItemGroup>
 
 	<ItemGroup>
-	  <Compile Update="Properties\Resources.Designer.cs">
-	    <DesignTime>True</DesignTime>
-	    <AutoGen>True</AutoGen>
-	    <DependentUpon>Resources.resx</DependentUpon>
-	  </Compile>
-	  <Compile Update="Properties\Settings.Designer.cs">
-	    <DesignTimeSharedInput>True</DesignTimeSharedInput>
-	    <AutoGen>True</AutoGen>
-	    <DependentUpon>Settings.settings</DependentUpon>
-	  </Compile>
+		<Compile Update="Properties\Resources.Designer.cs">
+			<DesignTime>True</DesignTime>
+			<AutoGen>True</AutoGen>
+			<DependentUpon>Resources.resx</DependentUpon>
+		</Compile>
+		<Compile Update="Properties\Settings.Designer.cs">
+			<DesignTimeSharedInput>True</DesignTimeSharedInput>
+			<AutoGen>True</AutoGen>
+			<DependentUpon>Settings.settings</DependentUpon>
+		</Compile>
 	</ItemGroup>
 
 	<ItemGroup>
-	  <EmbeddedResource Update="Properties\Resources.resx">
-	    <Generator>ResXFileCodeGenerator</Generator>
-	    <LastGenOutput>Resources.Designer.cs</LastGenOutput>
-	  </EmbeddedResource>
+		<EmbeddedResource Update="Properties\Resources.resx">
+			<Generator>ResXFileCodeGenerator</Generator>
+			<LastGenOutput>Resources.Designer.cs</LastGenOutput>
+		</EmbeddedResource>
 	</ItemGroup>
 
 	<ItemGroup>
-	  <None Update="Properties\Settings.settings">
-	    <Generator>PublicSettingsSingleFileGenerator</Generator>
-	    <LastGenOutput>Settings.Designer.cs</LastGenOutput>
-	  </None>
+		<None Update="Properties\Settings.settings">
+			<Generator>PublicSettingsSingleFileGenerator</Generator>
+			<LastGenOutput>Settings.Designer.cs</LastGenOutput>
+		</None>
 	</ItemGroup>
 
 </Project>
