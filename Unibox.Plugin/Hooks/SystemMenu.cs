@@ -30,6 +30,7 @@ namespace Unibox.Plugin.Hooks
         {
             MainWindowVM mainWindowVM = new MainWindowVM();
             MainWindow mainWindow = new MainWindow(mainWindowVM);
+
             mainWindow.ShowDialog();
         }
     }

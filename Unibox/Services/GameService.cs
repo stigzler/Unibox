@@ -320,6 +320,8 @@ namespace Unibox.Services
 
             // xmlDoc.Root.Add(newGameElement);
 
+            //xmlDoc.Save(xmlFilepath);
+
             if (Properties.Settings.Default.UseSsForRomAdds &&
                 Properties.Settings.Default.StopRomAddOnNoScreenscraperMatch &&
                 noMatchFoundInScreenscraper)
@@ -333,8 +335,6 @@ namespace Unibox.Services
                 {
                     SecondaryMessage = "Copying Rom file and updating metadata..."
                 }));
-
-                //xmlDoc.Save(xmlFilepath);
 
                 AddGameResponse addGameResponse = await messagingService.SendAddGameRequest(installationModel.InstallationPath, gameDTO);
 
