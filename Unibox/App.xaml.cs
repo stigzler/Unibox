@@ -19,8 +19,6 @@ namespace Unibox
 
             this.InitializeComponent();
 
-            Helpers.Log.StartLog();
-
             Window window = new MainWindow();
             window.Show();
         }
@@ -49,6 +47,7 @@ namespace Unibox
             services.AddSingleton<FileService>(); // Register the settings service
             services.AddSingleton<ScreenscraperService>(); // Register the screenscraper service
             services.AddSingleton<MessagingService>(); // Register the messaging service
+            services.AddSingleton<LoggingService>(); // Register the logging service
             services.AddSingleton<GameService>(); // Register the game service
 
             // Register ViewModels

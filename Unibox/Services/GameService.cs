@@ -5,6 +5,7 @@ using stigzler.ScreenscraperWrapper.DTOs;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Text;
+using System.Xml.Linq;
 using Unibox.Data.Constants;
 using Unibox.Data.Models;
 using Unibox.Data.ServiceOperationOutcomes;
@@ -21,14 +22,16 @@ namespace Unibox.Services
         private ScreenscraperService screenscraperService;
         private FileService fileService;
         private MessagingService messagingService;
+        private LoggingService loggingService;
 
         public GameService(DatabaseService databaseService, ScreenscraperService screenscraperService, FileService fileService,
-            MessagingService messagingService)
+            MessagingService messagingService, LoggingService loggingService)
         {
             this.databaseService = databaseService;
             this.screenscraperService = screenscraperService;
             this.fileService = fileService;
             this.messagingService = messagingService;
+            this.loggingService = loggingService;
         }
 
         internal ObservableCollection<GameModel> GetGamesFromXml(string xmlFilepath)
@@ -304,24 +307,6 @@ namespace Unibox.Services
             //    EmulatorId = gameDTO.EmulatorID
             //};
 
-            //XElement newGameElement = new XElement("Game",
-            //    new XElement("Title", newGameModel.Title),
-            //    new XElement("ApplicationPath", newGameModel.ApplicationPath),
-            //    new XElement("Developer", newGameModel.Developer),
-            //    new XElement("Publisher", newGameModel.Publisher),
-            //    new XElement("ReleaseDate", ""),
-            //    new XElement("Notes", newGameModel.Notes),
-            //    new XElement("Platform", platformModel.Name),
-            //    new XElement("DateAdded", DateTime.Now.ToString("o")),
-            //    new XElement("Emulator", GetEmulatorIdForPlatform(platformModel.Name, installationModel.InstallationPath)));
-
-            //if (newGameModel.ReleaseDate.ToString() != "01/01/0001 00:00:00") newGameElement.Element("ReleaseDate").Value =
-            //        newGameModel.ReleaseDate.ToString(@"yyyy-MM-dd");
-
-            // xmlDoc.Root.Add(newGameElement);
-
-            //xmlDoc.Save(xmlFilepath);
-
             if (Properties.Settings.Default.UseSsForRomAdds &&
                 Properties.Settings.Default.StopRomAddOnNoScreenscraperMatch &&
                 noMatchFoundInScreenscraper)
@@ -333,17 +318,73 @@ namespace Unibox.Services
             {
                 WeakReferenceMessenger.Default.Send(new ProgressMessage(new ProgressMessageArgs
                 {
-                    SecondaryMessage = "Copying Rom file and updating metadata..."
+                    SecondaryMessage = "Attempting to update metadata and copy file."
                 }));
+
+                bool metadataUpdateSuccessful = false;
 
                 AddGameResponse addGameResponse = await messagingService.SendAddGameRequest(installationModel.InstallationPath, gameDTO);
 
                 if (addGameResponse.IsSuccessful)
                 {
                     outcome.Outcomes.Add($"Game added to Launchbox database successfully. Game: {gameDTO.Title}");
-                    Log.WriteLine($"Game added to Launchbox database successfully. Game: {gameDTO.Title}");
+                    loggingService.WriteLine($"Game added to Launchbox database successfully. Game: {gameDTO.Title}");
+                    metadataUpdateSuccessful = true;
+                }
+                else
+                {
+                    outcome.Outcomes.Add($"Failed to add game to Launchbox database via the plugin. Error: {addGameResponse.TextResult}");
+                    loggingService.WriteLine($"Game NOT added via plugin to Launchbox database. Error: {addGameResponse.TextResult}");
+                    outcome.RomAdded = false;
 
-                    // db unpdate successful, therefore do file copy
+                    if (Properties.Settings.Default.AllowOfflineGameUpdate)
+                    {
+                        outcome.Outcomes.Add($"Settings dictate to allow offline update of launchbox database. Attempting to update the xml directly.");
+                        loggingService.WriteLine($"Settings dictate to allow offline update of launchbox database. Attempting to update the xml directly.");
+
+                        if (Properties.Settings.Default.BackupPlatformXml)
+                        {
+                            string backupFilePath = Path.Combine(installationModel.InstallationPath, Paths.LaunchboxRelDataDir, "UniboxBackups",
+                                Path.GetFileName(xmlFilepath));
+                            if (!Directory.Exists(Path.GetDirectoryName(backupFilePath))) Directory.CreateDirectory(Path.GetDirectoryName(backupFilePath));
+                            await fileService.CopyFileAsync(xmlFilepath, backupFilePath, percentMsg => WeakReferenceMessenger.Default.Send(
+                                new ProgressMessage(new ProgressMessageArgs { SecondaryMessage = $"Backing up xml file. {percentMsg} Completed." })
+                                ), CancellationToken.None);
+                            outcome.Outcomes.Add($"Backed up xml file to: {backupFilePath}");
+                        }
+
+                        XElement newGameElement = new XElement("Game",
+                        new XElement("Title", newGameModel.Title),
+                        new XElement("ApplicationPath", newGameModel.ApplicationPath),
+                        new XElement("Developer", newGameModel.Developer),
+                        new XElement("Publisher", newGameModel.Publisher),
+                        new XElement("ReleaseDate", ""),
+                        new XElement("Notes", newGameModel.Notes),
+                        new XElement("Platform", platformModel.Name),
+                        new XElement("DateAdded", DateTime.Now.ToString("o")),
+                        new XElement("Emulator", GetEmulatorIdForPlatform(platformModel.Name, installationModel.InstallationPath)));
+
+                        if (newGameModel.ReleaseDate.ToString() != "01/01/0001 00:00:00") newGameElement.Element("ReleaseDate").Value =
+                                newGameModel.ReleaseDate.ToString(@"yyyy-MM-dd");
+
+                        xmlDoc.Root.Add(newGameElement);
+
+                        xmlDoc.Save(xmlFilepath);
+
+                        outcome.Outcomes.Add($"PLatform xml updated successfully: {xmlFilepath}");
+                        loggingService.WriteLine($"PLatform xml updated successfully: {xmlFilepath}");
+                        metadataUpdateSuccessful = true;
+                    }
+                    else
+                    {
+                        outcome.Outcomes.Add($"Allow offline update in settings not enabled. Cannot add game metadata. Aborting game addition.");
+                        loggingService.WriteLine($"Allow offline update in settings not enabled. Cannot add game metadata. Aborting game addition.");
+                    }
+                }
+
+                if (metadataUpdateSuccessful)
+                {
+                    // db update successful, therefore do file copy
                     await fileService.CopyFileAsync(
                         romFilePath,
                         Path.Combine(romFolder, Path.GetFileName(romFilePath)),
@@ -353,12 +394,6 @@ namespace Unibox.Services
 
                     outcome.Outcomes.Add($"Copied rom to: {Path.Combine(romFolder, Path.GetFileName(romFilePath))}");
                     outcome.RomAdded = true;
-                }
-                else
-                {
-                    outcome.Outcomes.Add($"Failed to add game to Launchbox database. Therefore, not copying rom. Error: {addGameResponse.TextResult}");
-                    Log.WriteLine($"Game NOT added to Launchbox database. Error: {addGameResponse.TextResult}");
-                    outcome.RomAdded = false;
                 }
             }
 

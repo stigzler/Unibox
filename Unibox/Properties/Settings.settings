@@ -54,5 +54,11 @@
     <Setting Name="MessagingPort" Type="System.Int32" Scope="User">
       <Value Profile="(Default)">51723</Value>
     </Setting>
+    <Setting Name="AllowOfflineGameUpdate" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">False</Value>
+    </Setting>
+    <Setting Name="BackupPlatformXml" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">True</Value>
+    </Setting>
   </Settings>
 </SettingsFile>

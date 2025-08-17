@@ -51,14 +51,16 @@ namespace Unibox.ViewModels
         private SettingsPage settingsPage = new SettingsPage();
         private GamesPage gamesPage = new GamesPage();
         private InstallationsPage installationsPage = new InstallationsPage();
+        private LoggingService loggingService;
 
         public MainWindowVM()
         {
         }
 
-        public MainWindowVM(DatabaseService databaseService)
+        public MainWindowVM(DatabaseService databaseService, LoggingService loggingService)
         {
             DatabaseService = databaseService;
+            this.loggingService = loggingService;
 
             Helpers.Theming.ApplyTheme();
 
@@ -67,6 +69,8 @@ namespace Unibox.ViewModels
             UpdateIstallationsFromDatabase();
 
             NavigateToGames();
+
+            loggingService.StartLog();
 
             // Testsrefredsss
 

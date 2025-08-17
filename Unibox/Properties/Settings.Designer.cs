@@ -227,5 +227,29 @@ namespace Unibox.Properties {
                 this["MessagingPort"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool AllowOfflineGameUpdate {
+            get {
+                return ((bool)(this["AllowOfflineGameUpdate"]));
+            }
+            set {
+                this["AllowOfflineGameUpdate"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool BackupPlatformXml {
+            get {
+                return ((bool)(this["BackupPlatformXml"]));
+            }
+            set {
+                this["BackupPlatformXml"] = value;
+            }
+        }
     }
 }

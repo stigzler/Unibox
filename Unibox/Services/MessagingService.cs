@@ -3,6 +3,7 @@ using NetMessage.Base;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Runtime.InteropServices;
@@ -17,9 +18,11 @@ namespace Unibox.Services
     internal class MessagingService
     {
         private NetMessageClient client = new NetMessageClient();
+        private LoggingService loggingService;
 
-        public MessagingService()
+        public MessagingService(LoggingService loggingService)
         {
+            this.loggingService = loggingService;
             client.OnError += Client_OnError;
             client.Connected += OnConnected;
             client.Disconnected += OnDisconnected;
@@ -27,25 +30,28 @@ namespace Unibox.Services
 
         private void OnDisconnected(NetMessageClient client, SessionClosedArgs args)
         {
-            Log.WriteLine($"Client disconnected from server. Reason: [{args.Reason}] | Any socket exception: [{args?.SocketException}]");
+            loggingService.WriteLine($"Client disconnected from server. Reason: [{args.Reason}] | Any socket exception: [{args?.SocketException}]");
         }
 
         private void OnConnected(NetMessageClient client)
         {
-            Log.WriteLine($"Client connected to server successfully.");
+            loggingService.WriteLine($"Client connected to server successfully.");
         }
 
         private void Client_OnError(NetMessageClient arg1, string arg2, Exception? arg3)
         {
-            Log.WriteLine($"Client error: {arg2} | Exception: {arg3?.Message}");
+            loggingService.WriteLine($"Client error: {arg2} | Exception: {arg3?.Message}");
         }
 
         private string UncPathToIP(string uncPath)
         {
             string ipAddress = "127.0.0.1";
+            Debug.WriteLine(Path.GetPathRoot(uncPath));
             if (Helpers.FileSystem.IsNetworkPath(uncPath))
             {
-                IPHostEntry entry = Dns.GetHostEntry(uncPath);
+                string root = Path.GetPathRoot(uncPath); // e.g., "\\ATARI-1280\Users"
+                string server = root.TrimStart('\\').Split('\\')[0]; // "ATARI-1280"
+                IPHostEntry entry = Dns.GetHostEntry(server);
                 foreach (var ip in entry.AddressList)
                 {
                     if (Helpers.String.IsValidIPv4Address(ip.ToString()))
@@ -55,24 +61,24 @@ namespace Unibox.Services
                     }
                 }
             }
-            return ipAddress; // Return original path if no valid IP found
+            return ipAddress;
         }
 
         internal async Task<AddGameResponse> SendAddGameRequest(string installationPath, GameDTO gameDTO)
         {
-            Log.WriteLine($"SendAddGame request made of MessageService. InstallationPath: [{installationPath}] | Game: [{gameDTO.Title}]");
+            loggingService.WriteLine($"SendAddGame request made of MessageService. InstallationPath: [{installationPath}] | Game: [{gameDTO.Title}]");
 
             if (string.IsNullOrWhiteSpace(installationPath) || gameDTO is null)
             {
-                Log.WriteLine("SendAddGameRequest: Invalid parameters provided.");
+                loggingService.WriteLine("SendAddGameRequest: Invalid parameters provided.");
                 return null;
             }
 
             string ipAddress = UncPathToIP(installationPath);
 
-            Log.WriteLine("IP Address discerned from UNC path: " + ipAddress);
+            loggingService.WriteLine("IP Address discerned from UNC path: " + ipAddress);
 
-            Log.WriteLine("Attempting to connect to Unibox plugin server at: " + ipAddress + ":" + Properties.Settings.Default.MessagingPort);
+            loggingService.WriteLine("Attempting to connect to Unibox plugin server at: " + ipAddress + ":" + Properties.Settings.Default.MessagingPort);
 
             bool successful = await client.ConnectAsync(ipAddress, Properties.Settings.Default.MessagingPort);
 

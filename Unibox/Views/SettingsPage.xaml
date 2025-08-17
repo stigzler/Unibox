@@ -14,11 +14,16 @@
              d:DesignHeight="700" d:DesignWidth="800">
 
     <UserControl.Resources>
-        <Style TargetType="Image">
-            <Setter Property="RenderOptions.BitmapScalingMode" Value="HighQuality" />
-        </Style>
-        <converters:RegionToFullNameConverter x:Key="RegionToFullNameConverter" />
-        <converters:RegionToShortNameConverter x:Key="RegionToShortNameConverter" />
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="/Resources/Dictionaries/Styles.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+            <Style TargetType="Image">
+                <Setter Property="RenderOptions.BitmapScalingMode" Value="HighQuality" />
+            </Style>
+            <converters:RegionToFullNameConverter x:Key="RegionToFullNameConverter" />
+            <converters:RegionToShortNameConverter x:Key="RegionToShortNameConverter" />
+        </ResourceDictionary>
     </UserControl.Resources>
 
     <Grid Margin="10">
@@ -141,23 +146,36 @@
                         <StackPanel Orientation="Vertical">
                             <Grid>
                                 <CheckBox Content="Dark Theme" Margin="5"
-                          IsChecked="{Binding Source={x:Static properties:Settings.Default},Path=AppDarkMode}"
-                          Command="{Binding ToggleDarkModeCommand}" />
+                                      IsChecked="{Binding Source={x:Static properties:Settings.Default},Path=AppDarkMode}"
+                                      Command="{Binding ToggleDarkModeCommand}" />
                             </Grid>
                         </StackPanel>
                     </GroupBox>
 
-                    <GroupBox Grid.Row="1" Header="Plugin Integration" Height="90" VerticalAlignment="Top" Margin="0,10,0,0">
+                    <GroupBox Grid.Row="1" Header="Plugin Integration"  VerticalAlignment="Top" Margin="0,10,0,0">
                         <StackPanel Orientation="Vertical">
+
                             <Grid>
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="auto" />
                                     <ColumnDefinition Width="*" />
                                 </Grid.ColumnDefinitions>
-                                <TextBlock Grid.Column="0" Text="Port" VerticalAlignment="Center" Margin="5"
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="auto" />
+                                    <RowDefinition Height="auto" />
+                                    <RowDefinition Height="auto" />
+                                </Grid.RowDefinitions>
+
+                                <TextBlock Grid.Column="0" Grid.Row="0" Text="Port" VerticalAlignment="Center" Margin="5"
                                            ToolTip="Change this if you have another application using this port to a number between 49152-65535. Also needs changing in the Unibox plugin on all installations." />
-                                <TextBox x:Name="PortNumberTB" Grid.Column="1" Margin="5" PreviewTextInput="PortNumberTB_PreviewTextInput"
+                                <TextBox x:Name="PortNumberTB" Grid.Column="1" Grid.Row="0" Margin="5" PreviewTextInput="PortNumberTB_PreviewTextInput"
                                         Text="{Binding Source={x:Static properties:Settings.Default},Path=MessagingPort}" />
+                                <CheckBox Grid.Column="1" Grid.Row="1" Content="Allow Offline Game Addition" Margin="5"
+                                      IsChecked="{Binding Source={x:Static properties:Settings.Default},Path=AllowOfflineGameUpdate}"
+                                      ToolTip="Updates the launchbox database xml files directly if Launchbox or Bigbox aren't running (i.e. can't use the plugin)." />
+                                <CheckBox Grid.Column="1" Grid.Row="2" Content="Backup Platform XML" Margin="5"
+                                      IsChecked="{Binding Source={x:Static properties:Settings.Default},Path=BackupPlatformXml}"
+                                      ToolTip="If Allow Offline Game Addition is selected, the platform's xml file will be backed up prior to any changes. Unibox only keeps one backup, so if you're concerned, ensure you check the platform xml file after every game addition." />
                             </Grid>
                         </StackPanel>
                     </GroupBox>

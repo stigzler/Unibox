@@ -120,8 +120,8 @@ namespace Unibox.ViewModels
 
             if (romFiles is null || romFiles.Count == 0)
             {
-                AdonisUI.Controls.MessageBox.Show("No Rom files selected. Please select at least one Rom file to add.", "No Rom Files Selected",
-                    AdonisUI.Controls.MessageBoxButton.OK, AdonisUI.Controls.MessageBoxImage.Warning);
+                //AdonisUI.Controls.MessageBox.Show("No Rom files selected. Please select at least one Rom file to add.", "No Rom Files Selected",
+                //    AdonisUI.Controls.MessageBoxButton.OK, AdonisUI.Controls.MessageBoxImage.Warning);
                 return;
             }
 

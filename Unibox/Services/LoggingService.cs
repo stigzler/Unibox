@@ -5,9 +5,9 @@ using System.Threading;
 
 namespace Unibox.Services
 {
-    internal class LoggingService
+    public class LoggingService
     {
-        public string LogFilepath { get; set; } = "Unibox.Plugin.log";
+        public string LogFilepath { get; set; } = "Unibox.log";
         private readonly object _lock = new();
 
         public LoggingService()
