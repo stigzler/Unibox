@@ -171,7 +171,6 @@
 		<PackageReference Include="AdonisUI.ClassicTheme" Version="1.17.1" />
 		<PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.0" />
 		<PackageReference Include="LiteDB" Version="5.0.21" />
-		<PackageReference Include="Microsoft.Data.Sqlite" Version="9.0.8" />
 		<PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="9.0.8" />
 		<PackageReference Include="NetMessage" Version="1.0.0" />
 		<PackageReference Include="ScreenscraperWrapper" Version="1.6.1" />
