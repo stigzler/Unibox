@@ -52,8 +52,16 @@ namespace Unibox.Helpers
             OpenFolderDialog openFolderDialog = new OpenFolderDialog
             {
                 Title = "Select the directory to remap the Launchbox database paths to",
-                InitialDirectory = Settings.Default.RemapToInitialDirectory
             };
+
+            if (Directory.Exists(Settings.Default.RemapToInitialDirectory))
+            {
+                openFolderDialog.InitialDirectory = Settings.Default.RemapToInitialDirectory;
+            }
+            else
+            {
+                openFolderDialog.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+            }
 
             if (openFolderDialog.ShowDialog() == true)
             {

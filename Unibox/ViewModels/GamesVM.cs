@@ -195,8 +195,13 @@ namespace Unibox.ViewModels
             // wait cursor due to potential waits on non-available network paths
             Mouse.OverrideCursor = Cursors.Wait;
             InstallationAvailable = Directory.Exists(value.InstallationPath);
-            Mouse.OverrideCursor = Cursors.Arrow;
+            if (!InstallationAvailable)
+            {
+                Mouse.OverrideCursor = Cursors.Arrow;
+                return;
+            }
 
+            Mouse.OverrideCursor = Cursors.Arrow;
             CanAddRoms = false;
 
             // now check if latest version of plugin installed on remote launchbox installation
