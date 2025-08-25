@@ -30,5 +30,12 @@ namespace Unibox.Views
             this.Owner = Application.Current.MainWindow;
             this.DataContext = App.Current.Services.GetService(typeof(ViewModels.InstallationPlatformDetailsVM));
         }
+
+        private void Window_SizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            Properties.Settings.Default.AppPlatformDetailsHeight = this.Height;
+            Properties.Settings.Default.AppPlatformDetailsWidth = this.Width;
+            Properties.Settings.Default.Save();
+        }
     }
 }

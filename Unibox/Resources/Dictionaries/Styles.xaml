@@ -37,6 +37,12 @@
         <Setter Property="MinWidth" Value="80"></Setter>
     </Style>
 
+    <Style TargetType="{x:Type Window}" BasedOn="{StaticResource {x:Type Window}}">
+        <Setter Property="TextOptions.TextFormattingMode" Value="Display" />
+        <Setter Property="TextOptions.TextRenderingMode" Value="ClearType" />
+        <Setter Property="UseLayoutRounding" Value="True" />
+    </Style>
+
     <Style TargetType="GridSplitter">
         <Style.Triggers>
             <Trigger Property="VerticalAlignment" Value="Stretch">
@@ -63,8 +69,8 @@
                 <Setter Property="Template">
                     <Setter.Value>
                         <ControlTemplate TargetType="{x:Type GridSplitter}">
-                            <Canvas Height="7" Width="28">
-                                <Rectangle Width="36" Height="8" Canvas.Left="-4" Canvas.Top="-2" Fill="Transparent" />
+                            <Canvas Height="60" Width="40">
+                                <Rectangle Width="50" Height="40" Canvas.Left="-10" Canvas.Top="-30" Fill="Transparent" />
                                 <Ellipse Width="4" Height="4" Canvas.Left="0" Canvas.Top="1" Fill="LightGray"></Ellipse>
                                 <Ellipse Width="4" Height="4" Canvas.Left="8" Canvas.Top="1" Fill="LightGray"></Ellipse>
                                 <Ellipse Width="4" Height="4" Canvas.Left="16" Canvas.Top="1" Fill="LightGray"></Ellipse>

@@ -72,5 +72,17 @@
     <Setting Name="AppRomUploadHeight" Type="System.Double" Scope="User">
       <Value Profile="(Default)">160</Value>
     </Setting>
+    <Setting Name="AddRomInitialDirectory" Type="System.String" Scope="User">
+      <Value Profile="(Default)" />
+    </Setting>
+    <Setting Name="AppNavBarOpen" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">True</Value>
+    </Setting>
+    <Setting Name="AppPlatformDetailsHeight" Type="System.Double" Scope="User">
+      <Value Profile="(Default)">300</Value>
+    </Setting>
+    <Setting Name="AppPlatformDetailsWidth" Type="System.Double" Scope="User">
+      <Value Profile="(Default)">400</Value>
+    </Setting>
   </Settings>
 </SettingsFile>

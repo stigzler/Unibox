@@ -70,11 +70,20 @@ namespace Unibox.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to [placeholder in lieu of text].
+        ///   Looks up a localized string similar to Edit an Installation&apos;s details here. The &quot;Show Paths&quot; button can help with setting up path remaps (for example, remapping remote installations&apos; local drives to a UNC network path). .
         /// </summary>
         public static string EditInstalltionSubTitle {
             get {
                 return ResourceManager.GetString("EditInstalltionSubTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to This list allows you to study what each Platform&apos;s Rom and Media paths look like in the installation&apos;s Launchbox database. Useful when considering whether to set up a path remap for remote installations (where rom paths are stored as local paths on the remote machine, meaning you need to remap the relevant part of those paths to use the remote UNC path instead)..
+        /// </summary>
+        public static string PlatformDetailsText {
+            get {
+                return ResourceManager.GetString("PlatformDetailsText", resourceCulture);
             }
         }
     }

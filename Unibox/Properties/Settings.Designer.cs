@@ -299,5 +299,53 @@ namespace Unibox.Properties {
                 this["AppRomUploadHeight"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string AddRomInitialDirectory {
+            get {
+                return ((string)(this["AddRomInitialDirectory"]));
+            }
+            set {
+                this["AddRomInitialDirectory"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool AppNavBarOpen {
+            get {
+                return ((bool)(this["AppNavBarOpen"]));
+            }
+            set {
+                this["AppNavBarOpen"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("300")]
+        public double AppPlatformDetailsHeight {
+            get {
+                return ((double)(this["AppPlatformDetailsHeight"]));
+            }
+            set {
+                this["AppPlatformDetailsHeight"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("400")]
+        public double AppPlatformDetailsWidth {
+            get {
+                return ((double)(this["AppPlatformDetailsWidth"]));
+            }
+            set {
+                this["AppPlatformDetailsWidth"] = value;
+            }
+        }
     }
 }

@@ -116,7 +116,7 @@ namespace Unibox.ViewModels
             // START ADD ROM PROCESS
 
             // Get rom file/s to add
-            List<string> romFiles = Helpers.FileSystem.GetFilePaths("Please select the rom file/s to add");
+            List<string> romFiles = Helpers.FileSystem.GetRomFilePaths("Please select the rom file/s to add");
 
             if (romFiles is null || romFiles.Count == 0)
             {
@@ -191,18 +191,18 @@ namespace Unibox.ViewModels
         partial void OnSelectedInstallationChanged(InstallationModel value)
         {
             if (value == null) return;
-
+            CanAddRoms = false;
             // wait cursor due to potential waits on non-available network paths
             Mouse.OverrideCursor = Cursors.Wait;
             InstallationAvailable = Directory.Exists(value.InstallationPath);
             if (!InstallationAvailable)
             {
+                SelectedPlatform = null;
                 Mouse.OverrideCursor = Cursors.Arrow;
                 return;
             }
 
             Mouse.OverrideCursor = Cursors.Arrow;
-            CanAddRoms = false;
 
             // now check if latest version of plugin installed on remote launchbox installation
             if (!Helpers.Plugin.IsUniboxPluginInstalled(value))

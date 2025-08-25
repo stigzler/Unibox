@@ -6,9 +6,15 @@
         xmlns:local="clr-namespace:Unibox.Views"
         xmlns:adonis="clr-namespace:AdonisUI.Controls;assembly=AdonisUI"
         xmlns:vm="clr-namespace:Unibox.ViewModels"
+        xmlns:properties="clr-namespace:Unibox.Properties"
+        FontSize="{Binding Source={x:Static properties:Settings.Default},Path=AppFontSize}"
         d:DataContext="{d:DesignInstance Type=vm:InstallationPlatformDetailsVM, IsDesignTimeCreatable=True}"
         mc:Ignorable="d" WindowStartupLocation="CenterOwner"
-        Title="Platform Details" Height="674" Width="610">
+        Title="Platform Details" ResizeMode="CanResizeWithGrip"
+        Height="{Binding Source={x:Static properties:Settings.Default},Path=AppMainHeight}"
+        Width="{Binding Source={x:Static properties:Settings.Default},Path=AppMainWidth}"
+        MinHeight="600" MinWidth="800"
+        SizeChanged="Window_SizeChanged">
 
     <Window.Style>
         <Style TargetType="Window" BasedOn="{StaticResource {x:Type Window}}" />
@@ -29,10 +35,12 @@
                 <TextBlock Text="{Binding Platforms.Count}" VerticalAlignment="Center" d:Text="0"></TextBlock>
             </StackPanel>
             <Button Content="Use Paths" ToolTip="Populates 'Replace Text' with the selected Rom and Media Paths for editing."
-                    Margin="5" Width="75"
-                    Command="{Binding UsePathCommand}" CommandParameter="{Binding RelativeSource={RelativeSource AncestorType=Window}}" />
-            <Button Content="Close" Margin="5" Width="75"
-                    Command="{Binding ProcessOkButtonCommand}" CommandParameter="{Binding RelativeSource={RelativeSource AncestorType=Window}}" />
+                    Margin="5" MinWidth="100"
+                    Command="{Binding UsePathCommand}" CommandParameter="{Binding RelativeSource={RelativeSource AncestorType=Window}}"
+                    Padding="{Binding Source={x:Static properties:Settings.Default},Path=AppButtonPadding}" />
+            <Button Content="Close" Margin="5" MinWidth="100"
+                    Command="{Binding ProcessOkButtonCommand}" CommandParameter="{Binding RelativeSource={RelativeSource AncestorType=Window}}"
+                    Padding="{Binding Source={x:Static properties:Settings.Default},Path=AppButtonPadding}" />
         </StackPanel>
 
         <Grid>

@@ -1,7 +1,9 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using System.Configuration;
 using System.Data;
+using System.IO;
 using System.Windows;
+using Unibox.Properties;
 using Unibox.Services;
 using Unibox.ViewModels;
 using Unibox.Views;
@@ -19,8 +21,22 @@ namespace Unibox
 
             this.InitializeComponent();
 
+            UpgradeSettingsIfNeeded();
+
             Window window = new MainWindow();
             window.Show();
+        }
+
+        private void UpgradeSettingsIfNeeded()
+        {
+            string configPath = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.PerUserRoamingAndLocal).FilePath;
+            if (!File.Exists(configPath))
+            {
+                //Existing user config does not exist, so load settings from previous assembly
+                Settings.Default.Upgrade();
+                Settings.Default.Reload();
+                Settings.Default.Save();
+            }
         }
 
         /// <summary>

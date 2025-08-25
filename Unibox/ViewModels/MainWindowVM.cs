@@ -12,9 +12,12 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Media;
 using Unibox.Data.LiteDb;
 using Unibox.Data.Models;
 using Unibox.Messages;
+using Unibox.Properties;
 using Unibox.Services;
 using Unibox.Views;
 
@@ -62,6 +65,8 @@ namespace Unibox.ViewModels
             DatabaseService = databaseService;
             this.loggingService = loggingService;
 
+            IsMenuOpen = Settings.Default.AppNavBarOpen;
+
             Helpers.Theming.ApplyTheme();
 
             WeakReferenceMessenger.Default.Register<ProgressMessage>(this);
@@ -72,8 +77,6 @@ namespace Unibox.ViewModels
 
             loggingService.StartLog();
 
-            // Testsrefredsss
-
             var localVersion = Helpers.Plugin.GetApplicationPluginVersion();
         }
 
@@ -81,6 +84,7 @@ namespace Unibox.ViewModels
         private void ToggleMenu()
         {
             IsMenuOpen = !IsMenuOpen;
+            Settings.Default.AppNavBarOpen = IsMenuOpen;
         }
 
         [RelayCommand]

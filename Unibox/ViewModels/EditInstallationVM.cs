@@ -6,6 +6,7 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Windows;
+using System.Windows.Input;
 using Unibox.Data.Enums;
 using Unibox.Data.Models;
 using Unibox.Messages;
@@ -16,25 +17,30 @@ namespace Unibox.ViewModels
 {
     internal partial class EditInstallationVM : ObservableObject, IDataErrorInfo, IRecipient<UpdatePlatformMessage>
     {
+        private static readonly string[] ValidatedProperties =
+            { nameof(Name), nameof(InstallationPath), nameof(RemapRomsFrom), nameof(RemapRomsTo), nameof(RemapMediaFrom),
+            nameof(RemapMediaTo) };
+
+        private DatabaseService databaseService;
+
         [ObservableProperty]
         private InstallationModel installation;
+
+        [ObservableProperty]
+        private string installationPath = @"\\ATARI-1280\Users\admin\LaunchBox";
+
+        private InstallationService installationService;
+
+        [ObservableProperty]
+        private bool isValid;
 
         [ObservableProperty]
         private string name = "Atari 1280";
 
         [ObservableProperty]
-        private string installationPath = @"\\ATARI-1280\Users\admin\LaunchBox";
-
-        [ObservableProperty]
         private bool onRemoteMachine = true;
 
-        [ObservableProperty]
-        [NotifyPropertyChangedFor(nameof(RemapRomsTo))]
-        private string remapRomsFrom = @"D:\Games";
-
-        [ObservableProperty]
-        [NotifyPropertyChangedFor(nameof(RemapRomsFrom))]
-        private string remapRomsTo = @"\\ATARI-1280\Games";
+        private PlatformService platformUpdateService;
 
         [ObservableProperty]
         [NotifyPropertyChangedFor(nameof(RemapMediaTo))]
@@ -45,24 +51,57 @@ namespace Unibox.ViewModels
         private string remapMediaTo = @"\\ATARI-1280\Assets";
 
         [ObservableProperty]
-        private bool isValid;
+        [NotifyPropertyChangedFor(nameof(RemapRomsTo))]
+        private string remapRomsFrom = @"D:\Games";
 
-        partial void OnInstallationChanged(InstallationModel value)
-        {
-            UpdateViewModelFromDataObject();
-        }
-
-        public string Error => null;
+        [ObservableProperty]
+        [NotifyPropertyChangedFor(nameof(RemapRomsFrom))]
+        private string remapRomsTo = @"\\ATARI-1280\Games";
 
         public Data.Enums.DialogResult DialogResult { get; set; } = Data.Enums.DialogResult.Unset;
 
-        private DatabaseService databaseService;
-        private PlatformService platformUpdateService;
-        private InstallationService installationService;
+        public string Error => null;
 
-        private static readonly string[] ValidatedProperties =
-            { nameof(Name), nameof(InstallationPath), nameof(RemapRomsFrom), nameof(RemapRomsTo), nameof(RemapMediaFrom),
-            nameof(RemapMediaTo) };
+        public EditInstallationVM()
+        {
+        }
+
+        public EditInstallationVM(DatabaseService databaseService, InstallationService installationService, PlatformService platformUpdateService)
+        {
+            this.databaseService = databaseService;
+            this.installationService = installationService;
+            this.platformUpdateService = platformUpdateService;
+
+            Helpers.Theming.ApplyTheme();
+        }
+
+        string IDataErrorInfo.this[string propertyName]
+        {
+            get
+            {
+                string validaitonError = ProcessPropertyChange(propertyName);
+                ValidateForm();
+                return validaitonError;
+            }
+        }
+
+        public void Receive(UpdatePlatformMessage message)
+        {
+            Debug.WriteLine(message);
+        }
+
+        public void ValidateForm()
+        {
+            foreach (string property in ValidatedProperties)
+            {
+                if (ProcessPropertyChange(property) != null)
+                {
+                    IsValid = false;
+                    return;
+                }
+            }
+            IsValid = true;
+        }
 
         [RelayCommand]
         private void BrowseForInstallationPath()
@@ -124,114 +163,9 @@ namespace Unibox.ViewModels
                 RemapMediaTo = String.Empty;
         }
 
-        [RelayCommand]
-        private void ShowPlatformRomFolders()
+        partial void OnInstallationChanged(InstallationModel value)
         {
-            string prospectiveXmlPath = Path.Combine(InstallationPath, Data.Constants.Paths.LaunchboxRelDataDir,
-                Data.Constants.Paths.LaunchboxPlatformsXmlFile);
-
-            if (!File.Exists(prospectiveXmlPath))
-            {
-                AdonisUI.Controls.MessageBox.Show($"Could not locate the Launchbox platforms.xml file for this installation. " +
-                    $"Please check it is available on this path: {prospectiveXmlPath}", "Invalid Path",
-                    AdonisUI.Controls.MessageBoxButton.OK, AdonisUI.Controls.MessageBoxImage.Error);
-                return;
-            }
-
-            ObservableCollection<PlatformModel> platforms = new ObservableCollection<PlatformModel>(platformUpdateService.GetPlatformsFromXml(InstallationPath).OrderBy(p => p.Name));
-
-            InstallationPlatformDetails installationPlatformDetails = new InstallationPlatformDetails();
-
-            installationPlatformDetails.ViewModel.PageTitle = "Launchbox database paths for Installation";
-            installationPlatformDetails.ViewModel.PageSubtitle = "This list allows you to study what each Platform's Rom and Media paths look like in" +
-                " the installation's Launchbox database. Useful when considering whether to set up a path remap for remote installations" +
-                " (where rom paths are stored as local paths on the remote machine, meaning you need to remap the relevant part of those" +
-                " paths to use the remote UNC path instead).";
-
-            installationPlatformDetails.ViewModel.Platforms = new ObservableCollection<PlatformModel>(platforms);
-
-            installationPlatformDetails.ShowDialog();
-
-            DialogResult dialogResult = installationPlatformDetails.ViewModel.DialogResult;
-            if (dialogResult == Data.Enums.DialogResult.UsePath)
-            {
-                if (installationPlatformDetails.ViewModel.SelectedPlatform != null)
-                {
-                    RemapRomsFrom = installationPlatformDetails.ViewModel.SelectedPlatform.LaunchboxRomFolder;
-                    RemapMediaFrom = installationPlatformDetails.ViewModel.SelectedPlatformFolder.LaunchboxMediaPath;
-                }
-            }
-        }
-
-        private void UpdateInstallation()
-        {
-            installation.Name = Name;
-            installation.InstallationPath = InstallationPath;
-            installation.RemapRomsFrom = RemapRomsFrom?.TrimEnd('\\').TrimEnd('/');
-            installation.RemapRomsTo = RemapRomsTo;
-            installation.RemapMediaFrom = RemapMediaFrom?.TrimEnd('\\').TrimEnd('/');
-            installation.RemapMediaTo = RemapMediaTo;
-
-            installationService.Update(installation);
-        }
-
-        [RelayCommand]
-        private void ProcessOkButton(Window window)
-        {
-            UpdateInstallation();
-
-            WeakReferenceMessenger.Default.Send(new InstallationChangedMessage(installation));
-
-            DialogResult = Data.Enums.DialogResult.OK;
-            window.Close();
-        }
-
-        [RelayCommand]
-        private void ProcessCancelButton(Window window)
-        {
-            if (window != null)
-            {
-                DialogResult = Data.Enums.DialogResult.Cancel;
-                window.Close();
-            }
-        }
-
-        public EditInstallationVM()
-        {
-        }
-
-        public EditInstallationVM(DatabaseService databaseService, InstallationService installationService, PlatformService platformUpdateService)
-        {
-            this.databaseService = databaseService;
-            this.installationService = installationService;
-            this.platformUpdateService = platformUpdateService;
-
-            Helpers.Theming.ApplyTheme();
-        }
-
-        private void UpdateViewModelFromDataObject()
-        {
-            if (installation != null)
-            {
-                Name = installation.Name;
-                InstallationPath = installation.InstallationPath;
-                OnRemoteMachine = installation.OnRemoteMachine;
-                RemapRomsFrom = installation.RemapRomsFrom;
-                RemapRomsTo = installation.RemapRomsTo;
-                RemapMediaFrom = installation.RemapMediaFrom;
-                RemapMediaTo = installation.RemapMediaTo;
-                ValidateForm();
-            }
-        }
-
-        string IDataErrorInfo.this[string propertyName]
-        {
-            get
-            {
-                string validaitonError = ProcessPropertyChange(propertyName);
-                ValidateForm();
-                return validaitonError;
-            }
+            UpdateViewModelFromDataObject();
         }
 
         partial void OnInstallationPathChanged(string value)
@@ -244,6 +178,27 @@ namespace Unibox.ViewModels
                 RemapRomsFrom = string.Empty;
                 RemapRomsTo = string.Empty;
             }
+        }
+
+        [RelayCommand]
+        private void ProcessCancelButton(Window window)
+        {
+            if (window != null)
+            {
+                DialogResult = Data.Enums.DialogResult.Cancel;
+                window.Close();
+            }
+        }
+
+        [RelayCommand]
+        private void ProcessOkButton(Window window)
+        {
+            UpdateInstallation();
+
+            WeakReferenceMessenger.Default.Send(new InstallationChangedMessage(installation));
+
+            DialogResult = Data.Enums.DialogResult.OK;
+            window.Close();
         }
 
         private string ProcessPropertyChange(string propertyName)
@@ -317,22 +272,69 @@ namespace Unibox.ViewModels
             return null;
         }
 
-        public void ValidateForm()
+        [RelayCommand]
+        private void ShowPlatformRomFolders()
         {
-            foreach (string property in ValidatedProperties)
+            string prospectiveXmlPath = Path.Combine(InstallationPath, Data.Constants.Paths.LaunchboxRelDataDir,
+                Data.Constants.Paths.LaunchboxPlatformsXmlFile);
+
+            if (!File.Exists(prospectiveXmlPath))
             {
-                if (ProcessPropertyChange(property) != null)
+                AdonisUI.Controls.MessageBox.Show($"Could not locate the Launchbox platforms.xml file for this installation. " +
+                    $"Please check it is available on this path: {prospectiveXmlPath}", "Invalid Path",
+                    AdonisUI.Controls.MessageBoxButton.OK, AdonisUI.Controls.MessageBoxImage.Error);
+                return;
+            }
+
+            Mouse.OverrideCursor = Cursors.Wait;
+            ObservableCollection<PlatformModel> platforms = new ObservableCollection<PlatformModel>(platformUpdateService.GetPlatformsFromXml(InstallationPath).OrderBy(p => p.Name));
+            Mouse.OverrideCursor = Cursors.Arrow;
+
+            InstallationPlatformDetails installationPlatformDetails = new InstallationPlatformDetails();
+
+            installationPlatformDetails.ViewModel.PageTitle = "Launchbox database paths for Installation";
+            installationPlatformDetails.ViewModel.PageSubtitle = Properties.Resources.PlatformDetailsText;
+
+            installationPlatformDetails.ViewModel.Platforms = new ObservableCollection<PlatformModel>(platforms);
+
+            installationPlatformDetails.ShowDialog();
+
+            DialogResult dialogResult = installationPlatformDetails.ViewModel.DialogResult;
+            if (dialogResult == Data.Enums.DialogResult.UsePath)
+            {
+                if (installationPlatformDetails.ViewModel.SelectedPlatform != null)
                 {
-                    IsValid = false;
-                    return;
+                    RemapRomsFrom = installationPlatformDetails.ViewModel.SelectedPlatform.LaunchboxRomFolder;
+                    RemapMediaFrom = installationPlatformDetails.ViewModel.SelectedPlatformFolder.LaunchboxMediaPath;
                 }
             }
-            IsValid = true;
         }
 
-        public void Receive(UpdatePlatformMessage message)
+        private void UpdateInstallation()
         {
-            Debug.WriteLine(message);
+            installation.Name = Name;
+            installation.InstallationPath = InstallationPath;
+            installation.RemapRomsFrom = RemapRomsFrom?.TrimEnd('\\').TrimEnd('/');
+            installation.RemapRomsTo = RemapRomsTo;
+            installation.RemapMediaFrom = RemapMediaFrom?.TrimEnd('\\').TrimEnd('/');
+            installation.RemapMediaTo = RemapMediaTo;
+
+            installationService.Update(installation);
+        }
+
+        private void UpdateViewModelFromDataObject()
+        {
+            if (installation != null)
+            {
+                Name = installation.Name;
+                InstallationPath = installation.InstallationPath;
+                OnRemoteMachine = installation.OnRemoteMachine;
+                RemapRomsFrom = installation.RemapRomsFrom;
+                RemapRomsTo = installation.RemapRomsTo;
+                RemapMediaFrom = installation.RemapMediaFrom;
+                RemapMediaTo = installation.RemapMediaTo;
+                ValidateForm();
+            }
         }
     }
 }

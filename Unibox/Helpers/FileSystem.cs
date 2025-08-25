@@ -88,16 +88,25 @@ namespace Unibox.Helpers
             return folderPath;
         }
 
-        public static List<string> GetFilePaths(string prompt = "Please select file/s", string initialDirectory = "")
+        public static List<string> GetRomFilePaths(string prompt = "Please select file/s")
         {
             List<string> folderPaths = new List<string>();
             OpenFileDialog openFileDialog = new OpenFileDialog
             {
                 Title = prompt,
-                InitialDirectory = initialDirectory,
                 Multiselect = true,
             };
-            if (openFileDialog.ShowDialog() == true)
+
+            if (Directory.Exists(Settings.Default.AddRomInitialDirectory))
+            {
+                openFileDialog.InitialDirectory = Settings.Default.AddRomInitialDirectory;
+            }
+            else
+            {
+                openFileDialog.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+            }
+
+            if (openFileDialog.ShowDialog() == true && openFileDialog.FileNames.Count() > 0)
             {
                 foreach (string fileName in openFileDialog.FileNames)
                 {
@@ -106,6 +115,7 @@ namespace Unibox.Helpers
                         folderPaths.Add(fileName);
                     }
                 }
+                Settings.Default.AddRomInitialDirectory = Path.GetDirectoryName(openFileDialog.FileNames[0]);
             }
             return folderPaths;
         }

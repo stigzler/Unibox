@@ -5,10 +5,13 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Unibox.Views"
         xmlns:converters="clr-namespace:Unibox.Converters"
+        xmlns:properties="clr-namespace:Unibox.Properties"
+        FontSize="{Binding Source={x:Static properties:Settings.Default},Path=AppFontSize}"
         mc:Ignorable="d"
         xmlns:vm="clr-namespace:Unibox.ViewModels"
         d:DataContext="{d:DesignInstance Type=vm:UpdatePlatformsResultsVM, IsDesignTimeCreatable=True}"
-        Title="Update Platforms Results" Height="450" Width="800" WindowStartupLocation="CenterOwner">
+        Title="Update Platforms Results" Height="450" Width="800" WindowStartupLocation="CenterOwner"
+        ResizeMode="CanResizeWithGrip">
 
     <Window.Style>
         <Style TargetType="Window" BasedOn="{StaticResource {x:Type Window}}" />
@@ -55,7 +58,8 @@
             </ListView>
         </Border>
         <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right" Margin="5">
-            <Button x:Name="CloseBT" Content="Close" Command="{Binding CloseCommand}" Margin="5" Width="100" Click="CloseBT_Click" />
+            <Button x:Name="CloseBT" Content="Close" Command="{Binding CloseCommand}" Margin="5" MinWidth="100" Click="CloseBT_Click"
+                    Padding="{Binding Source={x:Static properties:Settings.Default},Path=AppButtonPadding}" />
         </StackPanel>
     </Grid>
 </Window>

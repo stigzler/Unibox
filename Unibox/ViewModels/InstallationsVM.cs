@@ -195,11 +195,13 @@ namespace Unibox.ViewModels
         {
             if (SelectedInstallation == null) return;
 
-            Cursor = Cursors.Wait;
+            Mouse.OverrideCursor = Cursors.Wait;
 
             var selectedInstallation = SelectedInstallation;
 
             UpdatePlatformsOutcome updatePlatformsOutcome = platformService.UpdateInstallationPlatforms(selectedInstallation);
+
+            Mouse.OverrideCursor = Cursors.Arrow;
 
             UpdatePlatformsResultsWindow updatePlatformsResultsWindow = new UpdatePlatformsResultsWindow();
             updatePlatformsResultsWindow.ViewModel.UpdatePlatformsOutcome = updatePlatformsOutcome;
@@ -208,8 +210,6 @@ namespace Unibox.ViewModels
             // UpdatePlatformsList();
 
             SelectedInstallation = selectedInstallation;
-
-            Cursor = Cursors.Arrow;
 
             WeakReferenceMessenger.Default.Send(new InstallationChangedMessage(SelectedInstallation));
         }

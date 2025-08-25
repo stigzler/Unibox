@@ -25,9 +25,9 @@
 
     <Grid Margin="10">
         <Grid.RowDefinitions>
-            <RowDefinition x:Name="TopPanel" MinHeight="120" Height="{Binding Source={x:Static properties:Settings.Default},Path=AppInstallationsPgTopPanelHeight}" d:Height="auto" />
+            <RowDefinition x:Name="TopPanel" MinHeight="150" Height="{Binding Source={x:Static properties:Settings.Default},Path=AppInstallationsPgTopPanelHeight}" d:Height="auto" />
             <RowDefinition Height="7" />
-            <RowDefinition x:Name="MidPanel" Height="{Binding Source={x:Static properties:Settings.Default},Path=AppInstallationsPgMidPanelHeight}" d:Height="auto" />
+            <RowDefinition x:Name="MidPanel" MinHeight="150"  Height="{Binding Source={x:Static properties:Settings.Default},Path=AppInstallationsPgMidPanelHeight}" d:Height="auto" />
             <RowDefinition Height="3" />
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
@@ -35,14 +35,14 @@
         <!-- INSTALLATIONS LIST -->
         <DockPanel Grid.Row="0" Margin="2">
             <TextBlock Text="Installations" FontWeight="Bold" DockPanel.Dock="Top" />
-            <StackPanel DockPanel.Dock="Right" Orientation="Vertical" HorizontalAlignment="Right">
-                <Button Content="Add" Command="{Binding AddNewInstallationCommand}" Margin="5" Padding="{Binding Source={x:Static properties:Settings.Default},Path=AppButtonPadding}"
+            <WrapPanel DockPanel.Dock="Right" Orientation="Vertical" HorizontalAlignment="Right">
+                <Button Content="Add" Command="{Binding AddNewInstallationCommand}" MinWidth="100" Margin="5" Padding="{Binding Source={x:Static properties:Settings.Default},Path=AppButtonPadding}"
                         ToolTip="Add new Installation." />
-                <Button Content="Delete" Command="{Binding DeleteInstallationCommand}" Margin="5" Padding="{Binding Source={x:Static properties:Settings.Default},Path=AppButtonPadding}"
+                <Button Content="Delete" Command="{Binding DeleteInstallationCommand}" MinWidth="100" Margin="5" Padding="{Binding Source={x:Static properties:Settings.Default},Path=AppButtonPadding}"
                         ToolTip="Delete selected Installation" />
-                <Button Content="Edit" Command="{Binding EditInstallationCommand}"  Margin="5" Padding="{Binding Source={x:Static properties:Settings.Default},Path=AppButtonPadding}"
+                <Button Content="Edit" Command="{Binding EditInstallationCommand}" MinWidth="100" Margin="5" Padding="{Binding Source={x:Static properties:Settings.Default},Path=AppButtonPadding}"
                         ToolTip="Edit selected Installation" />
-            </StackPanel>
+            </WrapPanel>
             <Border BorderBrush="gray" BorderThickness="1" Margin="5">
                 <ListView ItemsSource="{Binding Installations}" SelectedItem="{Binding SelectedInstallation}"
                   ScrollViewer.VerticalScrollBarVisibility="Auto">
@@ -56,7 +56,8 @@
             </Border>
         </DockPanel>
 
-        <GridSplitter Grid.Row="1" Background="#80808080" BorderThickness="1" BorderBrush="Gray" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" DragCompleted="GridSplitter_DragCompleted"></GridSplitter>
+        <GridSplitter Grid.Row="1" x:Name="InstallationsTopGS" Background="#80808080" BorderThickness="1" BorderBrush="Gray" VerticalAlignment="Stretch"
+                      HorizontalAlignment="Stretch" DragCompleted="GridSplitter_DragCompleted"></GridSplitter>
 
         <Grid Grid.Row="2" Margin="2">
             <Grid.ColumnDefinitions>
@@ -68,24 +69,24 @@
                 <RowDefinition Height="*" />
             </Grid.RowDefinitions>
             <TextBlock Grid.Row="0" Grid.Column="0" Text="Installation Platforms" FontWeight="Bold" DockPanel.Dock="Top" Grid.ColumnSpan="2" />
-            <StackPanel Grid.Row="1" Grid.Column="1" DockPanel.Dock="Right" Orientation="Vertical" HorizontalAlignment="Right"
+            <WrapPanel Grid.Row="1" Grid.Column="1" DockPanel.Dock="Right" Orientation="Vertical" HorizontalAlignment="Right"
                         IsEnabled="{Binding SelectedInstallation, Converter={StaticResource NullToBoolConverter}}">
-                <Button Content="Update" Command="{Binding UpdatePlatformsCommand}"   Margin="5" Padding="{Binding Source={x:Static properties:Settings.Default},Path=AppButtonPadding}"
+                <Button Content="Update" Command="{Binding UpdatePlatformsCommand}" MinWidth="100"  Margin="5" Padding="{Binding Source={x:Static properties:Settings.Default},Path=AppButtonPadding}"
                         ToolTip="Automatically generate all Rom and Media folder paths from the settings for the Installation." />
-                <Button Content="Folder"  Command="{Binding UpdateRomFolderCommand}"  Margin="5" Padding="{Binding Source={x:Static properties:Settings.Default},Path=AppButtonPadding}"
+                <Button Content="Folder"  Command="{Binding UpdateRomFolderCommand}" MinWidth="100" Margin="5" Padding="{Binding Source={x:Static properties:Settings.Default},Path=AppButtonPadding}"
                         ToolTip="Change the Rom Folder for the selected Platform"
                         IsEnabled="{Binding SelectedPlatform, Converter={StaticResource NullToBoolConverter}}" />
-                <Button Content="Lock"  Command="{Binding TogglePlatformLocksCommand}"  Margin="5" Padding="{Binding Source={x:Static properties:Settings.Default},Path=AppButtonPadding}"
+                <Button Content="Lock"  Command="{Binding TogglePlatformLocksCommand}" MinWidth="100" Margin="5" Padding="{Binding Source={x:Static properties:Settings.Default},Path=AppButtonPadding}"
                         CommandParameter="{Binding ElementName=PlatformsLV, Path=SelectedItems}"
                         IsEnabled="{Binding SelectedPlatform, Converter={StaticResource NullToBoolConverter}}"
                         ToolTip="Lock the PLatform settings from change during the automatic processes in Update." />
-            </StackPanel>
+            </WrapPanel>
             <Border Grid.Row="1" Grid.Column="0" BorderBrush="gray" BorderThickness="1" Margin="5">
                 <ListView  x:Name="PlatformsLV"  ItemsSource="{Binding Platforms}" SelectedItem="{Binding SelectedPlatform}"
                   ScrollViewer.VerticalScrollBarVisibility="Auto">
                     <ListView.View>
                         <GridView>
-                            <GridViewColumn>
+                            <GridViewColumn Header=" " Width="auto">
                                 <GridViewColumn.CellTemplate>
                                     <DataTemplate>
                                         <Image Source="{Binding Locked, Converter={StaticResource BoolToLockConverter}}" Width="16" />
@@ -102,25 +103,25 @@
             </Border>
         </Grid>
 
-        <GridSplitter Grid.Row="3"  HorizontalAlignment="Stretch" DragCompleted="GridSplitter_DragCompleted"></GridSplitter>
+        <GridSplitter Grid.Row="3" x:Name="InstallationsBottomGS" HorizontalAlignment="Stretch" DragCompleted="GridSplitter_DragCompleted"></GridSplitter>
 
         <DockPanel Grid.Row="4" Margin="2">
             <TextBlock Text="Platform Media Folders" FontWeight="Bold" DockPanel.Dock="Top" />
-            <StackPanel DockPanel.Dock="Right" Orientation="Vertical" HorizontalAlignment="Right"
+            <WrapPanel DockPanel.Dock="Right" Orientation="Vertical" HorizontalAlignment="Right"
                         IsEnabled="{Binding SelectedPlatformFolder, Converter={StaticResource NullToBoolConverter}}">
                 <!--<Button Content="Update" Command="{Binding UpdatePlatformsCommand}"  Margin="2" />-->
-                <Button Content="Folder"  Command="{Binding UpdatePlatformMediaFolderCommand}"  Margin="5" Padding="{Binding Source={x:Static properties:Settings.Default},Path=AppButtonPadding}"
+                <Button Content="Folder"  Command="{Binding UpdatePlatformMediaFolderCommand}" MinWidth="100" Margin="5" Padding="{Binding Source={x:Static properties:Settings.Default},Path=AppButtonPadding}"
                         ToolTip="Change the selected item's Media folder " />
-                <Button Content="Lock"  Command="{Binding ToggleMediaFolderLocksCommand}" Margin="5" Padding="{Binding Source={x:Static properties:Settings.Default},Path=AppButtonPadding}"
+                <Button Content="Lock"  Command="{Binding ToggleMediaFolderLocksCommand}" MinWidth="100" Margin="5" Padding="{Binding Source={x:Static properties:Settings.Default},Path=AppButtonPadding}"
                         CommandParameter="{Binding ElementName=MediaFoldersLV, Path=SelectedItems}"
                         ToolTip="Lock the Media Folder settings from change during the automatic processes in Update." />
-            </StackPanel>
+            </WrapPanel>
             <Border BorderBrush="gray" BorderThickness="1" Margin="5">
                 <ListView x:Name="MediaFoldersLV" ItemsSource="{Binding PlatformFolders}" SelectedItem="{Binding SelectedPlatformFolder}"
                   ScrollViewer.VerticalScrollBarVisibility="Auto">
                     <ListView.View>
                         <GridView>
-                            <GridViewColumn>
+                            <GridViewColumn Header=" " Width="auto">
                                 <GridViewColumn.CellTemplate>
                                     <DataTemplate>
                                         <Image Source="{Binding Locked, Converter={StaticResource BoolToLockConverter}}" Width="16" />

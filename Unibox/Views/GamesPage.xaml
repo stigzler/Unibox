@@ -19,6 +19,7 @@
         <converters:PathToFilenameConverter x:Key="PathToFilenameConverter" />
         <converters:DateTimeToYearConverter x:Key="DateTimeToYearConverter" />
         <converters:NullToVisibilityConverter x:Key="NullToVisibilityConverter" />
+        <converters:NullToBoolConverter x:Key="NullToBoolConverter" />
     </UserControl.Resources>
 
     <Grid>
@@ -31,14 +32,51 @@
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*" />
                 <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="auto" />
             </Grid.ColumnDefinitions>
 
-            <ComboBox Grid.Column="0" x:Name="InstallationsCB" MinWidth="150" ItemsSource="{Binding InstallationsView}"
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="auto" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <Image Grid.Column="0" Source="/Resources/Images/LaunchboxIcon.png" Width="32" />
+                <ComboBox Grid.Column="1" x:Name="InstallationsCB" MinWidth="150" ItemsSource="{Binding InstallationsView}"
                       DisplayMemberPath="Name" SelectedItem="{Binding SelectedInstallation, Mode=TwoWay}" Margin="5" />
+            </Grid>
 
-            <ComboBox Grid.Column="1" MinWidth="150" ItemsSource="{Binding PlatformsView}" DisplayMemberPath="Name" Margin="5"
+            <Grid Grid.Column="1" Visibility="{Binding SelectedInstallation, Converter={StaticResource NullToVisibilityConverter}}"
+                  d:Visibility="Visible">
+
+                <Grid Visibility="{Binding InstallationAvailable, Converter={StaticResource BoolToVisibilityConverter}}">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="auto" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+                    <Image Grid.Column="0" Source="/Resources/Images/Platform.png" Width="32" Margin="5" />
+
+                    <ComboBox Grid.Column="1"  MinWidth="150" ItemsSource="{Binding PlatformsView}" DisplayMemberPath="Name" Margin="5"
                       SelectedItem="{Binding SelectedPlatform}" d:Visibility="Visible"
                       Visibility="{Binding InstallationAvailable, Converter={StaticResource BoolToVisibilityConverter}}" />
+                </Grid>
+
+                <Grid Visibility="{Binding InstallationAvailable, Converter={StaticResource BoolToInverseVisibilityConverter}}">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="auto" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+                    <Image Grid.Column="0" Source="/Resources/Images/minus-circle.png" Height="24" />
+                    <TextBlock Grid.Column="1" Text="Installation Unreachable" VerticalAlignment="Center" Margin="5" />
+                </Grid>
+            </Grid>
+
+            <Button Grid.Column="2" Command="{Binding AddRomCommand}" Margin="5" MinWidth="140"
+                   IsEnabled="{Binding CanAddRoms}" Padding="{Binding Source={x:Static properties:Settings.Default},Path=AppButtonPadding}">
+                <StackPanel Orientation="Horizontal">
+                    <Image Source="/Resources/Images/AddRom.png" Height="28" />
+                    <TextBlock Text="Add Rom/s" VerticalAlignment="Center" Margin="5,0,0,0" />
+                </StackPanel>
+            </Button>
         </Grid>
 
         <!--<DockPanel.RowDefinitions>
@@ -100,8 +138,25 @@
                 <TextBlock Grid.Column="0" Text="Search: " FontWeight="Bold" VerticalAlignment="Center" />
                 <TextBox Grid.Column="1"  Text="{Binding SearchTerm,UpdateSourceTrigger=PropertyChanged}" />
             </Grid>-->
-        <Grid Grid.Row="1" VerticalAlignment="Stretch">
-            <Border  BorderThickness="1" BorderBrush="Gray" Margin="5" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+        <Grid Grid.Row="1" VerticalAlignment="Stretch"
+              Visibility="{Binding SelectedPlatform, Converter={StaticResource NullToVisibilityConverter}}">
+
+            <Grid.RowDefinitions>
+                <RowDefinition Height="auto" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+
+            <Grid Grid.Row="0" DockPanel.Dock="Top" Margin="5">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="auto" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <TextBlock Grid.Column="0" Text="Search: " FontWeight="Bold" VerticalAlignment="Center" Margin="5"
+                           Padding="{Binding Source={x:Static properties:Settings.Default},Path=AppButtonPadding}" />
+                <TextBox Grid.Column="1"  Text="{Binding SearchTerm,UpdateSourceTrigger=PropertyChanged}" />
+            </Grid>
+
+            <Border Grid.Row="1" BorderThickness="1" BorderBrush="Gray" Margin="5" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
                 <ListView ItemsSource="{Binding GamesView}">
                     <ListView.View>
                         <GridView>

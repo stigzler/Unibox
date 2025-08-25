@@ -24,6 +24,8 @@ namespace Unibox.Views
         {
             InitializeComponent();
             this.DataContext = App.Current.Services.GetService(typeof(ViewModels.InstallationsVM));
+            InstallationsTopGS.PreviewTouchDown += (s, e) => { e.TouchDevice.Capture((s as UIElement)); };
+            InstallationsBottomGS.PreviewTouchDown += (s, e) => { e.TouchDevice.Capture((s as UIElement)); };
         }
 
         private void GridSplitter_DragCompleted(object sender, System.Windows.Controls.Primitives.DragCompletedEventArgs e)

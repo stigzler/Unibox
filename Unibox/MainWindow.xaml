@@ -12,18 +12,34 @@
         d:DataContext="{d:DesignInstance Type=vm:MainWindowVM, IsDesignTimeCreatable=True}"
         mc:Ignorable="d"
         Title="Unibox"
+        MinWidth="400" MinHeight="300"
         Height="{Binding Source={x:Static properties:Settings.Default},Path=AppMainHeight}"
         Width="{Binding Source={x:Static properties:Settings.Default},Path=AppMainWidth}"
         FontSize="{Binding Source={x:Static properties:Settings.Default},Path=AppFontSize}"
         WindowStartupLocation="CenterScreen" Closing="Window_Closing"
-        SizeChanged="Window_SizeChanged">
+        SizeChanged="Window_SizeChanged" ResizeMode="CanResizeWithGrip">
 
     <Window.Style>
         <Style TargetType="Window" BasedOn="{StaticResource {x:Type Window}}" />
     </Window.Style>
 
+    <!--<UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="/Resources/Dictionaries/Styles.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+            <converters:BoolToLockConverter x:Key="BoolToLockConverter" />
+            <converters:NullToVisibilityConverter x:Key="NullToVisibilityConverter" />
+            <converters:NullToBoolConverter x:Key="NullToBoolConverter" />
+        </ResourceDictionary>
+    </UserControl.Resources>-->
+
     <Window.Resources>
         <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="/Resources/Dictionaries/Styles.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+
             <converters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter" />
             <converters:BoolToWidthConverter x:Key="BoolToWidthConverter" />
 
