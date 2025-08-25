@@ -17,7 +17,6 @@ using System.Windows;
 using System.Windows.Data;
 using System.Windows.Input;
 using Unbroken.LaunchBox.Plugins.Data;
-using Unibox.Data.Messages;
 using Unibox.Messaging.Requests;
 using Unibox.Services;
 using static System.Runtime.InteropServices.JavaScript.JSType;

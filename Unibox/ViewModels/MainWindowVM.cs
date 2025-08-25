@@ -13,6 +13,7 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Documents;
 using System.Windows.Media;
 using Unibox.Data.LiteDb;
 using Unibox.Data.Models;
@@ -23,7 +24,7 @@ using Unibox.Views;
 
 namespace Unibox.ViewModels
 {
-    public partial class MainWindowVM : ObservableObject, IRecipient<ProgressMessage>
+    public partial class MainWindowVM : ObservableObject, IRecipient<ProgressMessage>, IRecipient<PageChangeMessage>
     {
         [ObservableProperty]
         private string title = "Unibox";
@@ -54,6 +55,7 @@ namespace Unibox.ViewModels
         private SettingsPage settingsPage = new SettingsPage();
         private GamesPage gamesPage = new GamesPage();
         private InstallationsPage installationsPage = new InstallationsPage();
+        private EditInstallationPage editInstallationPage = new EditInstallationPage();
         private LoggingService loggingService;
 
         public MainWindowVM()
@@ -70,6 +72,7 @@ namespace Unibox.ViewModels
             Helpers.Theming.ApplyTheme();
 
             WeakReferenceMessenger.Default.Register<ProgressMessage>(this);
+            WeakReferenceMessenger.Default.Register<PageChangeMessage>(this);
 
             UpdateIstallationsFromDatabase();
 
@@ -131,6 +134,25 @@ namespace Unibox.ViewModels
             {
                 StatusBarProgressBarIndeterminate = false;
                 StatusBarProgressBarPercentage = message.Value.PercentageComplete;
+            }
+        }
+
+        void IRecipient<PageChangeMessage>.Receive(PageChangeMessage message)
+        {
+            LogoText = "Installations";
+
+            PageChangeMessageArgs args = (PageChangeMessageArgs)message.Value;
+
+            switch (args.RequestType)
+            {
+                case Data.Enums.PageRequestType.EditInstallation:
+                    editInstallationPage.ViewModel.Installation = (InstallationModel?)args.Data;
+                    CurrentPage = editInstallationPage;
+                    break;
+
+                case Data.Enums.PageRequestType.Installations:
+                    CurrentPage = installationsPage;
+                    break;
             }
         }
     }

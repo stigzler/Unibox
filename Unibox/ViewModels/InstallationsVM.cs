@@ -158,10 +158,14 @@ namespace Unibox.ViewModels
         {
             if (selectedInstallation == null) return;
 
-            EditInstallationWindow editInstallationWindow = new EditInstallationWindow();
-            editInstallationWindow.ViewModel.Installation = SelectedInstallation;
-            editInstallationWindow.ShowDialog();
-            WeakReferenceMessenger.Default.Send(new InstallationChangedMessage(SelectedInstallation));
+            //EditInstallationWindow editInstallationWindow = new EditInstallationWindow();
+            //editInstallationWindow.ViewModel.Installation = SelectedInstallation;
+            //editInstallationWindow.ShowDialog();
+            WeakReferenceMessenger.Default.Send(new PageChangeMessage(new PageChangeMessageArgs()
+            {
+                RequestType = Data.Enums.PageRequestType.EditInstallation,
+                Data = SelectedInstallation
+            }));
         }
 
         partial void OnSelectedInstallationChanged(InstallationModel value)

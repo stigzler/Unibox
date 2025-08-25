@@ -16,6 +16,10 @@ namespace Unibox.Data.Enums
         UsePath
     }
 
-
-
+    public enum PageRequestType
+    {
+        None,
+        Installations,
+        EditInstallation
+    }
 }

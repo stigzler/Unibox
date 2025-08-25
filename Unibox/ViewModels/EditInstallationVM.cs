@@ -27,7 +27,7 @@ namespace Unibox.ViewModels
         private InstallationModel installation;
 
         [ObservableProperty]
-        private string installationPath = @"\\ATARI-1280\Users\admin\LaunchBox";
+        private string installationPath = @"";
 
         private InstallationService installationService;
 
@@ -35,7 +35,7 @@ namespace Unibox.ViewModels
         private bool isValid;
 
         [ObservableProperty]
-        private string name = "Atari 1280";
+        private string name = "";
 
         [ObservableProperty]
         private bool onRemoteMachine = true;
@@ -44,19 +44,19 @@ namespace Unibox.ViewModels
 
         [ObservableProperty]
         [NotifyPropertyChangedFor(nameof(RemapMediaTo))]
-        private string remapMediaFrom = @"D:\Assets";
+        private string remapMediaFrom = @"";
 
         [ObservableProperty]
         [NotifyPropertyChangedFor(nameof(RemapMediaFrom))]
-        private string remapMediaTo = @"\\ATARI-1280\Assets";
+        private string remapMediaTo = @"";
 
         [ObservableProperty]
         [NotifyPropertyChangedFor(nameof(RemapRomsTo))]
-        private string remapRomsFrom = @"D:\Games";
+        private string remapRomsFrom = @"";
 
         [ObservableProperty]
         [NotifyPropertyChangedFor(nameof(RemapRomsFrom))]
-        private string remapRomsTo = @"\\ATARI-1280\Games";
+        private string remapRomsTo = @"";
 
         public Data.Enums.DialogResult DialogResult { get; set; } = Data.Enums.DialogResult.Unset;
 
@@ -181,24 +181,19 @@ namespace Unibox.ViewModels
         }
 
         [RelayCommand]
-        private void ProcessCancelButton(Window window)
+        private void GoBack(Window window)
         {
-            if (window != null)
-            {
-                DialogResult = Data.Enums.DialogResult.Cancel;
-                window.Close();
-            }
+            WeakReferenceMessenger.Default.Send(new PageChangeMessage(PageRequestType.Installations));
         }
 
         [RelayCommand]
-        private void ProcessOkButton(Window window)
+        private void SaveChanges(Window window)
         {
             UpdateInstallation();
 
             WeakReferenceMessenger.Default.Send(new InstallationChangedMessage(installation));
 
-            DialogResult = Data.Enums.DialogResult.OK;
-            window.Close();
+            WeakReferenceMessenger.Default.Send(new PageChangeMessage(PageRequestType.Installations));
         }
 
         private string ProcessPropertyChange(string propertyName)
