@@ -251,5 +251,53 @@ namespace Unibox.Properties {
                 this["BackupPlatformXml"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("14")]
+        public int AppFontSize {
+            get {
+                return ((int)(this["AppFontSize"]));
+            }
+            set {
+                this["AppFontSize"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("5")]
+        public int AppButtonPadding {
+            get {
+                return ((int)(this["AppButtonPadding"]));
+            }
+            set {
+                this["AppButtonPadding"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("500")]
+        public double AppRomUploadWidth {
+            get {
+                return ((double)(this["AppRomUploadWidth"]));
+            }
+            set {
+                this["AppRomUploadWidth"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("160")]
+        public double AppRomUploadHeight {
+            get {
+                return ((double)(this["AppRomUploadHeight"]));
+            }
+            set {
+                this["AppRomUploadHeight"] = value;
+            }
+        }
     }
 }

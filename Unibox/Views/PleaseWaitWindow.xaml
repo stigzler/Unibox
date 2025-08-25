@@ -7,9 +7,16 @@
         mc:Ignorable="d"
         xmlns:adonis="clr-namespace:AdonisUI.Controls;assembly=AdonisUI"
         xmlns:vm="clr-namespace:Unibox.ViewModels"
+        xmlns:properties="clr-namespace:Unibox.Properties"
         d:DataContext="{d:DesignInstance Type=vm:PleaseWaitVM, IsDesignTimeCreatable=True}"
-        Title="Please Wait.." Height="147" Width="504" WindowStartupLocation="CenterOwner" SizeToContent="Height"
-        ResizeMode="NoResize" Closing="Window_Closing">
+        Title="Please Wait.." WindowStartupLocation="CenterOwner"
+        ResizeMode="CanResizeWithGrip" Closing="Window_Closing" MinWidth="500" MinHeight="160"
+        FontSize="{Binding Source={x:Static properties:Settings.Default},Path=AppFontSize}"
+        Height="{Binding Source={x:Static properties:Settings.Default},Path=AppRomUploadHeight}"
+        Width="{Binding Source={x:Static properties:Settings.Default},Path=AppRomUploadWidth}"
+        SizeChanged="Window_SizeChanged"
+        d:DesignHeight="160" d:DesignWidth="500"
+>
 
     <Window.Style>
         <Style TargetType="Window" BasedOn="{StaticResource {x:Type Window}}" />
@@ -17,14 +24,14 @@
 
     <Grid Margin="10">
         <Grid.RowDefinitions>
-            <RowDefinition Height="*" />
+            <RowDefinition Height="*" MinHeight="50" />
             <RowDefinition Height="auto" />
         </Grid.RowDefinitions>
         <DockPanel Grid.Row="0" LastChildFill="True">
-            <Image DockPanel.Dock="Left" Margin="10" Source="/Resources/Images/clock.png" Width="32" />
+            <Image DockPanel.Dock="Left" Margin="10" Source="/Resources/Images/clock.png" Width="32" VerticalAlignment="Top" />
             <TextBlock  Text="{Binding Text}"  TextWrapping="Wrap" Grid.ColumnSpan="2" Margin="4,4,4,10" />
         </DockPanel>
-        <StackPanel Grid.Row="1" Orientation="Vertical" Margin="4">
+        <StackPanel Grid.Row="1" Orientation="Vertical" Margin="4" MinHeight="100">
             <TextBlock  Text="{Binding PrimaryText}" FontFamily="Consolas" Margin="2" TextWrapping="Wrap"
                         Grid.ColumnSpan="2" VerticalAlignment="Bottom" TextTrimming="CharacterEllipsis" />
             <ProgressBar Grid.Row="1" IsIndeterminate="True"  Height="5" VerticalAlignment="Top" Grid.ColumnSpan="2" />

@@ -37,5 +37,45 @@
         <Setter Property="MinWidth" Value="80"></Setter>
     </Style>
 
+    <Style TargetType="GridSplitter">
+        <Style.Triggers>
+            <Trigger Property="VerticalAlignment" Value="Stretch">
+                <Setter Property="BorderThickness" Value="1,0,1,0"></Setter>
+                <Setter Property="BorderBrush" Value="LightGray"></Setter>
+                <Setter Property="HorizontalAlignment" Value="Center"></Setter>
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="{x:Type GridSplitter}">
+                            <Canvas Height="28" Width="7">
+                                <Ellipse Width="4" Height="4" Canvas.Left="1" Canvas.Top="0" Fill="LightGray"></Ellipse>
+                                <Ellipse Width="4" Height="4" Canvas.Left="1" Canvas.Top="8" Fill="LightGray"></Ellipse>
+                                <Ellipse Width="4" Height="4" Canvas.Left="1" Canvas.Top="16" Fill="LightGray"></Ellipse>
+                                <Ellipse Width="4" Height="4" Canvas.Left="1" Canvas.Top="24" Fill="LightGray"></Ellipse>
+                            </Canvas>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Trigger>
+            <Trigger Property="HorizontalAlignment" Value="Stretch">
+                <Setter Property="BorderThickness" Value="1,0,1,0"></Setter>
+                <Setter Property="BorderBrush" Value="LightGray"></Setter>
+                <Setter Property="VerticalAlignment" Value="Center"></Setter>
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="{x:Type GridSplitter}">
+                            <Canvas Height="7" Width="28">
+                                <Rectangle Width="36" Height="8" Canvas.Left="-4" Canvas.Top="-2" Fill="Transparent" />
+                                <Ellipse Width="4" Height="4" Canvas.Left="0" Canvas.Top="1" Fill="LightGray"></Ellipse>
+                                <Ellipse Width="4" Height="4" Canvas.Left="8" Canvas.Top="1" Fill="LightGray"></Ellipse>
+                                <Ellipse Width="4" Height="4" Canvas.Left="16" Canvas.Top="1" Fill="LightGray"></Ellipse>
+                                <Ellipse Width="4" Height="4" Canvas.Left="24" Canvas.Top="1" Fill="LightGray"></Ellipse>
+                            </Canvas>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+
     <!-- Smooths images -->
 </ResourceDictionary>

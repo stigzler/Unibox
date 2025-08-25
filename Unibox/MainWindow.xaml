@@ -14,7 +14,9 @@
         Title="Unibox"
         Height="{Binding Source={x:Static properties:Settings.Default},Path=AppMainHeight}"
         Width="{Binding Source={x:Static properties:Settings.Default},Path=AppMainWidth}"
-        WindowStartupLocation="CenterScreen" Closing="Window_Closing">
+        FontSize="{Binding Source={x:Static properties:Settings.Default},Path=AppFontSize}"
+        WindowStartupLocation="CenterScreen" Closing="Window_Closing"
+        SizeChanged="Window_SizeChanged">
 
     <Window.Style>
         <Style TargetType="Window" BasedOn="{StaticResource {x:Type Window}}" />
@@ -36,78 +38,60 @@
         </ResourceDictionary>
     </Window.Resources>
 
-    <Grid Margin="4">
+    <Grid Margin="4" HorizontalAlignment="Stretch">
 
-        <DockPanel LastChildFill="True">
+        <!-- MAIN GRID -->
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <!--<ColumnDefinition Width="{Binding IsMenuOpen, Converter={StaticResource BoolToWidthConverter}}" />-->
+                <ColumnDefinition Width="auto" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
 
-            <!-- STATUS BAR -->
-            <!--<StatusBar DockPanel.Dock="Bottom" Background="#202020" Foreground="#f0f0f0">
-                <StatusBarItem>
-                    <ProgressBar Width="100" Height="5" Margin="5" VerticalAlignment="Center"
-                                 Value="{Binding StatusBarProgressBarPercentage}" IsIndeterminate="{Binding StatusBarProgressBarIndeterminate}" />
-                </StatusBarItem>
-                <StatusBarItem>
-                    <TextBlock Text="{Binding StatusBarText}" Margin="5,0,0,0" />
-                </StatusBarItem>
-            </StatusBar>-->
-            <!-- TITLE BAR -->
-            <!--<Grid HorizontalAlignment="Left" Margin="0,0,0,6" DockPanel.Dock="Top">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="45" />
-                    <ColumnDefinition Width="auto" />
-                    <ColumnDefinition Width="*" />
-                    <ColumnDefinition Width="auto" />
-                    <ColumnDefinition Width="*" />
-                </Grid.ColumnDefinitions>
+            <!-- Collapsible Menu -->
+            <StackPanel Grid.Column="0">
 
-                -->
+                <!-- Menu Buttons -->
 
-            <!-- MAIN GRID -->
-            <Grid>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="{Binding IsMenuOpen, Converter={StaticResource BoolToWidthConverter}}" />
-                    <ColumnDefinition Width="2" />
-                    <ColumnDefinition Width="*" />
-                </Grid.ColumnDefinitions>
-
-                <!-- Collapsible Menu -->
-                <StackPanel Grid.Column="0"  Grid.ColumnSpan="2">
-
-                    <!-- Menu Buttons -->
-
-                    <StackPanel Orientation="Horizontal">
-                        <Button Padding="5" Margin="2,3,2,2" Command="{Binding ToggleMenuCommand}">
-                            <Image Source="/Resources/Images/UniboxLogo.png" Width="24" Margin="4,0,4,0" />
-                        </Button>
-                        <TextBlock Text="{Binding LogoText}" Margin="5" FontSize="24"  VerticalAlignment="Center" FontFamily="Arial Narrow" />
-                    </StackPanel>
-
-                    <Button  Padding="5" Margin="2,3,2,2" Command="{Binding NavigateToGamesCommand}" HorizontalContentAlignment="Left">
-                        <StackPanel Orientation="Horizontal">
-                            <Image Source="/Resources/Images/GameIcon.png" Width="24" Margin="4,0,4,0" />
-                            <TextBlock Text="Games" Margin="5" FontSize="16" FontWeight="Bold" />
-                        </StackPanel>
+                <StackPanel Margin="5" Orientation="Horizontal">
+                    <Button  Command="{Binding ToggleMenuCommand}"
+                                Padding="{Binding Source={x:Static properties:Settings.Default},Path=AppButtonPadding}">
+                        <Image Source="/Resources/Images/UniboxLogo.png" MaxWidth="32"  Margin="4,0,4,0" />
                     </Button>
-
-                    <Button  Padding="5" Margin="2,3,2,2" Command="{Binding NavigateToInstallationsCommand}" HorizontalContentAlignment="Left">
-                        <StackPanel Orientation="Horizontal">
-                            <Image Source="/Resources/Images/LaunchboxIcon.png" Width="24" Margin="4,0,4,0" />
-                            <TextBlock Text="Installations" Margin="5" FontSize="16" FontWeight="Bold" />
-                        </StackPanel>
-                    </Button>
-
-                    <Button Padding="5" Margin="2" Command="{Binding NavigateToSettingsCommand}" HorizontalContentAlignment="Left">
-                        <StackPanel Orientation="Horizontal">
-                            <Image Source="/Resources/Images/Settings.png" Width="24" Margin="4,0,4,0" />
-                            <TextBlock Text="Settings" Margin="5" FontSize="16" FontWeight="Bold" />
-                        </StackPanel>
-                    </Button>
+                    <TextBlock Text="{Binding LogoText}" Margin="10" VerticalAlignment="Center" FontFamily="Arial Narrow"
+                               Visibility="{Binding IsMenuOpen, Converter={StaticResource BoolToVisibilityConverter}}" />
                 </StackPanel>
 
-                <!-- Main Content -->
-                <ContentControl Grid.Column="2"
-                                Content="{Binding CurrentPage}" Background="Green" />
-            </Grid>
-        </DockPanel>
+                <Button Margin="5"  Command="{Binding NavigateToGamesCommand}" HorizontalContentAlignment="Left"
+                             Padding="{Binding Source={x:Static properties:Settings.Default},Path=AppButtonPadding}">
+                    <StackPanel Orientation="Horizontal">
+                        <Image Source="/Resources/Images/GameIcon.png" MaxWidth="32" Margin="4,0,4,0" />
+                        <TextBlock Text="Games" Margin="5"  FontWeight="Bold" VerticalAlignment="Center"
+                                   Visibility="{Binding IsMenuOpen, Converter={StaticResource BoolToVisibilityConverter}}" />
+                    </StackPanel>
+                </Button>
+
+                <Button Margin="5"  Command="{Binding NavigateToInstallationsCommand}" HorizontalContentAlignment="Left"
+                             Padding="{Binding Source={x:Static properties:Settings.Default},Path=AppButtonPadding}">
+                    <StackPanel Orientation="Horizontal">
+                        <Image Source="/Resources/Images/LaunchboxIcon.png" MaxWidth="32" Margin="4,0,4,0" />
+                        <TextBlock Text="Installations" Margin="5" FontWeight="Bold" VerticalAlignment="Center"
+                                   Visibility="{Binding IsMenuOpen, Converter={StaticResource BoolToVisibilityConverter}}" />
+                    </StackPanel>
+                </Button>
+
+                <Button  Margin="5" Command="{Binding NavigateToSettingsCommand}" HorizontalContentAlignment="Left"
+                         Padding="{Binding Source={x:Static properties:Settings.Default},Path=AppButtonPadding}">
+                    <StackPanel Orientation="Horizontal">
+                        <Image Source="/Resources/Images/Settings.png" MaxWidth="32" Margin="4,0,4,0" />
+                        <TextBlock Text="Settings" Margin="5" FontWeight="Bold" VerticalAlignment="Center"
+                                   Visibility="{Binding IsMenuOpen, Converter={StaticResource BoolToVisibilityConverter}}" />
+                    </StackPanel>
+                </Button>
+            </StackPanel>
+
+            <!-- Main Content -->
+            <ContentControl Grid.Column="1" Content="{Binding CurrentPage}" />
+        </Grid>
     </Grid>
 </Window>

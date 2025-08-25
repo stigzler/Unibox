@@ -60,5 +60,17 @@
     <Setting Name="BackupPlatformXml" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">True</Value>
     </Setting>
+    <Setting Name="AppFontSize" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">14</Value>
+    </Setting>
+    <Setting Name="AppButtonPadding" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">5</Value>
+    </Setting>
+    <Setting Name="AppRomUploadWidth" Type="System.Double" Scope="User">
+      <Value Profile="(Default)">500</Value>
+    </Setting>
+    <Setting Name="AppRomUploadHeight" Type="System.Double" Scope="User">
+      <Value Profile="(Default)">160</Value>
+    </Setting>
   </Settings>
 </SettingsFile>

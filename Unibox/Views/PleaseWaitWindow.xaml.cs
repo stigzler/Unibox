@@ -43,5 +43,12 @@ namespace Unibox.Views
             Application.Current.MainWindow.IsEnabled = true;
             this.Close();
         }
+
+        private void Window_SizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            Properties.Settings.Default.AppRomUploadHeight = this.Height;
+            Properties.Settings.Default.AppRomUploadWidth = this.Width;
+            Properties.Settings.Default.Save();
+        }
     }
 }

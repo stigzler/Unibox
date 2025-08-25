@@ -11,7 +11,8 @@
              mc:Ignorable="d" Cursor="{Binding Cursor}"
              xmlns:converters="clr-namespace:Unibox.Converters"
              d:Background="#606060" d:Foreground="#f0f0f0"
-             d:DesignHeight="700" d:DesignWidth="800">
+             d:DesignHeight="700" d:DesignWidth="800"
+             FontSize="{Binding Source={x:Static properties:Settings.Default},Path=AppFontSize}">
 
     <UserControl.Resources>
         <ResourceDictionary>
@@ -84,10 +85,11 @@
                             <TextBlock Grid.Column="1" Grid.Row="3" VerticalAlignment="Center" Margin="5" Text="{Binding Source={x:Static properties:Settings.Default},Path=ssThreads}" />
 
                             <StackPanel Grid.Column="2" Grid.Row="3" Orientation="Horizontal">
-                                <Button  HorizontalAlignment="Right"  Content="Test Connection" Margin="5" Height="40" Width="100"
+                                <Button  HorizontalAlignment="Right"  Content="Test Connection" Margin="5"
+                                         Padding="{Binding Source={x:Static properties:Settings.Default},Path=AppButtonPadding}"
                                          Command="{Binding TestScreenscraperConnectionCommand}"
-                                         ToolTip="Test Connection and set thread count" />
-                                <Button  HorizontalAlignment="Right"   Content="Save" Margin="5" Height="40" Width="100"
+                                         ToolTip="Test Connection and set thread count" Click="Button_Click" />
+                                <Button  HorizontalAlignment="Right"   Content="Save" Margin="5" Padding="{Binding Source={x:Static properties:Settings.Default},Path=AppButtonPadding}"
                                          Command="{Binding SaveScreenscraperCredentialsCommand}"
                                          ToolTip="Save credentials" />
                             </StackPanel>
@@ -119,13 +121,13 @@
                                 </ListView.View>
                             </ListView>
                             <StackPanel Grid.Column="1" Orientation="Vertical">
-                                <Button Margin="2" Command="{Binding MoveSelectedRegionToTopCommand}">
+                                <Button Margin="2" Command="{Binding MoveSelectedRegionToTopCommand}" Padding="{Binding Source={x:Static properties:Settings.Default},Path=AppButtonPadding}">
                                     <Image Source="/Resources/Images/arrowTop.png" />
                                 </Button>
-                                <Button Margin="2" Command="{Binding MoveSelectedRegionUpCommand}">
+                                <Button Margin="2" Command="{Binding MoveSelectedRegionUpCommand}" Padding="{Binding Source={x:Static properties:Settings.Default},Path=AppButtonPadding}">
                                     <Image Source="/Resources/Images/arrowUp.png" />
                                 </Button>
-                                <Button Margin="2" Command="{Binding MoveSelectedRegionDownCommand}">
+                                <Button Margin="2" Command="{Binding MoveSelectedRegionDownCommand}" Padding="{Binding Source={x:Static properties:Settings.Default},Path=AppButtonPadding}">
                                     <Image Source="/Resources/Images/arrowDown.png" />
                                 </Button>
                             </StackPanel>
@@ -143,13 +145,36 @@
                     </Grid.RowDefinitions>
 
                     <GroupBox Grid.Row="0" Header="UI" VerticalAlignment="Top">
-                        <StackPanel Orientation="Vertical">
+                        <!--<StackPanel Orientation="Vertical">
                             <Grid>
-                                <CheckBox Content="Dark Theme" Margin="5"
+                            </Grid>
+                        </StackPanel>-->
+
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="auto" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="auto" />
+                                <RowDefinition Height="auto" />
+                                <RowDefinition Height="auto" />
+                            </Grid.RowDefinitions>
+
+                            <TextBlock  Grid.Column="0" Grid.Row="0" Text="Font Size" VerticalAlignment="Center" Margin="5"
+                                           ToolTip="Adjust the size of Unibox's font" />
+                            <TextBox x:Name="FontSizeTB" Grid.Column="1" Grid.Row="0" Margin="5" PreviewTextInput="FontSizeTB_PreviewTextInput"
+                                        LostFocus="FontSizeTB_LostFocus"
+                                        Text="{Binding Source={x:Static properties:Settings.Default},Path=AppFontSize}" />
+                            <TextBlock  Grid.Column="0" Grid.Row="1" Text="Command Button Padding" VerticalAlignment="Center" Margin="5"
+                                           ToolTip="Controls the space around the command buttons" />
+                            <TextBox x:Name="ButtonPaddingTB" Grid.Column="1" Grid.Row="1" Margin="5" PreviewTextInput="ButtonPaddingTB_PreviewTextInput"
+                                        Text="{Binding Source={x:Static properties:Settings.Default},Path=AppButtonPadding}"
+                                     LostFocus="ButtonPaddingTB_LostFocus" />
+                            <CheckBox Grid.Column="1" Grid.Row="2" Content="Dark Theme" Margin="5"
                                       IsChecked="{Binding Source={x:Static properties:Settings.Default},Path=AppDarkMode}"
                                       Command="{Binding ToggleDarkModeCommand}" />
-                            </Grid>
-                        </StackPanel>
+                        </Grid>
                     </GroupBox>
 
                     <GroupBox Grid.Row="1" Header="Plugin Integration"  VerticalAlignment="Top" Margin="0,10,0,0">

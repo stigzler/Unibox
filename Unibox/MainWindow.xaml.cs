@@ -19,5 +19,12 @@ namespace Unibox
             Properties.Settings.Default.AppMainWidth = this.Width;
             Properties.Settings.Default.Save();
         }
+
+        private void Window_SizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            Properties.Settings.Default.AppMainHeight = this.Height;
+            Properties.Settings.Default.AppMainWidth = this.Width;
+            Properties.Settings.Default.Save();
+        }
     }
 }
