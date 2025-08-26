@@ -18,6 +18,7 @@ using System.Windows.Media;
 using Unibox.Data.LiteDb;
 using Unibox.Data.Models;
 using Unibox.Messages;
+using Unibox.Messages.MessageDetails;
 using Unibox.Properties;
 using Unibox.Services;
 using Unibox.Views;
@@ -56,6 +57,7 @@ namespace Unibox.ViewModels
         private GamesPage gamesPage = new GamesPage();
         private InstallationsPage installationsPage = new InstallationsPage();
         private EditInstallationPage editInstallationPage = new EditInstallationPage();
+        private EditInstallationPlatformsPage editInstallationPlatformsPage = new EditInstallationPlatformsPage();
         private LoggingService loggingService;
 
         public MainWindowVM()
@@ -146,12 +148,29 @@ namespace Unibox.ViewModels
             switch (args.RequestType)
             {
                 case Data.Enums.PageRequestType.EditInstallation:
-                    editInstallationPage.ViewModel.Installation = (InstallationModel?)args.Data;
+                    InstallationEditMessageDetails msgDetails = (InstallationEditMessageDetails)args.Data;
+                    if (msgDetails != null)
+                    {
+                        if (msgDetails.Installation != null)
+                            editInstallationPage.ViewModel.Installation = msgDetails.Installation;
+
+                        if (!String.IsNullOrEmpty(msgDetails.RomsReplaceText))
+                            editInstallationPage.ViewModel.RemapRomsFrom = msgDetails.RomsReplaceText;
+
+                        if (!String.IsNullOrEmpty(msgDetails.MediaReplaceText))
+                            editInstallationPage.ViewModel.RemapMediaFrom = msgDetails.MediaReplaceText;
+                    }
+
                     CurrentPage = editInstallationPage;
                     break;
 
                 case Data.Enums.PageRequestType.Installations:
                     CurrentPage = installationsPage;
+                    break;
+
+                case Data.Enums.PageRequestType.InstallationPlatforms:
+                    editInstallationPlatformsPage.ViewModel.Platforms = (ObservableCollection<PlatformModel>?)args.Data;
+                    CurrentPage = editInstallationPlatformsPage;
                     break;
             }
         }

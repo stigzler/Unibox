@@ -7,8 +7,9 @@
             xmlns:vm="clr-namespace:Unibox.ViewModels"
             xmlns:properties="clr-namespace:Unibox.Properties"
             FontSize="{Binding Source={x:Static properties:Settings.Default},Path=AppFontSize}"
-            d:DataContext="{d:DesignInstance Type=vm:InstallationPlatformDetailsVM, IsDesignTimeCreatable=True}"
-            mc:Ignorable="d">
+            d:DataContext="{d:DesignInstance Type=vm:EditInstallationPlatformsVM, IsDesignTimeCreatable=True}"
+             d:Background="Gray"
+            mc:Ignorable="d" d:DesignHeight="335.532" d:DesignWidth="716.71">
     <UserControl.Resources>
         <ResourceDictionary Source="/Resources/Dictionaries/Styles.xaml" />
     </UserControl.Resources>
@@ -24,7 +25,7 @@
                 <TextBlock Text="{Binding Platforms.Count}" VerticalAlignment="Center" d:Text="0"></TextBlock>
             </StackPanel>
             <Button Content="Back" Margin="5" MinWidth="100"
-                    Command="{Binding ProcessOkButtonCommand}" CommandParameter="{Binding RelativeSource={RelativeSource AncestorType=Window}}"
+                    Command="{Binding GoBackCommand}" CommandParameter="{Binding RelativeSource={RelativeSource AncestorType=Window}}"
                     Padding="{Binding Source={x:Static properties:Settings.Default},Path=AppButtonPadding}" />
             <Button Content="Use Paths" ToolTip="Populates 'Replace Text' with the selected Rom and Media Paths for editing."
                     Margin="5" MinWidth="100"

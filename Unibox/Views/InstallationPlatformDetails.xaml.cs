@@ -22,13 +22,13 @@ namespace Unibox.Views
     /// </summary>
     public partial class InstallationPlatformDetails : Window
     {
-        public InstallationPlatformDetailsVM ViewModel => this.DataContext as InstallationPlatformDetailsVM;
+        public EditInstallationPlatformsVM ViewModel => this.DataContext as EditInstallationPlatformsVM;
 
         public InstallationPlatformDetails()
         {
             InitializeComponent();
             this.Owner = Application.Current.MainWindow;
-            this.DataContext = App.Current.Services.GetService(typeof(ViewModels.InstallationPlatformDetailsVM));
+            this.DataContext = App.Current.Services.GetService(typeof(ViewModels.EditInstallationPlatformsVM));
         }
 
         private void Window_SizeChanged(object sender, SizeChangedEventArgs e)

@@ -21,12 +21,12 @@ namespace Unibox.Views
     /// </summary>
     public partial class EditInstallationPlatformsPage : UserControl
     {
-        public InstallationPlatformDetailsVM ViewModel => (InstallationPlatformDetailsVM)this.DataContext;
+        public EditInstallationPlatformsVM ViewModel => (EditInstallationPlatformsVM)this.DataContext;
 
         public EditInstallationPlatformsPage()
         {
             InitializeComponent();
-            this.DataContext = App.Current.Services.GetService(typeof(ViewModels.InstallationPlatformDetailsVM));
+            this.DataContext = App.Current.Services.GetService(typeof(ViewModels.EditInstallationPlatformsVM));
         }
     }
 }

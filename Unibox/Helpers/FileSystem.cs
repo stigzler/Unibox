@@ -78,9 +78,18 @@ namespace Unibox.Helpers
             OpenFolderDialog openFolderDialog = new OpenFolderDialog
             {
                 Title = prompt,
-                InitialDirectory = initialDirectory,
                 Multiselect = true
             };
+
+            if (Directory.Exists(Settings.Default.AddRomInitialDirectory))
+            {
+                openFolderDialog.InitialDirectory = initialDirectory;
+            }
+            else
+            {
+                openFolderDialog.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+            }
+
             if (openFolderDialog.ShowDialog() == true)
             {
                 folderPath = openFolderDialog.FolderName;

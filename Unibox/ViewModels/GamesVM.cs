@@ -209,7 +209,7 @@ namespace Unibox.ViewModels
             {
                 var result = AdonisUI.Controls.MessageBox.Show(
                    $"Unibox requires a plugin to be running on the target installation and has detected it requires installing. " +
-                   $"Unibox cannot operate without this plugin. Would you like to install this now?",
+                   $"Unibox cannot operate without this plugin. Would you like to install this now? Please close any instances of Launchbox or Bigbox on the target installation before doing so.",
                    "Plugin Installation Required", AdonisUI.Controls.MessageBoxButton.YesNo, AdonisUI.Controls.MessageBoxImage.Warning);
                 if (result == AdonisUI.Controls.MessageBoxResult.Yes)
                 {
@@ -217,7 +217,7 @@ namespace Unibox.ViewModels
                     if (install is null)
                     {
                         AdonisUI.Controls.MessageBox.Show(
-                           $"The plugin was installed successfully. You now need to restart BigBox or Launchbox on the selected installation:\r\n{value.InstallationPath}",
+                           $"The plugin was installed successfully.",
                            "Plugin Installed Successfully", AdonisUI.Controls.MessageBoxButton.OK, AdonisUI.Controls.MessageBoxImage.Information);
                     }
                     else
@@ -240,7 +240,7 @@ namespace Unibox.ViewModels
                 var result = AdonisUI.Controls.MessageBox.Show(
                        $"The Unibox plugin on the selected installation requires an update. It is STRONGLY recommended that this is done now as " +
                        $"there is a risk of the universe ending with mismatched versions (and that's bad). " +
-                       $"You will need to restart Launchbox or Bigbox on this installation once this is done. Would you like to update the plugin now?",
+                       $" Would you like to update the plugin now? Please close any instances of Launchbox or Bigbox on the target installation before doing so.",
                        "Unibox Plugin requires update", AdonisUI.Controls.MessageBoxButton.YesNo, AdonisUI.Controls.MessageBoxImage.Warning);
                 if (result == AdonisUI.Controls.MessageBoxResult.Yes)
                 {
@@ -248,7 +248,7 @@ namespace Unibox.ViewModels
                     if (update is null)
                     {
                         AdonisUI.Controls.MessageBox.Show(
-                           $"The plugin was updated successfully. You now need to restart BigBox or Launchbox on the selected installation\r\n{value.InstallationPath}",
+                           $"The plugin was updated successfully.",
                            "Plugin Updated Successfully", AdonisUI.Controls.MessageBoxButton.OK, AdonisUI.Controls.MessageBoxImage.Information);
                     }
                     else

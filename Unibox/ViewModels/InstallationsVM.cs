@@ -7,6 +7,7 @@ using System.Windows.Input;
 using Unibox.Data.Models;
 using Unibox.Data.ServiceOperationOutcomes;
 using Unibox.Messages;
+using Unibox.Messages.MessageDetails;
 using Unibox.Services;
 using Unibox.Views;
 
@@ -166,7 +167,7 @@ namespace Unibox.ViewModels
             WeakReferenceMessenger.Default.Send(new PageChangeMessage(new PageChangeMessageArgs()
             {
                 RequestType = Data.Enums.PageRequestType.EditInstallation,
-                Data = SelectedInstallation
+                Data = new InstallationEditMessageDetails(SelectedInstallation, SelectedInstallation.RemapRomsFrom, SelectedInstallation.RemapMediaFrom)
             }));
         }
 

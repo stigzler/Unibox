@@ -5,10 +5,10 @@ using System.Diagnostics.Eventing.Reader;
 using System.IO;
 using Unibox.Data.Enums;
 using Unibox.Data.LiteDb;
-using Unibox.Data.MessageDetails;
 using Unibox.Data.Models;
 using Unibox.Data.ServiceOperationOutcomes;
 using Unibox.Messages;
+using Unibox.Messages.MessageDetails;
 using Unibox.Views;
 
 namespace Unibox.Services

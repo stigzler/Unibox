@@ -5,12 +5,11 @@ using System.Text;
 using System.Threading.Tasks;
 using Unibox.Data.Enums;
 
-namespace Unibox.Data.MessageDetails
+namespace Unibox.Messages.MessageDetails
 {
     internal class UpdatePlatformMessageDetails
     {
         public UpdatePlatformMessageType MessageType { get; set; }
         public string SummaryLine { get; set; } = string.Empty;
-
     }
 }

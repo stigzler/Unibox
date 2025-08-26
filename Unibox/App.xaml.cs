@@ -72,7 +72,7 @@ namespace Unibox
             services.AddTransient<GamesVM>();
             services.AddTransient<InstallationsVM>();
             services.AddTransient<EditInstallationVM>();
-            services.AddTransient<InstallationPlatformDetailsVM>();
+            services.AddTransient<EditInstallationPlatformsVM>();
             services.AddTransient<PleaseWaitVM>();
             services.AddTransient<AddGameResultsVM>();
             services.AddTransient<UpdatePlatformsResultsVM>();

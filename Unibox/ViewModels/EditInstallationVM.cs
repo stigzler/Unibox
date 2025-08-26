@@ -285,24 +285,26 @@ namespace Unibox.ViewModels
             ObservableCollection<PlatformModel> platforms = new ObservableCollection<PlatformModel>(platformUpdateService.GetPlatformsFromXml(InstallationPath).OrderBy(p => p.Name));
             Mouse.OverrideCursor = Cursors.Arrow;
 
-            InstallationPlatformDetails installationPlatformDetails = new InstallationPlatformDetails();
+            WeakReferenceMessenger.Default.Send(new PageChangeMessage(PageRequestType.InstallationPlatforms, platforms));
+
+            //InstallationPlatformDetails installationPlatformDetails = new InstallationPlatformDetails();
 
             //installationPlatformDetails.ViewModel.PageTitle = "Launchbox database paths for Installation";
             //installationPlatformDetails.ViewModel.PageSubtitle = Properties.Resources.PlatformDetailsText;
 
-            installationPlatformDetails.ViewModel.Platforms = new ObservableCollection<PlatformModel>(platforms);
+            //installationPlatformDetails.ViewModel.Platforms = new ObservableCollection<PlatformModel>(platforms);
 
-            installationPlatformDetails.ShowDialog();
+            //installationPlatformDetails.ShowDialog();
 
-            DialogResult dialogResult = installationPlatformDetails.ViewModel.DialogResult;
-            if (dialogResult == Data.Enums.DialogResult.UsePath)
-            {
-                if (installationPlatformDetails.ViewModel.SelectedPlatform != null)
-                {
-                    RemapRomsFrom = installationPlatformDetails.ViewModel.SelectedPlatform.LaunchboxRomFolder;
-                    RemapMediaFrom = installationPlatformDetails.ViewModel.SelectedPlatformFolder.LaunchboxMediaPath;
-                }
-            }
+            //DialogResult dialogResult = installationPlatformDetails.ViewModel.DialogResult;
+            //if (dialogResult == Data.Enums.DialogResult.UsePath)
+            //{
+            //    if (installationPlatformDetails.ViewModel.SelectedPlatform != null)
+            //    {
+            //        RemapRomsFrom = installationPlatformDetails.ViewModel.SelectedPlatform.LaunchboxRomFolder;
+            //        RemapMediaFrom = installationPlatformDetails.ViewModel.SelectedPlatformFolder.LaunchboxMediaPath;
+            //    }
+            //}
         }
 
         private void UpdateInstallation()

@@ -8,7 +8,7 @@
         xmlns:vm="clr-namespace:Unibox.ViewModels"
         xmlns:properties="clr-namespace:Unibox.Properties"
         FontSize="{Binding Source={x:Static properties:Settings.Default},Path=AppFontSize}"
-        d:DataContext="{d:DesignInstance Type=vm:InstallationPlatformDetailsVM, IsDesignTimeCreatable=True}"
+        d:DataContext="{d:DesignInstance Type=vm:EditInstallationPlatformsVM, IsDesignTimeCreatable=True}"
         mc:Ignorable="d" WindowStartupLocation="CenterOwner"
         Title="Platform Details" ResizeMode="CanResizeWithGrip"
         Height="{Binding Source={x:Static properties:Settings.Default},Path=AppMainHeight}"
