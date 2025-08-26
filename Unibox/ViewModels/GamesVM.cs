@@ -17,6 +17,7 @@ using System.Windows.Input;
 using Unibox.Data.Models;
 using Unibox.Data.ServiceOperationOutcomes;
 using Unibox.Messages;
+using Unibox.Messages.MessageDetails;
 using Unibox.Services;
 using Unibox.Views;
 
@@ -167,9 +168,15 @@ namespace Unibox.ViewModels
 
             pleaseWaitWindow.CloseWindow();
 
-            AddGameResultsWindow addGameResultsWindow = new AddGameResultsWindow();
-            addGameResultsWindow.ViewModel.AddGameResults = addGameOutcomes;
-            addGameResultsWindow.ShowDialog();
+            WeakReferenceMessenger.Default.Send(new PageChangeMessage(new PageChangeMessageArgs()
+            {
+                RequestType = Data.Enums.PageRequestType.AddGameResults,
+                Data = addGameOutcomes
+            }));
+
+            //AddGameResultsWindow addGameResultsWindow = new AddGameResultsWindow();
+            //addGameResultsWindow.ViewModel.AddGameResults = addGameOutcomes;
+            //addGameResultsWindow.ShowDialog();
 
             // Update User on outcomes
         }

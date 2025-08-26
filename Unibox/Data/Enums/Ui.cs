@@ -21,6 +21,8 @@ namespace Unibox.Data.Enums
         None,
         Installations,
         EditInstallation,
-        InstallationPlatforms
+        InstallationPlatforms,
+        AddGameResults,
+        Games
     }
 }

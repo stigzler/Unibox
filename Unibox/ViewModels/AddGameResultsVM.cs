@@ -1,4 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
+using CommunityToolkit.Mvvm.Messaging;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -6,6 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Unibox.Data.ServiceOperationOutcomes;
+using Unibox.Messages;
 
 namespace Unibox.ViewModels
 {
@@ -19,6 +22,15 @@ namespace Unibox.ViewModels
 
         public AddGameResultsVM()
         {
+        }
+
+        [RelayCommand]
+        private void CloseResults()
+        {
+            WeakReferenceMessenger.Default.Send(new PageChangeMessage(new PageChangeMessageArgs()
+            {
+                RequestType = Data.Enums.PageRequestType.Games
+            }));
         }
     }
 }

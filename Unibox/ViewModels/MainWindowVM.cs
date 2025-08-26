@@ -17,6 +17,7 @@ using System.Windows.Documents;
 using System.Windows.Media;
 using Unibox.Data.LiteDb;
 using Unibox.Data.Models;
+using Unibox.Data.ServiceOperationOutcomes;
 using Unibox.Messages;
 using Unibox.Messages.MessageDetails;
 using Unibox.Properties;
@@ -53,11 +54,15 @@ namespace Unibox.ViewModels
 
         public DatabaseService DatabaseService;
 
+        // Pages
         private SettingsPage settingsPage = new SettingsPage();
+
         private GamesPage gamesPage = new GamesPage();
         private InstallationsPage installationsPage = new InstallationsPage();
         private EditInstallationPage editInstallationPage = new EditInstallationPage();
         private EditInstallationPlatformsPage editInstallationPlatformsPage = new EditInstallationPlatformsPage();
+        private AddGameResultsPage addGameResultsPage = new AddGameResultsPage();
+
         private LoggingService loggingService;
 
         public MainWindowVM()
@@ -171,6 +176,16 @@ namespace Unibox.ViewModels
                 case Data.Enums.PageRequestType.InstallationPlatforms:
                     editInstallationPlatformsPage.ViewModel.Platforms = (ObservableCollection<PlatformModel>?)args.Data;
                     CurrentPage = editInstallationPlatformsPage;
+                    break;
+
+                case Data.Enums.PageRequestType.AddGameResults:
+                    ObservableCollection<AddGameOutcome> addGameOutcomes = (ObservableCollection<AddGameOutcome>)args.Data;
+                    addGameResultsPage.ViewModel.AddGameResults = addGameOutcomes;
+                    CurrentPage = addGameResultsPage;
+                    break;
+
+                case Data.Enums.PageRequestType.Games:
+                    CurrentPage = gamesPage;
                     break;
             }
         }
