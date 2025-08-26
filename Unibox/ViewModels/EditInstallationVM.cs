@@ -287,8 +287,8 @@ namespace Unibox.ViewModels
 
             InstallationPlatformDetails installationPlatformDetails = new InstallationPlatformDetails();
 
-            installationPlatformDetails.ViewModel.PageTitle = "Launchbox database paths for Installation";
-            installationPlatformDetails.ViewModel.PageSubtitle = Properties.Resources.PlatformDetailsText;
+            //installationPlatformDetails.ViewModel.PageTitle = "Launchbox database paths for Installation";
+            //installationPlatformDetails.ViewModel.PageSubtitle = Properties.Resources.PlatformDetailsText;
 
             installationPlatformDetails.ViewModel.Platforms = new ObservableCollection<PlatformModel>(platforms);
 

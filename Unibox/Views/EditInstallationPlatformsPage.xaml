@@ -1,0 +1,78 @@
+﻿<UserControl x:Class="Unibox.Views.EditInstallationPlatformsPage"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:local="clr-namespace:Unibox.Views"
+            xmlns:vm="clr-namespace:Unibox.ViewModels"
+            xmlns:properties="clr-namespace:Unibox.Properties"
+            FontSize="{Binding Source={x:Static properties:Settings.Default},Path=AppFontSize}"
+            d:DataContext="{d:DesignInstance Type=vm:InstallationPlatformDetailsVM, IsDesignTimeCreatable=True}"
+            mc:Ignorable="d">
+    <UserControl.Resources>
+        <ResourceDictionary Source="/Resources/Dictionaries/Styles.xaml" />
+    </UserControl.Resources>
+
+    <DockPanel>
+        <StackPanel DockPanel.Dock="Top">
+            <TextBlock x:Name="Title"  Text="{Binding PageTitle}" Style="{DynamicResource PageHeader}" />
+            <TextBlock x:Name="SubTitle" Text="{Binding PageSubtitle}" Style="{DynamicResource PageSubText}" />
+        </StackPanel>
+        <StackPanel Orientation="Horizontal" DockPanel.Dock="Bottom" HorizontalAlignment="Right" Margin="5">
+            <StackPanel Orientation="Horizontal" Margin="5">
+                <TextBlock Text="Platforms: " Margin="5,0,0,0" VerticalAlignment="Center" />
+                <TextBlock Text="{Binding Platforms.Count}" VerticalAlignment="Center" d:Text="0"></TextBlock>
+            </StackPanel>
+            <Button Content="Back" Margin="5" MinWidth="100"
+                    Command="{Binding ProcessOkButtonCommand}" CommandParameter="{Binding RelativeSource={RelativeSource AncestorType=Window}}"
+                    Padding="{Binding Source={x:Static properties:Settings.Default},Path=AppButtonPadding}" />
+            <Button Content="Use Paths" ToolTip="Populates 'Replace Text' with the selected Rom and Media Paths for editing."
+                    Margin="5" MinWidth="100"
+                    Command="{Binding UsePathCommand}" CommandParameter="{Binding RelativeSource={RelativeSource AncestorType=Window}}"
+                    Padding="{Binding Source={x:Static properties:Settings.Default},Path=AppButtonPadding}" />
+        </StackPanel>
+
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*" />
+                <RowDefinition Height="6" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+
+            <Border Grid.Row="0" BorderThickness="1" BorderBrush="gray" Margin="6">
+                <DockPanel>
+                    <TextBlock Text="Rom Paths" DockPanel.Dock="Top" FontWeight="Bold" Margin="5"></TextBlock>
+                    <ListView x:Name="MainList"  ItemsSource="{Binding Platforms}" ScrollViewer.VerticalScrollBarVisibility="auto"
+                      SelectedItem="{Binding SelectedPlatform, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+                        <ListView.View>
+                            <GridView>
+                                <GridViewColumn Header="Name" Width="200" DisplayMemberBinding="{Binding Name}" />
+                                <GridViewColumn Header="ScrapeAs" Width="120" DisplayMemberBinding="{Binding LaunchboxScrapeAs}" />
+                                <GridViewColumn Header="Roms Path" Width="auto" DisplayMemberBinding="{Binding LaunchboxRomFolder}" />
+                            </GridView>
+                        </ListView.View>
+                    </ListView>
+                </DockPanel>
+            </Border>
+
+            <GridSplitter Grid.Row="1" Background="gray" BorderThickness="10" Margin="2"
+                          HorizontalAlignment="Stretch" ></GridSplitter>
+
+            <Border Grid.Row="2" BorderThickness="1" BorderBrush="gray" Margin="6">
+                <DockPanel>
+                    <TextBlock Text="Media Paths" DockPanel.Dock="Top" FontWeight="Bold" Margin="5"></TextBlock>
+
+                    <ListView ItemsSource="{Binding PlatformFolders, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" ScrollViewer.VerticalScrollBarVisibility="Auto"
+                      SelectedItem="{Binding SelectedPlatformFolder, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+                        <ListView.View>
+                            <GridView>
+                                <GridViewColumn Header="Media Type" Width="200" DisplayMemberBinding="{Binding MediaType.Name}" />
+                                <GridViewColumn Header="Folder Path" Width="auto" DisplayMemberBinding="{Binding LaunchboxMediaPath}" />
+                            </GridView>
+                        </ListView.View>
+                    </ListView>
+                </DockPanel>
+            </Border>
+        </Grid>
+    </DockPanel>
+</UserControl>

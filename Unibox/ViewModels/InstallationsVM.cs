@@ -52,6 +52,8 @@ namespace Unibox.ViewModels
         [ObservableProperty]
         private PlatformFolderModel selectedPlatformFolder;
 
+        private EditInstallationPage editInstallationPage = new EditInstallationPage();
+
         public InstallationsVM()
         {
         }

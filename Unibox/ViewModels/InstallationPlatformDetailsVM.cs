@@ -16,16 +16,16 @@ namespace Unibox.ViewModels
     public partial class InstallationPlatformDetailsVM
     {
         [ObservableProperty]
-        private string pageTitle = "Installation Platforms";
+        private string pageTitle = "Launchbox database paths for Installation";
 
         [ObservableProperty]
-        private string pageSubtitle = "Details regarding platforms";
+        private string pageSubtitle = Properties.Resources.PlatformDetailsText;
 
         [ObservableProperty]
-        ObservableCollection<PlatformModel> platforms = new ObservableCollection<PlatformModel>();
+        private ObservableCollection<PlatformModel> platforms = new ObservableCollection<PlatformModel>();
 
         [ObservableProperty]
-        ObservableCollection<PlatformFolderModel> platformFolders = new ObservableCollection<PlatformFolderModel>();
+        private ObservableCollection<PlatformFolderModel> platformFolders = new ObservableCollection<PlatformFolderModel>();
 
         [ObservableProperty]
         [NotifyPropertyChangedFor(nameof(PlatformFolders))]
@@ -38,7 +38,6 @@ namespace Unibox.ViewModels
 
         public InstallationPlatformDetailsVM()
         {
-            
         }
 
         partial void OnSelectedPlatformChanged(PlatformModel value)
@@ -58,11 +57,7 @@ namespace Unibox.ViewModels
         private void ProcessOkButton(Window window)
         {
             DialogResult = DialogResult.OK;
-            if (window != null) window.Close();        
+            if (window != null) window.Close();
         }
-
-
-
-
     }
 }

@@ -20,6 +20,7 @@ namespace Unibox.Data.Enums
     {
         None,
         Installations,
-        EditInstallation
+        EditInstallation,
+        InstallationPlatforms
     }
 }
