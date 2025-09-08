@@ -65,7 +65,7 @@
             </Grid.ColumnDefinitions>
 
             <!-- Collapsible Menu -->
-            <StackPanel Grid.Column="0">
+            <StackPanel Grid.Column="0" IsEnabled="{Binding NavigationEnabled}">
 
                 <!-- Menu Buttons -->
 

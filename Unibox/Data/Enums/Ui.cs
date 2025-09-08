@@ -23,6 +23,8 @@ namespace Unibox.Data.Enums
         EditInstallation,
         InstallationPlatforms,
         AddGameResults,
-        Games
+        Games,
+        PleaseWait,
+        UpdatePlatformsResults
     }
 }

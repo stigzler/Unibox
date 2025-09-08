@@ -11,28 +11,23 @@ using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using System.Windows.Navigation;
 using System.Windows.Shapes;
 using Unibox.ViewModels;
 
 namespace Unibox.Views
 {
     /// <summary>
-    /// Interaction logic for UpdatePlatformsResultsWindow.xaml
+    /// Interaction logic for UpdatePlatformsResultsPage.xaml
     /// </summary>
-    public partial class UpdatePlatformsResultsWindow : Window
+    public partial class UpdatePlatformsResultsPage : UserControl
     {
         public UpdatePlatformsResultsVM ViewModel => (UpdatePlatformsResultsVM)this.DataContext;
 
-        public UpdatePlatformsResultsWindow()
+        public UpdatePlatformsResultsPage()
         {
             InitializeComponent();
             this.DataContext = App.Current.Services.GetService<UpdatePlatformsResultsVM>();
-            this.Owner = Application.Current.MainWindow;
-        }
-
-        private void CloseBT_Click(object sender, RoutedEventArgs e)
-        {
-            this.Close();
         }
     }
 }

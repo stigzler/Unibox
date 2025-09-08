@@ -26,7 +26,7 @@ using Unibox.Views;
 
 namespace Unibox.ViewModels
 {
-    public partial class MainWindowVM : ObservableObject, IRecipient<ProgressMessage>, IRecipient<PageChangeMessage>
+    public partial class MainWindowVM : ObservableObject, IRecipient<ProgressMessage>, IRecipient<PageChangeMessage>, IRecipient<SetNavigationEnabledMessage>
     {
         [ObservableProperty]
         private string title = "Unibox";
@@ -52,6 +52,9 @@ namespace Unibox.ViewModels
         [ObservableProperty]
         private int statusBarProgressBarPercentage = 0;
 
+        [ObservableProperty]
+        private bool navigationEnabled = true;
+
         public DatabaseService DatabaseService;
 
         // Pages
@@ -62,6 +65,8 @@ namespace Unibox.ViewModels
         private EditInstallationPage editInstallationPage = new EditInstallationPage();
         private EditInstallationPlatformsPage editInstallationPlatformsPage = new EditInstallationPlatformsPage();
         private AddGameResultsPage addGameResultsPage = new AddGameResultsPage();
+        private PleaseWaitPage pleaseWaitPage = new PleaseWaitPage();
+        private UpdatePlatformsResultsPage updatePlatformsResultsPage = new UpdatePlatformsResultsPage();
 
         private LoggingService loggingService;
 
@@ -80,6 +85,7 @@ namespace Unibox.ViewModels
 
             WeakReferenceMessenger.Default.Register<ProgressMessage>(this);
             WeakReferenceMessenger.Default.Register<PageChangeMessage>(this);
+            WeakReferenceMessenger.Default.Register<SetNavigationEnabledMessage>(this);
 
             UpdateIstallationsFromDatabase();
 
@@ -187,7 +193,22 @@ namespace Unibox.ViewModels
                 case Data.Enums.PageRequestType.Games:
                     CurrentPage = gamesPage;
                     break;
+
+                case Data.Enums.PageRequestType.PleaseWait:
+                    CurrentPage = pleaseWaitPage;
+                    pleaseWaitPage.ViewModel.Text = args.Data?.ToString() ?? "Please wait...";
+                    break;
+
+                case Data.Enums.PageRequestType.UpdatePlatformsResults:
+                    CurrentPage = updatePlatformsResultsPage;
+                    updatePlatformsResultsPage.ViewModel.UpdatePlatformsOutcome = (UpdatePlatformsOutcome)args.Data;
+                    break;
             }
+        }
+
+        void IRecipient<SetNavigationEnabledMessage>.Receive(SetNavigationEnabledMessage message)
+        {
+            NavigationEnabled = message.Value;
         }
     }
 }

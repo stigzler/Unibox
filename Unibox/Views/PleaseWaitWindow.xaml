@@ -15,8 +15,7 @@
         Height="{Binding Source={x:Static properties:Settings.Default},Path=AppRomUploadHeight}"
         Width="{Binding Source={x:Static properties:Settings.Default},Path=AppRomUploadWidth}"
         SizeChanged="Window_SizeChanged"
-        d:DesignHeight="160" d:DesignWidth="500"
->
+        d:DesignHeight="160" d:DesignWidth="500">
 
     <Window.Style>
         <Style TargetType="Window" BasedOn="{StaticResource {x:Type Window}}" />

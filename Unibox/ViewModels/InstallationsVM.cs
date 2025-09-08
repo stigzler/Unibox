@@ -210,15 +210,17 @@ namespace Unibox.ViewModels
 
             Mouse.OverrideCursor = Cursors.Arrow;
 
-            UpdatePlatformsResultsWindow updatePlatformsResultsWindow = new UpdatePlatformsResultsWindow();
-            updatePlatformsResultsWindow.ViewModel.UpdatePlatformsOutcome = updatePlatformsOutcome;
-            updatePlatformsResultsWindow.ShowDialog();
+            WeakReferenceMessenger.Default.Send(new PageChangeMessage(new PageChangeMessageArgs()
+            {
+                RequestType = Data.Enums.PageRequestType.UpdatePlatformsResults,
+                Data = updatePlatformsOutcome
+            }));
+
+            WeakReferenceMessenger.Default.Send(new InstallationChangedMessage(SelectedInstallation));
 
             // UpdatePlatformsList();
 
             SelectedInstallation = selectedInstallation;
-
-            WeakReferenceMessenger.Default.Send(new InstallationChangedMessage(SelectedInstallation));
         }
 
         private void ShowInfoBox(string title, string message, AdonisUI.Controls.MessageBoxImage image = AdonisUI.Controls.MessageBoxImage.Information)

@@ -128,9 +128,17 @@ namespace Unibox.ViewModels
 
             ObservableCollection<AddGameOutcome> addGameOutcomes = new ObservableCollection<AddGameOutcome>();
 
-            PleaseWaitWindow pleaseWaitWindow = new PleaseWaitWindow();
-            pleaseWaitWindow.ViewModel.Text = "Please wait whilst the selected Roms are processed...";
-            pleaseWaitWindow.Show();
+            //PleaseWaitWindow pleaseWaitWindow = new PleaseWaitWindow();
+            //pleaseWaitWindow.ViewModel.Text = "Please wait whilst the selected Roms are processed...";
+            //pleaseWaitWindow.Show();
+
+            WeakReferenceMessenger.Default.Send(new SetNavigationEnabledMessage(false));
+
+            WeakReferenceMessenger.Default.Send(new PageChangeMessage(new PageChangeMessageArgs()
+            {
+                RequestType = Data.Enums.PageRequestType.PleaseWait,
+                Data = "Please wait whilst the selected Roms are processed..."
+            }));
 
             int count = 1;
 
@@ -166,7 +174,7 @@ namespace Unibox.ViewModels
                 count += 1;
             }
 
-            pleaseWaitWindow.CloseWindow();
+            //pleaseWaitWindow.CloseWindow();
 
             WeakReferenceMessenger.Default.Send(new PageChangeMessage(new PageChangeMessageArgs()
             {
@@ -174,11 +182,7 @@ namespace Unibox.ViewModels
                 Data = addGameOutcomes
             }));
 
-            //AddGameResultsWindow addGameResultsWindow = new AddGameResultsWindow();
-            //addGameResultsWindow.ViewModel.AddGameResults = addGameOutcomes;
-            //addGameResultsWindow.ShowDialog();
-
-            // Update User on outcomes
+            WeakReferenceMessenger.Default.Send(new SetNavigationEnabledMessage(true));
         }
 
         partial void OnSearchTermChanged(string value)
