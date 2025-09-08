@@ -34,6 +34,7 @@ namespace Unibox.Services
         }
 
         private void OnConnected(NetMessageClient client)
+
         {
             loggingService.WriteLine($"Client connected to server successfully.");
         }

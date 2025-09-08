@@ -51,9 +51,19 @@ namespace Unibox.Services
             }
 
             // AT THIS POINT, PROCESS WILL COMPLETE SUCCESSFULLY, but could contain warnings
-
+            int count = 0;
             foreach (PlatformModel launchboxPlatform in xmlPlatforms)
             {
+                count += 1;
+
+                WeakReferenceMessenger.Default.Send(new ProgressMessage(
+                    new ProgressMessageArgs
+                    {
+                        PrimaryMessage = $"Processing Platform ({count}/{xmlPlatforms.Count()}): {launchboxPlatform.Name}",
+                        PercentageComplete = (count * 100) / xmlPlatforms.Count()
+                    }
+                ));
+
                 // Check if the platform already exists in the database
                 PlatformModel installationPlatform = installation.Platforms.Where(p => p.Name == launchboxPlatform.Name).FirstOrDefault();
                 if (installationPlatform == null)
@@ -236,6 +246,13 @@ namespace Unibox.Services
                 {
                     PlatformFolderModel installationPlatformFolder =
                         installationPlatform.PlatformFolders.Where(pf => pf.MediaType.Name == launchboxPlatformFolder.MediaType.Name).FirstOrDefault();
+
+                    WeakReferenceMessenger.Default.Send(new ProgressMessage(
+                             new ProgressMessageArgs
+                             {
+                                 SecondaryMessage = $"Processing Media Folder: {launchboxPlatformFolder.MediaType}"
+                             }
+                         ));
 
                     if (installationPlatformFolder == null)
                     {

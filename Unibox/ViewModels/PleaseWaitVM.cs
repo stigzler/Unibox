@@ -21,6 +21,12 @@ namespace Unibox.ViewModels
         [ObservableProperty]
         private string secondaryText = "Please wait...";
 
+        [ObservableProperty]
+        private int percentageComplete = 0;
+
+        [ObservableProperty]
+        private bool isIndeterminate = false;
+
         public PleaseWaitVM()
         {
             WeakReferenceMessenger.Default.Register<ProgressMessage>(this);
@@ -31,6 +37,15 @@ namespace Unibox.ViewModels
             Debug.WriteLine(message);
             if (!String.IsNullOrWhiteSpace(message.Value.PrimaryMessage)) PrimaryText = message.Value.PrimaryMessage;
             if (!String.IsNullOrWhiteSpace(message.Value.SecondaryMessage)) SecondaryText = message.Value.SecondaryMessage;
+            if (message.Value.PercentageComplete != -1)
+            {
+                IsIndeterminate = false;
+                PercentageComplete = message.Value.PercentageComplete;
+            }
+            else
+            {
+                //IsIndeterminate = true;
+            }
         }
     }
 }

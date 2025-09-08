@@ -293,20 +293,6 @@ namespace Unibox.Services
                 EmulatorID = GetEmulatorIdForPlatform(platformModel.Name, installationModel.InstallationPath)
             };
 
-            // Below kept in just in case decide to allow add games in offline mode (i.e. doesn't require launchbox/bb to be running)
-            //Unbroken.LaunchBox.Plugins.Data.IGame game = new Unbroken.LaunchBox.Plugins.Data.IGame
-            //{
-            //    Title = gameDTO.Title,
-            //    ApplicationPath = gameDTO.ApplicationPath,
-            //    Developer = gameDTO.Developer,
-            //    Publisher = gameDTO.Publisher,
-            //    ReleaseDate = gameDTO.ReleaseDate,
-            //    Notes = gameDTO.Notes,
-            //    Platform = gameDTO.Platform,
-            //    DateAdded = gameDTO.DateAdded,
-            //    EmulatorId = gameDTO.EmulatorID
-            //};
-
             if (Properties.Settings.Default.UseSsForRomAdds &&
                 Properties.Settings.Default.StopRomAddOnNoScreenscraperMatch &&
                 noMatchFoundInScreenscraper)

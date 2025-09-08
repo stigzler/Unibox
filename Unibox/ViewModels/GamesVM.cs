@@ -148,7 +148,8 @@ namespace Unibox.ViewModels
                     new ProgressMessageArgs
                     {
                         PrimaryMessage = $"Processing Rom ({count}/{romFiles.Count()}): {Path.GetFileName(romFile)}",
-                        SecondaryMessage = "Starting process."
+                        SecondaryMessage = "Starting process.",
+                        PercentageComplete = (count * 100) / romFiles.Count()
                     }
                 ));
 

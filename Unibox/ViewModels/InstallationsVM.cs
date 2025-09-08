@@ -198,17 +198,33 @@ namespace Unibox.ViewModels
         }
 
         [RelayCommand]
-        private void UpdatePlatforms()
+        private async Task UpdatePlatformsAsync()
         {
             if (SelectedInstallation == null) return;
 
-            Mouse.OverrideCursor = Cursors.Wait;
-
             var selectedInstallation = SelectedInstallation;
 
-            UpdatePlatformsOutcome updatePlatformsOutcome = platformService.UpdateInstallationPlatforms(selectedInstallation);
+            WeakReferenceMessenger.Default.Send(new SetNavigationEnabledMessage(false));
 
-            Mouse.OverrideCursor = Cursors.Arrow;
+            WeakReferenceMessenger.Default.Send(new PageChangeMessage(new PageChangeMessageArgs()
+            {
+                RequestType = Data.Enums.PageRequestType.PleaseWait,
+                Data = "Please wait whilst the Platforms data is updated...",
+            }));
+
+            WeakReferenceMessenger.Default.Send(new ProgressMessage(
+                  new ProgressMessageArgs
+                  {
+                      PrimaryMessage = $"Starting Platform Update Process...",
+                      SecondaryMessage = "Starting process...",
+                      PercentageComplete = 0
+                  }
+
+              ));
+
+            UpdatePlatformsOutcome updatePlatformsOutcome = await Task.Run(() => platformService.UpdateInstallationPlatforms(selectedInstallation));
+
+            // UpdatePlatformsOutcome updatePlatformsOutcome = platformService.UpdateInstallationPlatforms(selectedInstallation);
 
             WeakReferenceMessenger.Default.Send(new PageChangeMessage(new PageChangeMessageArgs()
             {
@@ -221,6 +237,8 @@ namespace Unibox.ViewModels
             // UpdatePlatformsList();
 
             SelectedInstallation = selectedInstallation;
+
+            WeakReferenceMessenger.Default.Send(new SetNavigationEnabledMessage(true));
         }
 
         private void ShowInfoBox(string title, string message, AdonisUI.Controls.MessageBoxImage image = AdonisUI.Controls.MessageBoxImage.Information)
