@@ -8,6 +8,7 @@
              xmlns:converters="clr-namespace:Unibox.Converters"
              xmlns:properties="clr-namespace:Unibox.Properties"
              mc:Ignorable="d" d:Foreground="White"
+             xmlns:controls="clr-namespace:Unibox.Controls"
              d:DataContext="{d:DesignInstance Type=vm:GamesVM, IsDesignTimeCreatable=True}"
              d:Height="139" d:Width="800" d:DesignHeight="189" d:DesignWidth="728"
              FontSize="{Binding Source={x:Static properties:Settings.Default},Path=AppFontSize}"
@@ -20,6 +21,11 @@
         <converters:DateTimeToYearConverter x:Key="DateTimeToYearConverter" />
         <converters:NullToVisibilityConverter x:Key="NullToVisibilityConverter" />
         <converters:NullToBoolConverter x:Key="NullToBoolConverter" />
+        <Style TargetType="{x:Type controls:TouchComboBox}" x:Key="MyTouchComboBoxStyle" BasedOn="{StaticResource {x:Type ComboBox}}">
+            <Setter Property="Background" Value="Red" />
+            <Setter Property="Foreground" Value="Yellow" />
+            <!-- Setters for Background, Foreground, etc. -->
+        </Style>
     </UserControl.Resources>
 
     <Grid>
@@ -55,9 +61,15 @@
                     </Grid.ColumnDefinitions>
                     <Image Grid.Column="0" Source="/Resources/Images/Platform.png" Width="32" Margin="5" />
 
-                    <ComboBox Grid.Column="1"  MinWidth="150" ItemsSource="{Binding PlatformsView}" DisplayMemberPath="Name" Margin="5"
+                    <controls:TouchComboBox Grid.Column="1"  MinWidth="150" ItemsSource="{Binding PlatformsView}" DisplayMemberPath="Name" Margin="5"
                       SelectedItem="{Binding SelectedPlatform}" d:Visibility="Visible"
-                      Visibility="{Binding InstallationAvailable, Converter={StaticResource BoolToVisibilityConverter}}" />
+                      Visibility="{Binding InstallationAvailable, Converter={StaticResource BoolToVisibilityConverter}}"
+                        Style="{StaticResource MyTouchComboBoxStyle}"
+                        TouchScrollSpeed="1.5"
+                        TouchScrollAcceleration="0.2"
+                        TouchScrollDeceleration="0.15"
+                        MaxDropDownItems="15"
+                        MaxDropDownHeightInPixels="500" />
                 </Grid>
 
                 <Grid Visibility="{Binding InstallationAvailable, Converter={StaticResource BoolToInverseVisibilityConverter}}">
