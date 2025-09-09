@@ -347,5 +347,17 @@ namespace Unibox.Properties {
                 this["AppPlatformDetailsWidth"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("5")]
+        public int AppListPadding {
+            get {
+                return ((int)(this["AppListPadding"]));
+            }
+            set {
+                this["AppListPadding"] = value;
+            }
+        }
     }
 }

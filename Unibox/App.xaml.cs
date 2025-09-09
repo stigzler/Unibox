@@ -15,6 +15,8 @@ namespace Unibox
     /// </summary>
     public partial class App : Application
     {
+        private Window window;
+
         public App()
         {
             Services = ConfigureServices();
@@ -22,9 +24,6 @@ namespace Unibox
             this.InitializeComponent();
 
             UpgradeSettingsIfNeeded();
-
-            Window window = new MainWindow();
-            window.Show();
         }
 
         private void UpgradeSettingsIfNeeded()
@@ -80,6 +79,35 @@ namespace Unibox
             // Add other necessary services here
             // e.g., services.AddSingleton<IDataService, DataService>();
             return services.BuildServiceProvider();
+        }
+
+        private static Mutex _mutex = null;
+
+        protected override void OnStartup(StartupEventArgs e)
+        {
+            const string appName = "UniBox";
+            bool createdNew;
+
+            _mutex = new Mutex(true, appName, out createdNew);
+
+            if (!createdNew)
+            {
+                //window.Hide();
+
+                Helpers.Theming.ApplyTheme();
+
+                AdonisUI.Controls.MessageBox.Show($"Another instance of Unibox is already running. Please switch to that instance.", "Unibox already running",
+                    AdonisUI.Controls.MessageBoxButton.OK, AdonisUI.Controls.MessageBoxImage.Warning);
+
+                //app is already running! Exiting the application
+                Application.Current.Shutdown();
+            }
+
+            window = new MainWindow();
+
+            window.Show();
+
+            base.OnStartup(e);
         }
     }
 }

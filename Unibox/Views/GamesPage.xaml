@@ -11,15 +11,22 @@
              d:DataContext="{d:DesignInstance Type=vm:GamesVM, IsDesignTimeCreatable=True}"
              d:Height="139" d:Width="800" d:DesignHeight="189" d:DesignWidth="728"
              FontSize="{Binding Source={x:Static properties:Settings.Default},Path=AppFontSize}"
+             x:Name="GamesPageControl"
 >
 
     <UserControl.Resources>
-        <converters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter" />
-        <converters:BoolToInverseVisibilityConverter x:Key="BoolToInverseVisibilityConverter" />
-        <converters:PathToFilenameConverter x:Key="PathToFilenameConverter" />
-        <converters:DateTimeToYearConverter x:Key="DateTimeToYearConverter" />
-        <converters:NullToVisibilityConverter x:Key="NullToVisibilityConverter" />
-        <converters:NullToBoolConverter x:Key="NullToBoolConverter" />
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="/Resources/Dictionaries/Styles.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+            <converters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter" />
+            <converters:BoolToInverseVisibilityConverter x:Key="BoolToInverseVisibilityConverter" />
+            <converters:PathToFilenameConverter x:Key="PathToFilenameConverter" />
+            <converters:DateTimeToYearConverter x:Key="DateTimeToYearConverter" />
+            <converters:NullToVisibilityConverter x:Key="NullToVisibilityConverter" />
+            <converters:NullToBoolConverter x:Key="NullToBoolConverter" />
+            <converters:EightyPercentConverter x:Key="EightyPercentConverter" />
+        </ResourceDictionary>
     </UserControl.Resources>
 
     <Grid>
@@ -42,7 +49,8 @@
                 </Grid.ColumnDefinitions>
                 <Image Grid.Column="0" Source="/Resources/Images/LaunchboxIcon.png" Width="32" />
                 <ComboBox Grid.Column="1" x:Name="InstallationsCB" MinWidth="150" ItemsSource="{Binding InstallationsView}"
-                      DisplayMemberPath="Name" SelectedItem="{Binding SelectedInstallation, Mode=TwoWay}" Margin="5" />
+                      DisplayMemberPath="Name" SelectedItem="{Binding SelectedInstallation, Mode=TwoWay}" Margin="5"
+                      ItemContainerStyle="{StaticResource ComboBoxItemPaddingStyle}" />
             </Grid>
 
             <Grid Grid.Column="1" Visibility="{Binding SelectedInstallation, Converter={StaticResource NullToVisibilityConverter}}"
@@ -57,7 +65,9 @@
 
                     <ComboBox Grid.Column="1"  MinWidth="150" ItemsSource="{Binding PlatformsView}" DisplayMemberPath="Name" Margin="5"
                       SelectedItem="{Binding SelectedPlatform}" d:Visibility="Visible"
-                      Visibility="{Binding InstallationAvailable, Converter={StaticResource BoolToVisibilityConverter}}" />
+                      Visibility="{Binding InstallationAvailable, Converter={StaticResource BoolToVisibilityConverter}}"
+                      ItemContainerStyle="{StaticResource ComboBoxItemPaddingStyle}"
+                    MaxDropDownHeight="{Binding ActualHeight, ElementName=GamesPageControl, Converter={StaticResource EightyPercentConverter}}" />
                 </Grid>
 
                 <Grid Visibility="{Binding InstallationAvailable, Converter={StaticResource BoolToInverseVisibilityConverter}}">

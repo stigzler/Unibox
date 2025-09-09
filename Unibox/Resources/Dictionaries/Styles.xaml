@@ -1,6 +1,8 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-                    xmlns:adonis="clr-namespace:AdonisUI;assembly=AdonisUI">
+                    xmlns:adonis="clr-namespace:AdonisUI;assembly=AdonisUI"
+                    xmlns:properties="clr-namespace:Unibox.Properties"
+>
 
     <Style TargetType="ToolTip">
         <Style.Resources>
@@ -84,4 +86,7 @@
     </Style>
 
     <!-- Smooths images -->
+    <Style x:Key="ComboBoxItemPaddingStyle" TargetType="ComboBoxItem">
+        <Setter Property="Padding" Value="{Binding Source={x:Static properties:Settings.Default},Path=AppListPadding}" />
+    </Style>
 </ResourceDictionary>

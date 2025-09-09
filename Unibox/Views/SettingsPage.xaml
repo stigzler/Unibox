@@ -159,6 +159,7 @@
                                 <RowDefinition Height="auto" />
                                 <RowDefinition Height="auto" />
                                 <RowDefinition Height="auto" />
+                                <RowDefinition Height="auto" />
                             </Grid.RowDefinitions>
 
                             <TextBlock  Grid.Column="0" Grid.Row="0" Text="Font Size" VerticalAlignment="Center" Margin="5"
@@ -166,12 +167,20 @@
                             <TextBox x:Name="FontSizeTB" Grid.Column="1" Grid.Row="0" Margin="5" PreviewTextInput="FontSizeTB_PreviewTextInput"
                                         LostFocus="FontSizeTB_LostFocus"
                                         Text="{Binding Source={x:Static properties:Settings.Default},Path=AppFontSize}" />
+
                             <TextBlock  Grid.Column="0" Grid.Row="1" Text="Command Button Padding" VerticalAlignment="Center" Margin="5"
                                            ToolTip="Controls the space around the command buttons" />
                             <TextBox x:Name="ButtonPaddingTB" Grid.Column="1" Grid.Row="1" Margin="5" PreviewTextInput="ButtonPaddingTB_PreviewTextInput"
                                         Text="{Binding Source={x:Static properties:Settings.Default},Path=AppButtonPadding}"
                                      LostFocus="ButtonPaddingTB_LostFocus" />
-                            <CheckBox Grid.Column="1" Grid.Row="2" Content="Dark Theme" Margin="5"
+
+                            <TextBlock  Grid.Column="0" Grid.Row="2" Text="List Item Padding" VerticalAlignment="Center" Margin="5"
+                                           ToolTip="Controls the space around any dropdown list items" />
+                            <TextBox x:Name="ListPaddingTB" Grid.Column="1" Grid.Row="2" Margin="5" PreviewTextInput="ListPaddingTB_PreviewTextInput"
+                                        Text="{Binding Source={x:Static properties:Settings.Default},Path=AppListPadding}"
+                                     LostFocus="ListPaddingTB_LostFocus" />
+
+                            <CheckBox Grid.Column="1" Grid.Row="3" Content="Dark Theme" Margin="5"
                                       IsChecked="{Binding Source={x:Static properties:Settings.Default},Path=AppDarkMode}"
                                       Command="{Binding ToggleDarkModeCommand}" />
                         </Grid>
