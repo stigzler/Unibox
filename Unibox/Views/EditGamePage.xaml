@@ -92,18 +92,6 @@
                     <RowDefinition Height="Auto" />
                 </Grid.RowDefinitions>
 
-                <!-- Media present indicators -->
-                <StackPanel Grid.Row="0" Orientation="Horizontal">
-                    <Image Source="/Resources/Images/box-3d.png" Width="32" Height="32" Margin="5" ToolTip="Box 3D" />
-                    <Image Source="/Resources/Images/box-front.png" Width="32" Height="32" Margin="5" ToolTip="Box Front" />
-                    <Image Source="/Resources/Images/logo.png" Width="32" Height="32" Margin="5" ToolTip="Logo" />
-                    <Image Source="/Resources/Images/music.png" Width="32" Height="32" Margin="5" ToolTip="Music" />
-                    <Image Source="/Resources/Images/manual.png" Width="32" Height="32" Margin="5" ToolTip="Manual" />
-                    <Image Source="/Resources/Images/video.png" Width="32" Height="32" Margin="5" ToolTip="Video" />
-                    <Image Source="/Resources/Images/screen-ingame.png" Width="32" Height="32" Margin="5" ToolTip="Gameplay Screenshot" />
-                    <Image Source="/Resources/Images/screen-title.png" Width="32" Height="32" Margin="5" ToolTip="Title Screen" />
-                </StackPanel>
-
                 <!-- Combobox + Buttons -->
                 <Grid Grid.Row="1">
                     <Grid.ColumnDefinitions>
@@ -125,39 +113,74 @@
                         </i:Interaction.Triggers>
                     </ComboBox>
 
-                    <Button Grid.Column="1" Margin="5"  ToolTip="Search for image on internet"
+                    <Button Grid.Column="1" Margin="5"  ToolTip="Search for media on internet"
                             Command="{Binding OpenPlatformUrlCommand}"
                             Padding="{Binding Source={x:Static properties:Settings.Default},Path=AppButtonPadding}">
                         <Image Source="/Resources/Images/globe-green.png"  HorizontalAlignment="Center" Width="32" />
                     </Button>
 
-                    <Button Grid.Column="2" Margin="5"  ToolTip="Search for image on internet"
+                    <Button Grid.Column="2" Margin="5"  ToolTip="Add/replace default media item (0)"
+                             Command="{Binding OpenPlatformUrlCommand}"
+                             Padding="{Binding Source={x:Static properties:Settings.Default},Path=AppButtonPadding}">
+                        <Image Source="/Resources/Images/plus.png"  HorizontalAlignment="Center" Width="32" />
+                    </Button>
+
+                    <Button Grid.Column="3" Margin="5"  ToolTip="Open media item folder"
                             Command="{Binding OpenPlatformUrlCommand}"
                             Padding="{Binding Source={x:Static properties:Settings.Default},Path=AppButtonPadding}">
                         <Image Source="/Resources/Images/folder-horizontal-open.png"  HorizontalAlignment="Center" Width="32" />
                     </Button>
 
-                    <Button Grid.Column="3" Margin="5"  ToolTip="Search for image on internet"
-                 Command="{Binding OpenPlatformUrlCommand}"
-                 Padding="{Binding Source={x:Static properties:Settings.Default},Path=AppButtonPadding}">
-                        <Image Source="/Resources/Images/arrowLeft.png"  HorizontalAlignment="Center" Width="32" />
-                    </Button>
-
-                    <Button Grid.Column="4" Margin="5"  ToolTip="Search for image on internet"
-                 Command="{Binding OpenPlatformUrlCommand}"
-                 Padding="{Binding Source={x:Static properties:Settings.Default},Path=AppButtonPadding}">
+                    <Button Grid.Column="4" Margin="5"  ToolTip="Show next media item"
+                             Command="{Binding OpenPlatformUrlCommand}"
+                             Padding="{Binding Source={x:Static properties:Settings.Default},Path=AppButtonPadding}">
                         <Image Source="/Resources/Images/arrowRight.png"  HorizontalAlignment="Center" Width="32" />
                     </Button>
                 </Grid>
 
                 <!-- Image box -->
-                <Border Grid.Row="2" BorderThickness="1" BorderBrush="Gray">
-                    <Image  Source="{Binding ImageSource}" Stretch="Uniform" />
-                </Border>
+                <Grid Grid.Row="2">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="auto" />
+                    </Grid.ColumnDefinitions>
+                    <Border Grid.Column="0" BorderThickness="1" BorderBrush="Gray">
+                        <Image  Source="{Binding ImageSource}" Stretch="Uniform" />
+                    </Border>
+                    <!-- Media present indicators -->
+                    <StackPanel Grid.Column="1" Orientation="Vertical" Margin="5">
+                        <Image Source="/Resources/Images/box-3d.png"  Margin="2" ToolTip="Box 3D"
+                        Width="{Binding Source={x:Static properties:Settings.Default},Path=AppMediaIndicatorSize}"
+                        Height="{Binding Source={x:Static properties:Settings.Default},Path=AppMediaIndicatorSize}" />
+                        <Image Source="/Resources/Images/box-front.png" Margin="2" ToolTip="Box Front"
+                        Width="{Binding Source={x:Static properties:Settings.Default},Path=AppMediaIndicatorSize}"
+                        Height="{Binding Source={x:Static properties:Settings.Default},Path=AppMediaIndicatorSize}" />
+                        <Image Source="/Resources/Images/music.png"  Margin="2" ToolTip="Music"
+                        Width="{Binding Source={x:Static properties:Settings.Default},Path=AppMediaIndicatorSize}"
+                        Height="{Binding Source={x:Static properties:Settings.Default},Path=AppMediaIndicatorSize}" />
+                        <Image Source="/Resources/Images/manual.png" Margin="2" ToolTip="Manual"
+                        Width="{Binding Source={x:Static properties:Settings.Default},Path=AppMediaIndicatorSize}"
+                        Height="{Binding Source={x:Static properties:Settings.Default},Path=AppMediaIndicatorSize}" />
+                        <Image Source="/Resources/Images/video.png"  Margin="2" ToolTip="Video"
+                        Width="{Binding Source={x:Static properties:Settings.Default},Path=AppMediaIndicatorSize}"
+                        Height="{Binding Source={x:Static properties:Settings.Default},Path=AppMediaIndicatorSize}" />
+                        <Image Source="/Resources/Images/screen-ingame.png"  Margin="2" ToolTip="Gameplay Screenshot"
+                        Width="{Binding Source={x:Static properties:Settings.Default},Path=AppMediaIndicatorSize}"
+                        Height="{Binding Source={x:Static properties:Settings.Default},Path=AppMediaIndicatorSize}" />
+                        <Image Source="/Resources/Images/screen-title.png" Margin="2" ToolTip="Title Screen"
+                        Width="{Binding Source={x:Static properties:Settings.Default},Path=AppMediaIndicatorSize}"
+                        Height="{Binding Source={x:Static properties:Settings.Default},Path=AppMediaIndicatorSize}" />
+                        <Image Source="/Resources/Images/logo.png"  Margin="2" ToolTip="Logo"
+                        Width="{Binding Source={x:Static properties:Settings.Default},Path=AppMediaIndicatorSize}"
+                        Height="{Binding Source={x:Static properties:Settings.Default},Path=AppMediaIndicatorSize}" />
+                    </StackPanel>
+                </Grid>
 
                 <!-- Media Details -->
-                <TextBox Grid.Row="3"  TextAlignment="Right"
-                         Text="C:\Users\stigz\LaunchBoxDevelopmentInstall\Images\Atari 2600\LaunchBoxDevelopmentInstall\Images\Atari 2600\Clear Logo\Amidar-01.png" />
+                <DockPanel Grid.Row="3" Margin="5" LastChildFill="True">
+                    <TextBlock DockPanel.Dock="Right" Text="0/0" />
+                    <TextBlock Text="Amidar-01.png" />
+                </DockPanel>
             </Grid>
         </GroupBox>
 

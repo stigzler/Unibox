@@ -95,7 +95,7 @@ namespace Unibox.ViewModels
             NotSaving = true;
 
             AlertVisible = true;
-            await Task.Delay(2000);
+            await Task.Delay(3000);
             AlertVisible = false;
         }
 
@@ -104,13 +104,6 @@ namespace Unibox.ViewModels
         {
             Debug.WriteLine($"Checking for media of type: {mediaType}");
             List<string> mediaList = gameService.GetGameMediaPaths(Game, mediaType);
-
-            switch (SelectedMediaType)
-            {
-                case "Video":
-                    mediaList = mediaList.Where(m => Path.GetExtension(m).ToLower() is ".mp4" or ".avi" or ".mov" or ".wmv").ToList();
-                    break;
-            }
         }
     }
 }

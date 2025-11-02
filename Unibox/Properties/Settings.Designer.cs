@@ -456,5 +456,17 @@ namespace Unibox.Properties {
                 this["AppPermittedMusicExts"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("24")]
+        public int AppMediaIndicatorSize {
+            get {
+                return ((int)(this["AppMediaIndicatorSize"]));
+            }
+            set {
+                this["AppMediaIndicatorSize"] = value;
+            }
+        }
     }
 }

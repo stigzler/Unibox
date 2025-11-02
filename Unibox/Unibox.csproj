@@ -126,6 +126,7 @@
 		<None Remove="Resources\Images\noMedia.png" />
 		<None Remove="Resources\Images\pencil.png" />
 		<None Remove="Resources\Images\Platform.png" />
+		<None Remove="Resources\Images\plus.png" />
 		<None Remove="Resources\Images\screen-ingame.png" />
 		<None Remove="Resources\Images\screen-title.png" />
 		<None Remove="Resources\Images\Settings.png" />
@@ -184,6 +185,7 @@
 		<Resource Include="Resources\Images\noMedia.png" />
 		<Resource Include="Resources\Images\pencil.png" />
 		<Resource Include="Resources\Images\Platform.png" />
+		<Resource Include="Resources\Images\plus.png" />
 		<Resource Include="Resources\Images\screen-ingame.png" />
 		<Resource Include="Resources\Images\screen-title.png" />
 		<Resource Include="Resources\Images\Settings.png" />

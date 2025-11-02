@@ -162,6 +162,7 @@
                                 <RowDefinition Height="auto" />
                                 <RowDefinition Height="auto" />
                                 <RowDefinition Height="auto" />
+                                <RowDefinition Height="auto" />
                             </Grid.RowDefinitions>
 
                             <TextBlock  Grid.Column="0" Grid.Row="0" Text="Font Size" VerticalAlignment="Center" Margin="5"
@@ -188,7 +189,12 @@
                                       Text="{Binding Source={x:Static properties:Settings.Default},Path=AppCalendarSize}"
                                      LostFocus="CalendarSizeTB_LostFocus" />
 
-                            <CheckBox Grid.Column="1" Grid.Row="4" Content="Dark Theme" Margin="5"
+                            <TextBlock  Grid.Column="0" Grid.Row="4" Text="Media Indicator" VerticalAlignment="Center" Margin="5"
+                                  ToolTip="The width and height of the existing media indicators in Edit Game." />
+                            <TextBox x:Name="MediaIndicatorSizeTB" Grid.Column="1" Grid.Row="4" Margin="5" PreviewTextInput="MediaIndicatorSizeTB_PreviewTextInput"
+                                   Text="{Binding Source={x:Static properties:Settings.Default},Path=AppMediaIndicatorSize}" />
+
+                            <CheckBox Grid.Column="1" Grid.Row="5" Content="Dark Theme" Margin="5"
                                       IsChecked="{Binding Source={x:Static properties:Settings.Default},Path=AppDarkMode}"
                                       Command="{Binding ToggleDarkModeCommand}" />
                         </Grid>

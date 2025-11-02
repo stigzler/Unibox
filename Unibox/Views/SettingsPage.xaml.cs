@@ -145,5 +145,10 @@ namespace Unibox.Views
         {
             e.Handled = !IsCsvKey(e.Text);
         }
+
+        private void MediaIndicatorSizeTB_PreviewTextInput(object sender, TextCompositionEventArgs e)
+        {
+            e.Handled = !IsTextAllowed(e.Text);
+        }
     }
 }

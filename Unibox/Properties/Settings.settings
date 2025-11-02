@@ -157,5 +157,8 @@
     <Setting Name="AppPermittedMusicExts" Type="System.String" Scope="User">
       <Value Profile="(Default)">mp3,wav</Value>
     </Setting>
+    <Setting Name="AppMediaIndicatorSize" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">24</Value>
+    </Setting>
   </Settings>
 </SettingsFile>
