@@ -1,0 +1,173 @@
+﻿<UserControl x:Class="Unibox.Views.EditGamePage"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:local="clr-namespace:Unibox.Views"
+            xmlns:vm="clr-namespace:Unibox.ViewModels"
+            xmlns:converters="clr-namespace:Unibox.Converters"
+            xmlns:properties="clr-namespace:Unibox.Properties"
+             xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
+            d:DataContext="{d:DesignInstance Type=vm:EditGameVM, IsDesignTimeCreatable=True}"
+             mc:Ignorable="d"
+             d:DesignHeight="800" d:DesignWidth="400" d:Foreground="#e0e0e0">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="/Resources/Dictionaries/Styles.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+            <converters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter" />
+        </ResourceDictionary>
+    </UserControl.Resources>
+
+    <Grid Margin="5">
+
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <!-- Page Title -->
+        <StackPanel Grid.Row="0">
+            <TextBlock  Text="Edit Game" Style="{DynamicResource PageHeader}" />
+        </StackPanel>
+
+        <!-- Alert Message -->
+        <StackPanel Grid.Row="1" DockPanel.Dock="Top">
+            <TextBlock  Margin="5" Padding="5" TextWrapping="Wrap" FontWeight="Bold" Foreground="White"
+                        Text="{Binding AlertText}" d:Text="This is an alert message."
+                        Background="{Binding AlertColor}" d:Background="Red"
+                        Visibility="{Binding AlertVisible, Converter={StaticResource BoolToVisibilityConverter}}"
+                        d:Visibility="Visible" />
+        </StackPanel>
+
+        <!-- Metadata Edit -->
+        <GroupBox Grid.Row="2" DockPanel.Dock="Top" Header="Metadata (Updates on Save)" Margin="5">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="auto" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="auto" />
+                    <RowDefinition Height="auto" />
+                    <RowDefinition Height="auto" />
+                    <RowDefinition Height="auto" />
+                    <RowDefinition Height="auto" />
+                    <RowDefinition Height="auto" />
+                </Grid.RowDefinitions>
+
+                <TextBlock Grid.Row="0" Grid.Column="0" Text="Game Title:" VerticalAlignment="Center" />
+                <TextBox Grid.Row="0" Grid.Column="1" Margin="5" Text="{Binding Game.Title}" />
+
+                <TextBlock Grid.Row="1" Grid.Column="0" Text="Publisher:" VerticalAlignment="Center" />
+                <TextBox Grid.Row="1" Grid.Column="1" Margin="5" Text="{Binding Game.Publisher}" />
+
+                <TextBlock Grid.Row="2" Grid.Column="0" Text="Developer:" VerticalAlignment="Center" />
+                <TextBox Grid.Row="2" Grid.Column="1" Margin="5" Text="{Binding Game.Developer}" />
+
+                <TextBlock Grid.Row="3" Grid.Column="0" Text="Release Date:" VerticalAlignment="Center" />
+                <DatePicker  Grid.Row="3" Grid.Column="1" Margin="5" CalendarStyle="{DynamicResource styleCalendar}" SelectedDate="{Binding Game.ReleaseDate}" />
+
+                <TextBlock Grid.Row="4" Grid.Column="0" Text="Path:" VerticalAlignment="Center" />
+                <TextBox Grid.Row="4" Grid.Column="1" Margin="5" Text="{Binding Game.ApplicationPath}" IsEnabled="False" />
+
+                <TextBlock Grid.Row="5" Grid.Column="0" Text="Notes:" VerticalAlignment="Center" />
+                <TextBox Grid.Row="5" Grid.Column="1" Margin="5" Text="{Binding Game.Notes}"
+                         TextWrapping="Wrap"  VerticalScrollBarVisibility="Visible" Height="100" />
+            </Grid>
+        </GroupBox>
+
+        <!-- Media Edit-->
+        <GroupBox Grid.Row="3" Header="Media (Updates on change)" Margin="5">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+
+                <!-- Media present indicators -->
+                <StackPanel Grid.Row="0" Orientation="Horizontal">
+                    <Image Source="/Resources/Images/box-3d.png" Width="32" Height="32" Margin="5" ToolTip="Box 3D" />
+                    <Image Source="/Resources/Images/box-front.png" Width="32" Height="32" Margin="5" ToolTip="Box Front" />
+                    <Image Source="/Resources/Images/logo.png" Width="32" Height="32" Margin="5" ToolTip="Logo" />
+                    <Image Source="/Resources/Images/music.png" Width="32" Height="32" Margin="5" ToolTip="Music" />
+                    <Image Source="/Resources/Images/manual.png" Width="32" Height="32" Margin="5" ToolTip="Manual" />
+                    <Image Source="/Resources/Images/video.png" Width="32" Height="32" Margin="5" ToolTip="Video" />
+                    <Image Source="/Resources/Images/screen-ingame.png" Width="32" Height="32" Margin="5" ToolTip="Gameplay Screenshot" />
+                    <Image Source="/Resources/Images/screen-title.png" Width="32" Height="32" Margin="5" ToolTip="Title Screen" />
+                </StackPanel>
+
+                <!-- Combobox + Buttons -->
+                <Grid Grid.Row="1">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="auto" />
+                        <ColumnDefinition Width="auto" />
+                        <ColumnDefinition Width="auto" />
+                        <ColumnDefinition Width="auto" />
+                    </Grid.ColumnDefinitions>
+
+                    <ComboBox Grid.Column="0" Margin="5" ItemsSource="{Binding MediaTypes}"
+                              SelectedItem="{Binding SelectedMediaType}">
+                        <i:Interaction.Triggers>
+                            <i:EventTrigger EventName="SelectionChanged">
+                                <i:InvokeCommandAction
+                                    Command="{Binding CheckForMediaCommand}"
+                                    CommandParameter="{Binding SelectedItem, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type ComboBox}}}" />
+                            </i:EventTrigger>
+                        </i:Interaction.Triggers>
+                    </ComboBox>
+
+                    <Button Grid.Column="1" Margin="5"  ToolTip="Search for image on internet"
+                            Command="{Binding OpenPlatformUrlCommand}"
+                            Padding="{Binding Source={x:Static properties:Settings.Default},Path=AppButtonPadding}">
+                        <Image Source="/Resources/Images/globe-green.png"  HorizontalAlignment="Center" Width="32" />
+                    </Button>
+
+                    <Button Grid.Column="2" Margin="5"  ToolTip="Search for image on internet"
+                            Command="{Binding OpenPlatformUrlCommand}"
+                            Padding="{Binding Source={x:Static properties:Settings.Default},Path=AppButtonPadding}">
+                        <Image Source="/Resources/Images/folder-horizontal-open.png"  HorizontalAlignment="Center" Width="32" />
+                    </Button>
+
+                    <Button Grid.Column="3" Margin="5"  ToolTip="Search for image on internet"
+                 Command="{Binding OpenPlatformUrlCommand}"
+                 Padding="{Binding Source={x:Static properties:Settings.Default},Path=AppButtonPadding}">
+                        <Image Source="/Resources/Images/arrowLeft.png"  HorizontalAlignment="Center" Width="32" />
+                    </Button>
+
+                    <Button Grid.Column="4" Margin="5"  ToolTip="Search for image on internet"
+                 Command="{Binding OpenPlatformUrlCommand}"
+                 Padding="{Binding Source={x:Static properties:Settings.Default},Path=AppButtonPadding}">
+                        <Image Source="/Resources/Images/arrowRight.png"  HorizontalAlignment="Center" Width="32" />
+                    </Button>
+                </Grid>
+
+                <!-- Image box -->
+                <Border Grid.Row="2" BorderThickness="1" BorderBrush="Gray">
+                    <Image  Source="{Binding ImageSource}" Stretch="Uniform" />
+                </Border>
+
+                <!-- Media Details -->
+                <TextBox Grid.Row="3"  TextAlignment="Right"
+                         Text="C:\Users\stigz\LaunchBoxDevelopmentInstall\Images\Atari 2600\LaunchBoxDevelopmentInstall\Images\Atari 2600\Clear Logo\Amidar-01.png" />
+            </Grid>
+        </GroupBox>
+
+        <!-- Nav Buttons -->
+        <StackPanel Grid.Row="4" DockPanel.Dock="Bottom" Orientation="Horizontal" HorizontalAlignment="Right">
+            <Button Content="Back" Margin="5" MinWidth="100" Command="{Binding NavigateToGamesCommand}"
+                    Padding="{Binding Source={x:Static properties:Settings.Default},Path=AppButtonPadding}" />
+            <Button Content="Save" Margin="5" MinWidth="100" Command="{Binding SaveGameEditCommand}"
+                    IsEnabled="{Binding IsValid, Mode=OneWay, ValidatesOnDataErrors=True}"
+                    Padding="{Binding Source={x:Static properties:Settings.Default},Path=AppButtonPadding}" />
+        </StackPanel>
+    </Grid>
+</UserControl>

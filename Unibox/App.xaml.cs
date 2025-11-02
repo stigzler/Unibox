@@ -16,6 +16,7 @@ namespace Unibox
     public partial class App : Application
     {
         private Window window;
+        private LoggingService loggingService;
 
         public App()
         {
@@ -24,6 +25,24 @@ namespace Unibox
             this.InitializeComponent();
 
             UpgradeSettingsIfNeeded();
+
+            loggingService = Services.GetService<LoggingService>();
+
+            this.Dispatcher.UnhandledException += OnDispatcherUnhandledException;
+        }
+
+        void OnDispatcherUnhandledException(object sender, System.Windows.Threading.DispatcherUnhandledExceptionEventArgs e)
+        {
+            string logEntry = $"Unhandled exception: {e.Exception.Message}\r\nStack Trace: {e.Exception.StackTrace}";
+
+            loggingService.WriteLine(logEntry);
+
+            string errorMessage = string.Format("An unhandled exception occurred. See logs for more details and berate the author. Exception: \r\n\r\n{0}", e.Exception.Message);
+
+            MessageBox.Show(errorMessage, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            // OR whatever you want like logging etc. MessageBox it's just example
+            // for quick debugging etc.
+            e.Handled = true;
         }
 
         private void UpgradeSettingsIfNeeded()
@@ -75,6 +94,8 @@ namespace Unibox
             services.AddTransient<PleaseWaitVM>();
             services.AddTransient<AddGameResultsVM>();
             services.AddTransient<UpdatePlatformsResultsVM>();
+            services.AddTransient<EditPlatformVM>();
+            services.AddTransient<EditGameVM>();
 
             // Add other necessary services here
             // e.g., services.AddSingleton<IDataService, DataService>();

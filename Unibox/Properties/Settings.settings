@@ -87,5 +87,75 @@
     <Setting Name="AppListPadding" Type="System.Int32" Scope="User">
       <Value Profile="(Default)">5</Value>
     </Setting>
+    <Setting Name="LbGameMediaList" Type="System.Collections.Specialized.StringCollection" Scope="User">
+      <Value Profile="(Default)">&lt;?xml version="1.0" encoding="utf-16"?&gt;
+&lt;ArrayOfString xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"&gt;
+  &lt;string&gt;Advertisement Flyer - Back&lt;/string&gt;
+  &lt;string&gt;Advertisement Flyer - Front&lt;/string&gt;
+  &lt;string&gt;Amazon Background&lt;/string&gt;
+  &lt;string&gt;Amazon Poster&lt;/string&gt;
+  &lt;string&gt;Amazon Screenshot&lt;/string&gt;
+  &lt;string&gt;Arcade - Cabinet&lt;/string&gt;
+  &lt;string&gt;Arcade - Circuit Board&lt;/string&gt;
+  &lt;string&gt;Arcade - Control Panel&lt;/string&gt;
+  &lt;string&gt;Arcade - Controls Information&lt;/string&gt;
+  &lt;string&gt;Arcade - Marquee&lt;/string&gt;
+  &lt;string&gt;Banner&lt;/string&gt;
+  &lt;string&gt;Box - 3D&lt;/string&gt;
+  &lt;string&gt;Box - Back&lt;/string&gt;
+  &lt;string&gt;Box - Back - Reconstructed&lt;/string&gt;
+  &lt;string&gt;Box - Front&lt;/string&gt;
+  &lt;string&gt;Box - Front - Reconstructed&lt;/string&gt;
+  &lt;string&gt;Box - Full&lt;/string&gt;
+  &lt;string&gt;Box - Spine&lt;/string&gt;
+  &lt;string&gt;Cart - 3D&lt;/string&gt;
+  &lt;string&gt;Cart - Back&lt;/string&gt;
+  &lt;string&gt;Cart - Front&lt;/string&gt;
+  &lt;string&gt;Clear Logo&lt;/string&gt;
+  &lt;string&gt;Disc&lt;/string&gt;
+  &lt;string&gt;Epic Games Background&lt;/string&gt;
+  &lt;string&gt;Epic Games Poster&lt;/string&gt;
+  &lt;string&gt;Epic Games Screenshot&lt;/string&gt;
+  &lt;string&gt;Fanart - Background&lt;/string&gt;
+  &lt;string&gt;Fanart - Box - Back&lt;/string&gt;
+  &lt;string&gt;Fanart - Box - Front&lt;/string&gt;
+  &lt;string&gt;Fanart - Cart - Back&lt;/string&gt;
+  &lt;string&gt;Fanart - Cart - Front&lt;/string&gt;
+  &lt;string&gt;Fanart - Disc&lt;/string&gt;
+  &lt;string&gt;GOG Poster&lt;/string&gt;
+  &lt;string&gt;GOG Screenshot&lt;/string&gt;
+  &lt;string&gt;Icon&lt;/string&gt;
+  &lt;string&gt;Origin Background&lt;/string&gt;
+  &lt;string&gt;Origin Poster&lt;/string&gt;
+  &lt;string&gt;Origin Screenshot&lt;/string&gt;
+  &lt;string&gt;Poster&lt;/string&gt;
+  &lt;string&gt;Screenshot - Game Over&lt;/string&gt;
+  &lt;string&gt;Screenshot - Game Select&lt;/string&gt;
+  &lt;string&gt;Screenshot - Game Title&lt;/string&gt;
+  &lt;string&gt;Screenshot - Gameplay&lt;/string&gt;
+  &lt;string&gt;Screenshot - High Scores&lt;/string&gt;
+  &lt;string&gt;Square&lt;/string&gt;
+  &lt;string&gt;Steam Banner&lt;/string&gt;
+  &lt;string&gt;Steam Poster&lt;/string&gt;
+  &lt;string&gt;Steam Screenshot&lt;/string&gt;
+  &lt;string&gt;Uplay Background&lt;/string&gt;
+  &lt;string&gt;Uplay Thumbnail&lt;/string&gt;
+&lt;/ArrayOfString&gt;</Value>
+    </Setting>
+    <Setting Name="AppCalendarSize" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">300</Value>
+    </Setting>
+    <Setting Name="AppPermittedImageExts" Type="System.String" Scope="User">
+      <Value Profile="(Default)">png,jpeg,jpg</Value>
+    </Setting>
+    <Setting Name="AppPermittedVideoExts" Type="System.String" Scope="User">
+      <Value Profile="(Default)">mp4,wmv,avi,mkv</Value>
+    </Setting>
+    <Setting Name="AppPermittedManualExts" Type="System.String" Scope="User">
+      <Value Profile="(Default)">pdf,doc,docx,txt,rtf</Value>
+    </Setting>
+    <Setting Name="AppPermittedMusicExts" Type="System.String" Scope="User">
+      <Value Profile="(Default)">mp3,wav</Value>
+    </Setting>
   </Settings>
 </SettingsFile>

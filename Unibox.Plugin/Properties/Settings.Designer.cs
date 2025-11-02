@@ -58,5 +58,17 @@ namespace Unibox.Plugin.Properties {
                 this["ShowGameOnAdd"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool ShowGameOnEdit {
+            get {
+                return ((bool)(this["ShowGameOnEdit"]));
+            }
+            set {
+                this["ShowGameOnEdit"] = value;
+            }
+        }
     }
 }

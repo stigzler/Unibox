@@ -67,6 +67,8 @@ namespace Unibox.ViewModels
         private AddGameResultsPage addGameResultsPage = new AddGameResultsPage();
         private PleaseWaitPage pleaseWaitPage = new PleaseWaitPage();
         private UpdatePlatformsResultsPage updatePlatformsResultsPage = new UpdatePlatformsResultsPage();
+        private EditPlatformPage editPlatformPage = new EditPlatformPage();
+        private EditGamePage editGamePage = new EditGamePage();
 
         private LoggingService loggingService;
 
@@ -192,6 +194,11 @@ namespace Unibox.ViewModels
 
                 case Data.Enums.PageRequestType.Games:
                     CurrentPage = gamesPage;
+                    GamesPageMessageDetails gamesPageMessageDetails = (GamesPageMessageDetails?)args.Data;
+                    if (gamesPageMessageDetails != null && gamesPageMessageDetails.GamesUpdateRequired)
+                    {
+                        gamesPage.ViewModel.UpdateGamesList();
+                    }
                     break;
 
                 case Data.Enums.PageRequestType.PleaseWait:
@@ -202,6 +209,18 @@ namespace Unibox.ViewModels
                 case Data.Enums.PageRequestType.UpdatePlatformsResults:
                     CurrentPage = updatePlatformsResultsPage;
                     updatePlatformsResultsPage.ViewModel.UpdatePlatformsOutcome = (UpdatePlatformsOutcome)args.Data;
+                    break;
+
+                case Data.Enums.PageRequestType.EditPlatform:
+                    CurrentPage = editPlatformPage;
+                    editPlatformPage.ViewModel.Platform = ((EditPlatformMessageDetails)args.Data).Platform;
+                    editPlatformPage.ViewModel.Installation = ((EditPlatformMessageDetails)args.Data).Installation;
+                    break;
+
+                case Data.Enums.PageRequestType.EditGame:
+                    CurrentPage = editGamePage;
+                    editGamePage.ViewModel.Game = ((EditGameMessageDetails)args.Data).Game;
+                    editGamePage.ViewModel.Installation = ((EditGameMessageDetails)args.Data).Installation;
                     break;
             }
         }

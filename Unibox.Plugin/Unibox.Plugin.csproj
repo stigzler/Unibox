@@ -31,7 +31,7 @@
 	</PropertyGroup>
 
 	<PropertyGroup>
-		<VersionFile>$(TEMP)\Unibox.Plugin.version.txt</VersionFile>
+		<VersionFile>$(SolutionDir)\Unibox.Plugin.version.txt</VersionFile>
 		<DefaultVersion>0.8.2.0</DefaultVersion>
 	</PropertyGroup>
 

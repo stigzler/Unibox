@@ -9,6 +9,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Unibox.Data.ServiceOperationOutcomes;
 using Unibox.Messages;
+using Unibox.Messages.MessageDetails;
 
 namespace Unibox.ViewModels
 {
@@ -29,7 +30,8 @@ namespace Unibox.ViewModels
         {
             WeakReferenceMessenger.Default.Send(new PageChangeMessage(new PageChangeMessageArgs()
             {
-                RequestType = Data.Enums.PageRequestType.Games
+                RequestType = Data.Enums.PageRequestType.Games,
+                Data = new GamesPageMessageDetails() { GamesUpdateRequired = true }
             }));
         }
     }

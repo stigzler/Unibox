@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml.Schema;
 using Unibox.Messaging.Requests;
 using Unibox.Messaging.Responses;
 using Unibox.Plugin.Helpers;
@@ -29,10 +30,36 @@ namespace Unibox.Plugin.Services
             server.SessionOpened += OnSessionOpened;
             server.SessionClosed += OnSessionClosed;
             server.AddRequestHandler<AddGameRequest, AddGameResponse>(AddGameRequestHandler);
+            server.AddRequestHandler<EditGameRequest, EditGameResponse>(EditGameRequestHandler);
 
             server.Start();
 
             loggingService.WriteLine("MessagingService started successfully.");
+        }
+
+        private void EditGameRequestHandler(NetMessageSession session, TypedRequest<EditGameRequest, EditGameResponse> request)
+        {
+            loggingService.WriteLine($"Received EditGameRequest for game: {request.Request.Game.Title} ({request.Request.Game.Platform})");
+
+            loggingService.WriteLine("Attempting Game Edit");
+
+            Exception anyException = launchboxService.EditGame(request.Request.Game);
+
+            var response = new EditGameResponse();
+
+            if (anyException != null)
+            {
+                loggingService.WriteLine($"Error editing game: {anyException.Message}");
+                response.TextResult = $"Error whilst editing game in Launchbox Database: '{anyException.Message}'";
+            }
+            else
+            {
+                loggingService.WriteLine($"Game [{request.Request.Game.Title}] edited successfully!");
+                response.TextResult = $"Game [{request.Request.Game.Title}] edited successfully in Launchbox Database.";
+                response.IsSuccessful = true;
+            }
+
+            request.SendResponseAsync(response);
         }
 
         private void AddGameRequestHandler(NetMessageSession session, TypedRequest<AddGameRequest, AddGameResponse> request)

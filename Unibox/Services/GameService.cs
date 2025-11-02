@@ -5,7 +5,10 @@ using stigzler.ScreenscraperWrapper.DTOs;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Text;
+using System.Text.RegularExpressions;
+using System.Windows.Media;
 using System.Xml.Linq;
+using Unbroken.LaunchBox.Plugins.Data;
 using Unibox.Data.Constants;
 using Unibox.Data.Models;
 using Unibox.Data.ServiceOperationOutcomes;
@@ -49,7 +52,8 @@ namespace Unibox.Services
                     Developer = platformElement.Element("Developer")?.Value,
                     Publisher = platformElement.Element("Publisher")?.Value,
                     ReleaseDate = DateTime.TryParse(platformElement.Element("ReleaseDate")?.Value, out DateTime releaseDate) ? releaseDate : DateTime.MinValue,
-                    Notes = platformElement.Element("Notes")?.Value
+                    Notes = platformElement.Element("Notes")?.Value,
+                    LaunchboxID = platformElement.Element("ID")?.Value
                 };
                 lbGames.Add(lbGame);
             }
@@ -66,6 +70,38 @@ namespace Unibox.Services
                 return platformElement.Element("Emulator")?.Value;
             }
             return string.Empty;
+        }
+
+        /// <summary>
+        ///
+        /// </summary>
+        /// <param name="game"></param>
+        /// <returns>Null if none found</returns>
+        internal List<string> GetGameMediaPaths(GameModel game, string mediaName)
+        {
+            List<string> mediaSources = new List<string>();
+
+            PlatformFolderModel platformFolder = game.Platform.PlatformFolders.
+                Where(pf => pf.MediaType.Name == mediaName).FirstOrDefault();
+
+            if (platformFolder == null) return null;
+
+            string romPath = game.ApplicationPath;
+            string gameName = game.Title;
+
+            // Get matches on  romName (e.g. Aliens (USA)-00.png)
+            string romRegexPattern = $"^{Regex.Escape(Path.GetFileNameWithoutExtension(romPath))}(-\\d{{2}})?\\.*$";
+
+            string nameRegexPattern = $"^{Regex.Escape(gameName)}(-\\d{{2}})?\\.*$";
+
+            var matches = Directory.GetFiles(platformFolder.ResolvedMediaPath)
+                .Where(f => Regex.IsMatch(Path.GetFileNameWithoutExtension(f), romRegexPattern, RegexOptions.IgnoreCase) ||
+                            Regex.IsMatch(Path.GetFileNameWithoutExtension(f), nameRegexPattern, RegexOptions.IgnoreCase));
+
+            if (matches != null)
+                mediaSources = matches.ToList<string>();
+
+            return mediaSources;
         }
 
         /// <summary>
@@ -237,7 +273,7 @@ namespace Unibox.Services
                                             AssociatedUserDataObject = ssGame,
                                             Url = ssGameMediaDetails.Uri,
                                             Filename = Path.Combine(lbPlatformFolder.ResolvedMediaPath,
-                                                $"{Path.GetFileNameWithoutExtension(romFilePath)}[0].{ssGameMediaDetails.Format}")
+                                                $"{Path.GetFileNameWithoutExtension(romFilePath)}-00.{ssGameMediaDetails.Format}")
                                         });
                                     }
                                 }
@@ -383,6 +419,38 @@ namespace Unibox.Services
                 }
             }
 
+            return outcome;
+        }
+
+        internal async Task<EditGameOutcome> EditGame(GameModel game, InstallationModel installationModel)
+        {
+            EditGameOutcome outcome = new EditGameOutcome();
+
+            GameDTO gameDTO = new GameDTO
+            {
+                Title = game.Title,
+                //ApplicationPath = game.ApplicationPath,
+                Developer = game.Developer,
+                Publisher = game.Publisher,
+                ReleaseDate = game.ReleaseDate,
+                Notes = game.Notes,
+                LaunchboxID = game.LaunchboxID
+            };
+
+            EditGameResponse editGameResponse = await messagingService.SendEditGameRequest(installationModel.InstallationPath, gameDTO);
+
+            outcome.GameEdited = editGameResponse.IsSuccessful;
+
+            if (editGameResponse.IsSuccessful)
+            {
+                outcome.Outcome = $"Game edited in Launchbox database successfully. Game: {gameDTO.Title}";
+                loggingService.WriteLine(outcome.Outcome);
+            }
+            else
+            {
+                outcome.Outcome = $"Could not Edit game. Messaging Error: {editGameResponse.TextResult}";
+                loggingService.WriteLine(outcome.Outcome);
+            }
             return outcome;
         }
     }

@@ -12,7 +12,12 @@ namespace Unibox.Converters
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            if (value is null) return System.Windows.Visibility.Collapsed;
+            if (value is string)
+            {
+                if (string.IsNullOrEmpty(value as string)) return System.Windows.Visibility.Collapsed;
+                return System.Windows.Visibility.Visible;
+            }
+            else if (value is null) return System.Windows.Visibility.Collapsed;
             return System.Windows.Visibility.Visible;
         }
 

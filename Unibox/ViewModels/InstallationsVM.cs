@@ -135,10 +135,17 @@ namespace Unibox.ViewModels
 
                 UpdateIstallationsFromDatabase();
             }
+        }
 
-            //UpdateIstallationsFromDatabase();
-
-            //databaseService.Database.Collections.Installations.Insert(newInstallation);
+        [RelayCommand]
+        private void EditPlatform()
+        {
+            if (selectedPlatform == null) return;
+            WeakReferenceMessenger.Default.Send(new PageChangeMessage(new PageChangeMessageArgs()
+            {
+                RequestType = Data.Enums.PageRequestType.EditPlatform,
+                Data = new EditPlatformMessageDetails() { Platform = SelectedPlatform, Installation = SelectedInstallation }
+            }));
         }
 
         [RelayCommand]
@@ -161,9 +168,6 @@ namespace Unibox.ViewModels
         {
             if (selectedInstallation == null) return;
 
-            //EditInstallationWindow editInstallationWindow = new EditInstallationWindow();
-            //editInstallationWindow.ViewModel.Installation = SelectedInstallation;
-            //editInstallationWindow.ShowDialog();
             WeakReferenceMessenger.Default.Send(new PageChangeMessage(new PageChangeMessageArgs()
             {
                 RequestType = Data.Enums.PageRequestType.EditInstallation,
@@ -272,7 +276,7 @@ namespace Unibox.ViewModels
         private void UpdatePlatformsList()
         {
             if (SelectedInstallation == null) return;
-            Platforms = new ObservableCollection<PlatformModel>(SelectedInstallation.Platforms);
+            Platforms = new ObservableCollection<PlatformModel>(SelectedInstallation.Platforms.OrderBy(p => p.Name));
             if (Platforms.Count > 0) SelectedPlatform = Platforms.First();
         }
     }

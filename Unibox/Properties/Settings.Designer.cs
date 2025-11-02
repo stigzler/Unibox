@@ -359,5 +359,102 @@ namespace Unibox.Properties {
                 this["AppListPadding"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("<?xml version=\"1.0\" encoding=\"utf-16\"?>\r\n<ArrayOfString xmlns:xsd=\"http://www.w3." +
+            "org/2001/XMLSchema\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\">\r\n  <s" +
+            "tring>Advertisement Flyer - Back</string>\r\n  <string>Advertisement Flyer - Front" +
+            "</string>\r\n  <string>Amazon Background</string>\r\n  <string>Amazon Poster</string" +
+            ">\r\n  <string>Amazon Screenshot</string>\r\n  <string>Arcade - Cabinet</string>\r\n  " +
+            "<string>Arcade - Circuit Board</string>\r\n  <string>Arcade - Control Panel</strin" +
+            "g>\r\n  <string>Arcade - Controls Information</string>\r\n  <string>Arcade - Marquee" +
+            "</string>\r\n  <string>Banner</string>\r\n  <string>Box - 3D</string>\r\n  <string>Box" +
+            " - Back</string>\r\n  <string>Box - Back - Reconstructed</string>\r\n  <string>Box -" +
+            " Front</string>\r\n  <string>Box - Front - Reconstructed</string>\r\n  <string>Box -" +
+            " Full</string>\r\n  <string>Box - Spine</string>\r\n  <string>Cart - 3D</string>\r\n  " +
+            "<string>Cart - Back</string>\r\n  <string>Cart - Front</string>\r\n  <string>Clear L" +
+            "ogo</string>\r\n  <string>Disc</string>\r\n  <string>Epic Games Background</string>\r" +
+            "\n  <string>Epic Games Poster</string>\r\n  <string>Epic Games Screenshot</string>\r" +
+            "\n  <string>Fanart - Background</string>\r\n  <string>Fanart - Box - Back</string>\r" +
+            "\n  <string>Fanart - Box - Front</string>\r\n  <string>Fanart - Cart - Back</string" +
+            ">\r\n  <string>Fanart - Cart - Front</string>\r\n  <string>Fanart - Disc</string>\r\n " +
+            " <string>GOG Poster</string>\r\n  <string>GOG Screenshot</string>\r\n  <string>Icon<" +
+            "/string>\r\n  <string>Origin Background</string>\r\n  <string>Origin Poster</string>" +
+            "\r\n  <string>Origin Screenshot</string>\r\n  <string>Poster</string>\r\n  <string>Scr" +
+            "eenshot - Game Over</string>\r\n  <string>Screenshot - Game Select</string>\r\n  <st" +
+            "ring>Screenshot - Game Title</string>\r\n  <string>Screenshot - Gameplay</string>\r" +
+            "\n  <string>Screenshot - High Scores</string>\r\n  <string>Square</string>\r\n  <stri" +
+            "ng>Steam Banner</string>\r\n  <string>Steam Poster</string>\r\n  <string>Steam Scree" +
+            "nshot</string>\r\n  <string>Uplay Background</string>\r\n  <string>Uplay Thumbnail</" +
+            "string>\r\n</ArrayOfString>")]
+        public global::System.Collections.Specialized.StringCollection LbGameMediaList {
+            get {
+                return ((global::System.Collections.Specialized.StringCollection)(this["LbGameMediaList"]));
+            }
+            set {
+                this["LbGameMediaList"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("300")]
+        public int AppCalendarSize {
+            get {
+                return ((int)(this["AppCalendarSize"]));
+            }
+            set {
+                this["AppCalendarSize"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("png,jpeg,jpg")]
+        public string AppPermittedImageExts {
+            get {
+                return ((string)(this["AppPermittedImageExts"]));
+            }
+            set {
+                this["AppPermittedImageExts"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("mp4,wmv,avi,mkv")]
+        public string AppPermittedVideoExts {
+            get {
+                return ((string)(this["AppPermittedVideoExts"]));
+            }
+            set {
+                this["AppPermittedVideoExts"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("pdf,doc,docx,txt,rtf")]
+        public string AppPermittedManualExts {
+            get {
+                return ((string)(this["AppPermittedManualExts"]));
+            }
+            set {
+                this["AppPermittedManualExts"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("mp3,wav")]
+        public string AppPermittedMusicExts {
+            get {
+                return ((string)(this["AppPermittedMusicExts"]));
+            }
+            set {
+                this["AppPermittedMusicExts"] = value;
+            }
+        }
     }
 }

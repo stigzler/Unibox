@@ -45,6 +45,13 @@ namespace Unibox.Views
             return !_regex.IsMatch(text);
         }
 
+        private static readonly Regex csvRegex = new Regex("[^0-9a-z,]+"); //regex that matches disallowed text
+
+        private static bool IsCsvKey(string text)
+        {
+            return !csvRegex.IsMatch(text);
+        }
+
         private void PortNumberTB_PreviewTextInput(object sender, TextCompositionEventArgs e)
         {
             e.Handled = !IsTextAllowed(e.Text);
@@ -97,6 +104,46 @@ namespace Unibox.Views
                     AdonisUI.Controls.MessageBoxButton.OK, AdonisUI.Controls.MessageBoxImage.Warning);
                 Properties.Settings.Default.AppListPadding = 5;
             }
+        }
+
+        private void Image_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            throw new Exception("Test Exception");
+        }
+
+        private void CalendarSizeTB_PreviewTextInput(object sender, TextCompositionEventArgs e)
+        {
+            e.Handled = !IsTextAllowed(e.Text);
+        }
+
+        private void CalendarSizeTB_LostFocus(object sender, RoutedEventArgs e)
+        {
+            if (!IsTextAllowed(CalendarSizeTB.Text) || Convert.ToInt16(CalendarSizeTB.Text) < 100 || Convert.ToInt16(CalendarSizeTB.Text) > 1000)
+            {
+                AdonisUI.Controls.MessageBox.Show($"Invalid number or size. Calendar size must be between 100 and 1000. Reset to 300", "Invalid Calendar size",
+                    AdonisUI.Controls.MessageBoxButton.OK, AdonisUI.Controls.MessageBoxImage.Warning);
+                Properties.Settings.Default.AppCalendarSize = 300;
+            }
+        }
+
+        private void ImageExtsTB_PreviewTextInput(object sender, TextCompositionEventArgs e)
+        {
+            e.Handled = !IsCsvKey(e.Text);
+        }
+
+        private void VideoExtsTB_PreviewTextInput(object sender, TextCompositionEventArgs e)
+        {
+            e.Handled = !IsCsvKey(e.Text);
+        }
+
+        private void ManualExtsTB_PreviewTextInput(object sender, TextCompositionEventArgs e)
+        {
+            e.Handled = !IsCsvKey(e.Text);
+        }
+
+        private void MusicExtsTB_PreviewTextInput(object sender, TextCompositionEventArgs e)
+        {
+            e.Handled = !IsCsvKey(e.Text);
         }
     }
 }

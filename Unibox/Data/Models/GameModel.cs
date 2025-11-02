@@ -17,5 +17,6 @@ namespace Unibox.Data.Models
         public string Publisher { get; set; } = string.Empty;
         public DateTime ReleaseDate { get; set; } = DateTime.MinValue;
         public string Notes { get; set; } = string.Empty;
+        public string LaunchboxID { get; set; } = string.Empty;
     }
 }

@@ -25,6 +25,8 @@ namespace Unibox.Data.Enums
         AddGameResults,
         Games,
         PleaseWait,
-        UpdatePlatformsResults
+        UpdatePlatformsResults,
+        EditPlatform,
+        EditGame
     }
 }

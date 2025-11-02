@@ -34,7 +34,7 @@
 	</PropertyGroup>
 
 	<PropertyGroup>
-		<VersionFile>$(TEMP)\Unibox.version.txt</VersionFile>
+		<VersionFile>$(SolutionDir)\Unibox.version.txt</VersionFile>
 		<DefaultVersion>0.8.2.0</DefaultVersion>
 	</PropertyGroup>
 
@@ -102,33 +102,55 @@
 		<None Remove="Data\SsSystemList.dat" />
 		<None Remove="Resources\Images\AddRom.png" />
 		<None Remove="Resources\Images\arrowDown.png" />
+		<None Remove="Resources\Images\arrowLeft.png" />
+		<None Remove="Resources\Images\arrowRight.png" />
 		<None Remove="Resources\Images\arrowTop.png" />
 		<None Remove="Resources\Images\arrowUp.png" />
+		<None Remove="Resources\Images\box-3d.png" />
+		<None Remove="Resources\Images\box-front.png" />
 		<None Remove="Resources\Images\clock.png" />
+		<None Remove="Resources\Images\document-text.png" />
 		<None Remove="Resources\Images\eraser.png" />
 		<None Remove="Resources\Images\exclamation.png" />
 		<None Remove="Resources\Images\folder-horizontal-open.png" />
 		<None Remove="Resources\Images\GameIcon.png" />
+		<None Remove="Resources\Images\gear.png" />
+		<None Remove="Resources\Images\globe-green.png" />
 		<None Remove="Resources\Images\information.png" />
 		<None Remove="Resources\Images\LaunchboxIcon.png" />
 		<None Remove="Resources\Images\lock.png" />
+		<None Remove="Resources\Images\logo.png" />
+		<None Remove="Resources\Images\manual.png" />
 		<None Remove="Resources\Images\minus-circle.png" />
+		<None Remove="Resources\Images\music.png" />
+		<None Remove="Resources\Images\noMedia.png" />
+		<None Remove="Resources\Images\pencil.png" />
 		<None Remove="Resources\Images\Platform.png" />
+		<None Remove="Resources\Images\screen-ingame.png" />
+		<None Remove="Resources\Images\screen-title.png" />
 		<None Remove="Resources\Images\Settings.png" />
 		<None Remove="Resources\Images\UniboxLogo.png" />
+		<None Remove="Resources\Images\video.png" />
 		<None Remove="Resources\Images\WillyRound.png" />
 	</ItemGroup>
 
 	<ItemGroup>
 		<Resource Include="Resources\Images\AddRom.png" />
 		<Resource Include="Resources\Images\arrowDown.png" />
+		<Resource Include="Resources\Images\arrowLeft.png" />
+		<Resource Include="Resources\Images\arrowRight.png" />
 		<Resource Include="Resources\Images\arrowTop.png" />
 		<Resource Include="Resources\Images\arrowUp.png" />
+		<Resource Include="Resources\Images\box-3d.png" />
+		<Resource Include="Resources\Images\box-front.png" />
 		<Resource Include="Resources\Images\clock.png" />
+		<Resource Include="Resources\Images\document-text.png" />
 		<Resource Include="Resources\Images\eraser.png" />
 		<Resource Include="Resources\Images\exclamation.png" />
 		<Resource Include="Resources\Images\folder-horizontal-open.png" />
 		<Resource Include="Resources\Images\GameIcon.png" />
+		<Resource Include="Resources\Images\gear.png" />
+		<Resource Include="Resources\Images\globe-green.png" />
 		<Resource Include="Resources\Images\information.png">
 			<CopyToOutputDirectory>Never</CopyToOutputDirectory>
 		</Resource>
@@ -155,10 +177,18 @@
 		</Content>
 		<Resource Include="Resources\Images\LaunchboxIcon.png" />
 		<Resource Include="Resources\Images\lock.png" />
+		<Resource Include="Resources\Images\logo.png" />
+		<Resource Include="Resources\Images\manual.png" />
 		<Resource Include="Resources\Images\minus-circle.png" />
+		<Resource Include="Resources\Images\music.png" />
+		<Resource Include="Resources\Images\noMedia.png" />
+		<Resource Include="Resources\Images\pencil.png" />
 		<Resource Include="Resources\Images\Platform.png" />
+		<Resource Include="Resources\Images\screen-ingame.png" />
+		<Resource Include="Resources\Images\screen-title.png" />
 		<Resource Include="Resources\Images\Settings.png" />
 		<Resource Include="Resources\Images\UniboxLogo.png" />
+		<Resource Include="Resources\Images\video.png" />
 		<Resource Include="Resources\Images\WillyRound.png" />
 	</ItemGroup>
 
@@ -172,8 +202,9 @@
 		<PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.0" />
 		<PackageReference Include="LiteDB" Version="5.0.21" />
 		<PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="9.0.8" />
+		<PackageReference Include="Microsoft.Xaml.Behaviors.Wpf" Version="1.1.135" />
 		<PackageReference Include="NetMessage" Version="1.0.0" />
-		<PackageReference Include="ScreenscraperWrapper" Version="1.6.1" />
+		<PackageReference Include="ScreenscraperWrapper" Version="1.6.2" />
 	</ItemGroup>
 
 	<ItemGroup>

@@ -11,6 +11,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Unibox.Helpers;
 using Unibox.Messaging.DTOs;
+using Unibox.Messaging.Requests;
 using Unibox.Messaging.Responses;
 
 namespace Unibox.Services
@@ -92,6 +93,42 @@ namespace Unibox.Services
             else
             {
                 response = await client.SendRequestAsync(new Messaging.Requests.AddGameRequest { Game = gameDTO });
+            }
+
+            client.Disconnect();
+            return response;
+        }
+
+        internal async Task<EditGameResponse> SendEditGameRequest(string installationPath, GameDTO gameDTO)
+        {
+            loggingService.WriteLine($"SendEditGame request made of MessageService. InstallationPath: [{installationPath}] | Game: [{gameDTO.Title}]");
+
+            EditGameResponse response = new EditGameResponse();
+
+            if (string.IsNullOrWhiteSpace(installationPath) || gameDTO is null || string.IsNullOrWhiteSpace(gameDTO.LaunchboxID))
+            {
+                loggingService.WriteLine("SendEditGameRequest: Invalid parameters provided.");
+                response.IsSuccessful = false;
+                response.TextResult = "Could not continue. Either Game, InstallationPath or game ID is null.";
+                return response;
+            }
+
+            string ipAddress = UncPathToIP(installationPath);
+
+            loggingService.WriteLine("IP Address discerned from UNC path: " + ipAddress);
+
+            loggingService.WriteLine("Attempting to connect to Unibox plugin server at: " + ipAddress + ":" + Properties.Settings.Default.MessagingPort);
+
+            bool successful = await client.ConnectAsync(ipAddress, Properties.Settings.Default.MessagingPort);
+
+            if (!successful)
+            {
+                response.IsSuccessful = false;
+                response.TextResult = "Failed to connect to Unibox plugin server.";
+            }
+            else
+            {
+                response = await client.SendRequestAsync(new Messaging.Requests.EditGameRequest { Game = gameDTO });
             }
 
             client.Disconnect();

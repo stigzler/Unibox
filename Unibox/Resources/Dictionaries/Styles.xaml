@@ -89,4 +89,22 @@
     <Style x:Key="ComboBoxItemPaddingStyle" TargetType="ComboBoxItem">
         <Setter Property="Padding" Value="{Binding Source={x:Static properties:Settings.Default},Path=AppListPadding}" />
     </Style>
+
+    <!-- Date Picker -->
+    <Style x:Key="styleCalendar" TargetType="{x:Type Calendar}"
+       BasedOn="{StaticResource {x:Type Calendar}}">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type Calendar}">
+                    <Viewbox Height="{Binding Source={x:Static properties:Settings.Default},Path=AppCalendarSize}"
+                             Width="{Binding Source={x:Static properties:Settings.Default},Path=AppCalendarSize}">
+                        <CalendarItem x:Name="PART_CalendarItem"
+                                  Background="{TemplateBinding Background}"
+                                  BorderBrush="{TemplateBinding BorderBrush}"
+                                  BorderThickness="{TemplateBinding BorderThickness}" />
+                    </Viewbox>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
 </ResourceDictionary>

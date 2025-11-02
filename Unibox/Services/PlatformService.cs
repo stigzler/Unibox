@@ -24,6 +24,11 @@ namespace Unibox.Services
             this.installationService = installationService;
         }
 
+        public void UpdatePlatform(InstallationModel installationModel)
+        {
+            databaseService.Database.Collections.Installations.Upsert(installationModel);
+        }
+
         public UpdatePlatformsOutcome UpdateInstallationPlatforms(InstallationModel installation)
         {
             UpdatePlatformsOutcome updatePlatformsOutcome = new UpdatePlatformsOutcome();
@@ -431,7 +436,8 @@ namespace Unibox.Services
             });
         }
 
-        public ObservableCollection<PlatformModel> GetPlatformsFromXml(string installationPath)
+        public ObservableCollection<PlatformModel>
+            GetPlatformsFromXml(string installationPath)
         {
             ObservableCollection<PlatformModel> lbPlatforms = new ObservableCollection<PlatformModel>();
 

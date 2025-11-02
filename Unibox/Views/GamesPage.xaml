@@ -11,8 +11,7 @@
              d:DataContext="{d:DesignInstance Type=vm:GamesVM, IsDesignTimeCreatable=True}"
              d:Height="139" d:Width="800" d:DesignHeight="189" d:DesignWidth="728"
              FontSize="{Binding Source={x:Static properties:Settings.Default},Path=AppFontSize}"
-             x:Name="GamesPageControl"
->
+             x:Name="GamesPageControl">
 
     <UserControl.Resources>
         <ResourceDictionary>
@@ -26,6 +25,7 @@
             <converters:NullToVisibilityConverter x:Key="NullToVisibilityConverter" />
             <converters:NullToBoolConverter x:Key="NullToBoolConverter" />
             <converters:EightyPercentConverter x:Key="EightyPercentConverter" />
+            <converters:NullToInverseVisibilityConverter x:Key="NullToInverseVisibilityConverter" />
         </ResourceDictionary>
     </UserControl.Resources>
 
@@ -42,13 +42,18 @@
                 <ColumnDefinition Width="auto" />
             </Grid.ColumnDefinitions>
 
+            <Grid.RowDefinitions>
+                <RowDefinition Height="auto" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+
             <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="auto" />
                     <ColumnDefinition Width="*" />
                 </Grid.ColumnDefinitions>
                 <Image Grid.Column="0" Source="/Resources/Images/LaunchboxIcon.png" Width="32" />
-                <ComboBox Grid.Column="1" x:Name="InstallationsCB" MinWidth="150" ItemsSource="{Binding InstallationsView}"
+                <ComboBox Grid.Column="1" x:Name="InstallationsCB"  ItemsSource="{Binding InstallationsView}"
                       DisplayMemberPath="Name" SelectedItem="{Binding SelectedInstallation, Mode=TwoWay}" Margin="5"
                       ItemContainerStyle="{StaticResource ComboBoxItemPaddingStyle}" />
             </Grid>
@@ -63,7 +68,7 @@
                     </Grid.ColumnDefinitions>
                     <Image Grid.Column="0" Source="/Resources/Images/Platform.png" Width="32" Margin="5" />
 
-                    <ComboBox Grid.Column="1"  MinWidth="150" ItemsSource="{Binding PlatformsView}" DisplayMemberPath="Name" Margin="5"
+                    <ComboBox Grid.Column="1"   ItemsSource="{Binding PlatformsView}" DisplayMemberPath="Name" Margin="5"
                       SelectedItem="{Binding SelectedPlatform}" d:Visibility="Visible"
                       Visibility="{Binding InstallationAvailable, Converter={StaticResource BoolToVisibilityConverter}}"
                       ItemContainerStyle="{StaticResource ComboBoxItemPaddingStyle}"
@@ -80,94 +85,87 @@
                 </Grid>
             </Grid>
 
-            <Button Grid.Column="2" Command="{Binding AddRomCommand}" Margin="5" MinWidth="140"
-                   IsEnabled="{Binding CanAddRoms}" Padding="{Binding Source={x:Static properties:Settings.Default},Path=AppButtonPadding}">
-                <StackPanel Orientation="Horizontal">
-                    <Image Source="/Resources/Images/AddRom.png" Height="28" />
-                    <TextBlock Text="Add Rom/s" VerticalAlignment="Center" Margin="5,0,0,0" />
+            <StackPanel Grid.Column="2" Orientation="Horizontal">
+
+                <StackPanel Orientation="Horizontal" Visibility="{Binding SelectedPlatform, Converter={StaticResource NullToVisibilityConverter}}"
+                            d:Visibility="Visible">
+
+                    <Button x:Name="ToggleNotesBT" Margin="5" ToolTip="Toggle Platform notes"
+                   Visibility="{Binding SelectedPlatform.Notes, Converter={StaticResource NullToVisibilityConverter}}"
+                         Padding="{Binding Source={x:Static properties:Settings.Default},Path=AppButtonPadding}"
+                         Click="ToggleNotesBT_Click">
+                        <StackPanel Orientation="Horizontal">
+                            <Image Source="/Resources/Images/document-text.png"  HorizontalAlignment="Center" />
+                        </StackPanel>
+                    </Button>
+
+                    <Button  Margin="5" ToolTip="Launch platform's associated application"
+                            Visibility="{Binding SelectedPlatform.ApplicationPath, Converter={StaticResource NullToVisibilityConverter}}"
+                            Padding="{Binding Source={x:Static properties:Settings.Default},Path=AppButtonPadding}"
+                            Command="{Binding LaunchPlatformApplicationCommand}">
+                        <StackPanel Orientation="Horizontal">
+                            <Image Source="/Resources/Images/gear.png"  HorizontalAlignment="Center" />
+                        </StackPanel>
+                    </Button>
+
+                    <Button  Margin="5" ToolTip="Open platform's associated URL"
+                            Command="{Binding OpenPlatformUrlCommand}"
+                            Visibility="{Binding SelectedPlatform.Url, Converter={StaticResource NullToVisibilityConverter}}"
+                            Padding="{Binding Source={x:Static properties:Settings.Default},Path=AppButtonPadding}">
+                        <StackPanel Orientation="Horizontal">
+                            <Image Source="/Resources/Images/globe-green.png"  HorizontalAlignment="Center" />
+                        </StackPanel>
+                    </Button>
                 </StackPanel>
-            </Button>
+
+                <Button  Command="{Binding AddRomCommand}" Margin="5" MinWidth="140"
+                   IsEnabled="{Binding CanAddRoms}" Padding="{Binding Source={x:Static properties:Settings.Default},Path=AppButtonPadding}">
+                    <StackPanel Orientation="Horizontal">
+                        <Image Source="/Resources/Images/AddRom.png" Height="28" />
+                        <TextBlock Text="Add Rom/s" VerticalAlignment="Center" Margin="5,0,0,0" />
+                    </StackPanel>
+                </Button>
+            </StackPanel>
+            <Grid Grid.Row="1" Grid.ColumnSpan="3" Margin="0"
+                Visibility="{Binding SelectedPlatform.Notes, Converter={StaticResource NullToVisibilityConverter}}">
+
+                <DockPanel x:Name="PlatformNotesPN"  LastChildFill="True">
+                    <Image DockPanel.Dock="Left" Source="/Resources/Images/document-text.png" Width="24" Margin="{Binding Source={x:Static properties:Settings.Default},Path=AppButtonPadding}" />
+                    <TextBox IsReadOnly="True" Text="{Binding SelectedPlatform.Notes}" BorderThickness="1" Background="Transparent"
+                             MaxHeight="80" VerticalScrollBarVisibility="Auto" Margin="5"></TextBox>
+                </DockPanel>
+            </Grid>
         </Grid>
 
-        <!--<DockPanel.RowDefinitions>
-            <RowDefinition Height="auto" />
-            <RowDefinition Height="*" />
-        </DockPanel.RowDefinitions>-->
-
-        <!--- TOP MENU BAR -->
-        <!--<Grid Grid.Row="0">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="auto" />
-                <ColumnDefinition Width="*" />
-                <ColumnDefinition Width="auto" />
-            </Grid.ColumnDefinitions>
-
-            <StackPanel Grid.Column="0" Orientation="Horizontal">
-                <Image  Source="/Resources/Images/LaunchboxIcon.png" Width="32" />
-                <ComboBox x:Name="InstallationsCB" MinWidth="150" ItemsSource="{Binding InstallationsView}"
-                      DisplayMemberPath="Name" SelectedItem="{Binding SelectedInstallation, Mode=TwoWay}" Margin="5" />
-            </StackPanel>
-
-            <StackPanel Grid.Column="1" Orientation="Horizontal" d:Visibility="Visible"
-                        Visibility="{Binding SelectedInstallation, Converter={StaticResource NullToVisibilityConverter}}">
-                <Image Source="/Resources/Images/Platform.png" Width="32" Margin="5" />
-                <ComboBox MinWidth="150" ItemsSource="{Binding PlatformsView}" DisplayMemberPath="Name" Margin="5"
-                      SelectedItem="{Binding SelectedPlatform}" d:Visibility="Visible"
-                      Visibility="{Binding InstallationAvailable, Converter={StaticResource BoolToVisibilityConverter}}" />
-            </StackPanel>
-
-            <StackPanel Grid.Column="1" Orientation="Horizontal" d:Visibility="Hidden"
-                    Visibility="{Binding InstallationAvailable, Converter={StaticResource BoolToInverseVisibilityConverter}}">
-                <Image Source="/Resources/Images/minus-circle.png" Height="24" />
-                <TextBlock Text="Installation Unreachable" VerticalAlignment="Center" Margin="5" />
-            </StackPanel>
-
-            <Button Grid.Column="2" Command="{Binding AddRomCommand}"
-                    IsEnabled="{Binding CanAddRoms}" Padding="{Binding Source={x:Static properties:Settings.Default},Path=AppButtonPadding}">
-                <StackPanel Orientation="Horizontal">
-                    <Image Source="/Resources/Images/AddRom.png" Height="28" />
-                    <TextBlock Text="Add Rom/s" VerticalAlignment="Center" Margin="5,0,0,0" />
-                </StackPanel>
-            </Button>
-        </Grid>-->
-
-        <!-- GAMES GRID -->
-        <!--<StackPanel Grid.Row="1" Visibility="{Binding InstallationAvailable, Converter={StaticResource BoolToVisibilityConverter}}"
-              d:Visibility="Visible">-->
-        <!--<Grid.RowDefinitions>
-                <RowDefinition Height="auto" />
-                <RowDefinition Height="*" />
-            </Grid.RowDefinitions>-->
-
-        <!-- Games Grid and Search -->
-        <!--<Grid DockPanel.Dock="Top">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="auto" />
-                    <ColumnDefinition Width="*" />
-                </Grid.ColumnDefinitions>
-                <TextBlock Grid.Column="0" Text="Search: " FontWeight="Bold" VerticalAlignment="Center" />
-                <TextBox Grid.Column="1"  Text="{Binding SearchTerm,UpdateSourceTrigger=PropertyChanged}" />
-            </Grid>-->
+        <!-- Games Toolbar and List -->
         <Grid Grid.Row="1" VerticalAlignment="Stretch"
-              Visibility="{Binding SelectedPlatform, Converter={StaticResource NullToVisibilityConverter}}">
+              Visibility="{Binding SelectedPlatform, Converter={StaticResource NullToVisibilityConverter}}"
+              d:Visibility="Visible">
 
             <Grid.RowDefinitions>
                 <RowDefinition Height="auto" />
                 <RowDefinition Height="*" />
             </Grid.RowDefinitions>
 
-            <Grid Grid.Row="0" DockPanel.Dock="Top" Margin="5">
+            <Grid Grid.Row="0" DockPanel.Dock="Top"  d:Visibility="Visible">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="auto" />
                     <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="auto" />
                 </Grid.ColumnDefinitions>
-                <TextBlock Grid.Column="0" Text="Search: " FontWeight="Bold" VerticalAlignment="Center" Margin="5"
-                           Padding="{Binding Source={x:Static properties:Settings.Default},Path=AppButtonPadding}" />
-                <TextBox Grid.Column="1"  Text="{Binding SearchTerm,UpdateSourceTrigger=PropertyChanged}" />
+                <TextBlock Grid.Column="0" Text="Search: " FontWeight="Bold" VerticalAlignment="Center" Margin="5" />
+                <TextBox Grid.Column="1"  Text="{Binding SearchTerm,UpdateSourceTrigger=PropertyChanged}" Margin="5" />
+                <Button Grid.Column="2" DockPanel.Dock="Right" Command="{Binding EditGameCommand}" Margin="5" MinWidth="140"
+                            IsEnabled="{Binding CanAddRoms}" Padding="{Binding Source={x:Static properties:Settings.Default},Path=AppButtonPadding}">
+                    <StackPanel Orientation="Horizontal">
+                        <Image Source="/Resources/Images/Pencil.png" Height="28" />
+                        <TextBlock Text="Edit Game" VerticalAlignment="Center" Margin="5,0,0,0" />
+                    </StackPanel>
+                </Button>
             </Grid>
 
             <Border Grid.Row="1" BorderThickness="1" BorderBrush="Gray" Margin="5" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
-                <ListView ItemsSource="{Binding GamesView}">
+                <ListView ItemsSource="{Binding GamesView}" SelectedItem="{Binding SelectedGame}">
                     <ListView.View>
                         <GridView>
                             <GridViewColumn Header="Name" DisplayMemberBinding="{Binding Title}" />
@@ -177,6 +175,7 @@
                             <GridViewColumn Header="Publisher"  DisplayMemberBinding="{Binding Publisher}" />
                             <GridViewColumn Header="Release Date"  DisplayMemberBinding="{Binding ReleaseDate, Converter={StaticResource DateTimeToYearConverter}}" />
                             <GridViewColumn Header="Launchbox Rom Path"  DisplayMemberBinding="{Binding ApplicationPath}" />
+                            <GridViewColumn Header="Launchbox ID" DisplayMemberBinding="{Binding LaunchboxID}" />
                         </GridView>
                     </ListView.View>
                 </ListView>

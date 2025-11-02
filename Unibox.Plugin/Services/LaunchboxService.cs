@@ -43,5 +43,38 @@ namespace Unibox.Plugin.Services
 
             return null;
         }
+
+        internal Exception EditGame(GameDTO gameDTO)
+        {
+            try
+            {
+                var existingGame = PluginHelper.DataManager.GetGameById(gameDTO.LaunchboxID);
+                if (existingGame == null)
+                {
+                    return new Exception($"Game with ID {gameDTO.LaunchboxID} not found in LaunchBox database.");
+                }
+                existingGame.Title = gameDTO.Title;
+                existingGame.Notes = gameDTO.Notes;
+                existingGame.Publisher = gameDTO.Publisher;
+                existingGame.Developer = gameDTO.Developer;
+                //existingGame.ApplicationPath = gameDTO.ApplicationPath;
+                existingGame.ReleaseDate = gameDTO.ReleaseDate;
+                existingGame.DateModified = DateTime.Now;
+                PluginHelper.DataManager.Save();
+                if (PluginHelper.StateManager.IsBigBox && Properties.Settings.Default.ShowGameOnEdit)
+                {
+                    PluginHelper.BigBoxMainViewModel.ShowGame(existingGame, Unbroken.LaunchBox.Plugins.Data.FilterType.None);
+                }
+                else if (!PluginHelper.StateManager.IsBigBox)
+                {
+                    PluginHelper.LaunchBoxMainViewModel.RefreshData();
+                }
+            }
+            catch (Exception ex)
+            {
+                return ex;
+            }
+            return null;
+        }
     }
 }

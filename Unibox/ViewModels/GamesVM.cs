@@ -4,6 +4,7 @@ using CommunityToolkit.Mvvm.Messaging;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
@@ -57,6 +58,9 @@ namespace Unibox.ViewModels
 
         [ObservableProperty]
         private PlatformModel selectedPlatform;
+
+        [ObservableProperty]
+        private GameModel selectedGame;
 
         public GamesVM(DatabaseService databaseService, GameService gameService)
         {
@@ -121,16 +125,12 @@ namespace Unibox.ViewModels
 
             if (romFiles is null || romFiles.Count == 0)
             {
-                //AdonisUI.Controls.MessageBox.Show("No Rom files selected. Please select at least one Rom file to add.", "No Rom Files Selected",
-                //    AdonisUI.Controls.MessageBoxButton.OK, AdonisUI.Controls.MessageBoxImage.Warning);
+                AdonisUI.Controls.MessageBox.Show("No Rom files selected. Please select at least one Rom file to add.", "No Rom Files Selected",
+                    AdonisUI.Controls.MessageBoxButton.OK, AdonisUI.Controls.MessageBoxImage.Warning);
                 return;
             }
 
             ObservableCollection<AddGameOutcome> addGameOutcomes = new ObservableCollection<AddGameOutcome>();
-
-            //PleaseWaitWindow pleaseWaitWindow = new PleaseWaitWindow();
-            //pleaseWaitWindow.ViewModel.Text = "Please wait whilst the selected Roms are processed...";
-            //pleaseWaitWindow.Show();
 
             WeakReferenceMessenger.Default.Send(new SetNavigationEnabledMessage(false));
 
@@ -291,11 +291,9 @@ namespace Unibox.ViewModels
         partial void OnSelectedPlatformChanged(PlatformModel value)
         {
             UpdateGamesList();
-            GamesView = (CollectionView)CollectionViewSource.GetDefaultView(games);
-            GamesView.SortDescriptions.Add(new System.ComponentModel.SortDescription("Title", System.ComponentModel.ListSortDirection.Ascending));
         }
 
-        private void UpdateGamesList()
+        internal void UpdateGamesList()
         {
             if (SelectedPlatform is null) return;
 
@@ -313,13 +311,83 @@ namespace Unibox.ViewModels
 
             Mouse.OverrideCursor = Cursors.Wait;
             games = gameService.GetGamesFromXml(candidateXmlPath);
+
+            GamesView = (CollectionView)CollectionViewSource.GetDefaultView(games);
+            GamesView.SortDescriptions.Add(new System.ComponentModel.SortDescription("Title", System.ComponentModel.ListSortDirection.Ascending));
+
             Mouse.OverrideCursor = Cursors.Arrow;
         }
 
         public void Receive(InstallationChangedMessage message)
         {
+            var selectedInstallation = SelectedInstallation;
+            var selectedPlatform = SelectedPlatform;
+
             installations = new ObservableCollection<InstallationModel>(databaseService.Database.Collections.Installations.FindAll());
             InstallationsView = (CollectionView)CollectionViewSource.GetDefaultView(installations);
+
+            // hacky, but meh
+            if (selectedInstallation != null) SelectedInstallation = installations.Where(i => i.ID == selectedInstallation.ID).FirstOrDefault(); ;
+            if (selectedPlatform != null) SelectedPlatform = platforms.Where(p => p.ID == selectedPlatform.ID).FirstOrDefault();
+        }
+
+        [RelayCommand]
+        private void EditGame()
+        {
+            if (SelectedGame == null) return;
+
+            SelectedGame.Platform = SelectedPlatform;
+
+            WeakReferenceMessenger.Default.Send(new PageChangeMessage(new PageChangeMessageArgs()
+            {
+                RequestType = Data.Enums.PageRequestType.EditGame,
+                Data = new EditGameMessageDetails()
+                {
+                    Game = SelectedGame,
+                    Installation = SelectedInstallation
+                }
+            }));
+        }
+
+        [RelayCommand]
+        private void LaunchPlatformApplication()
+        {
+            try
+            {
+                if (SelectedPlatform is null || SelectedInstallation is null) return;
+                if (String.IsNullOrWhiteSpace(SelectedPlatform.ApplicationPath) || !File.Exists(SelectedPlatform.ApplicationPath))
+                {
+                    AdonisUI.Controls.MessageBox.Show("The selected platform does not have a valid application path set. Please check the platform settings.", "Invalid Application Path",
+                        AdonisUI.Controls.MessageBoxButton.OK, AdonisUI.Controls.MessageBoxImage.Warning);
+                    return;
+                }
+                System.Diagnostics.ProcessStartInfo startInfo = new System.Diagnostics.ProcessStartInfo
+                {
+                    FileName = SelectedPlatform.ApplicationPath,
+                    WorkingDirectory = Path.GetDirectoryName(SelectedPlatform.ApplicationPath),
+                };
+                System.Diagnostics.Process.Start(startInfo);
+            }
+            catch (Exception ex)
+            {
+                AdonisUI.Controls.MessageBox.Show($"Unibox couldn't launch the application. Exception: {ex.Message}", "Error Launching Application",
+                    AdonisUI.Controls.MessageBoxButton.OK, AdonisUI.Controls.MessageBoxImage.Error);
+            }
+        }
+
+        [RelayCommand]
+        private void OpenPlatformUrl()
+        {
+            try
+            {
+                if (SelectedPlatform is null || SelectedInstallation is null) return;
+                Process.Start(new ProcessStartInfo() { FileName = SelectedPlatform.Url, UseShellExecute = true }); ;
+            }
+            catch (Exception ex)
+            {
+                AdonisUI.Controls.MessageBox.Show($"Unibox couldn't open the URL. Exception: {ex.Message}", "Error Opening URL",
+                    AdonisUI.Controls.MessageBoxButton.OK, AdonisUI.Controls.MessageBoxImage.Error);
+            }
         }
     }
 }

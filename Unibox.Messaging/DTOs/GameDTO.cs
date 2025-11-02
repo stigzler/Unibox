@@ -8,6 +8,7 @@ namespace Unibox.Messaging.DTOs
 {
     public class GameDTO
     {
+        public string LaunchboxID { get; set; } = string.Empty;
         public string Title { get; set; }
         public string Platform { get; set; }
         public string Notes { get; set; }

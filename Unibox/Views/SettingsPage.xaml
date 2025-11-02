@@ -142,6 +142,7 @@
                     <Grid.RowDefinitions>
                         <RowDefinition Height="auto" />
                         <RowDefinition Height="auto" />
+                        <RowDefinition Height="auto" />
                     </Grid.RowDefinitions>
 
                     <GroupBox Grid.Row="0" Header="UI" VerticalAlignment="Top">
@@ -160,6 +161,7 @@
                                 <RowDefinition Height="auto" />
                                 <RowDefinition Height="auto" />
                                 <RowDefinition Height="auto" />
+                                <RowDefinition Height="auto" />
                             </Grid.RowDefinitions>
 
                             <TextBlock  Grid.Column="0" Grid.Row="0" Text="Font Size" VerticalAlignment="Center" Margin="5"
@@ -168,19 +170,25 @@
                                         LostFocus="FontSizeTB_LostFocus"
                                         Text="{Binding Source={x:Static properties:Settings.Default},Path=AppFontSize}" />
 
-                            <TextBlock  Grid.Column="0" Grid.Row="1" Text="Command Button Padding" VerticalAlignment="Center" Margin="5"
+                            <TextBlock  Grid.Column="0" Grid.Row="1" Text="Button Padding" VerticalAlignment="Center" Margin="5"
                                            ToolTip="Controls the space around the command buttons" />
                             <TextBox x:Name="ButtonPaddingTB" Grid.Column="1" Grid.Row="1" Margin="5" PreviewTextInput="ButtonPaddingTB_PreviewTextInput"
                                         Text="{Binding Source={x:Static properties:Settings.Default},Path=AppButtonPadding}"
                                      LostFocus="ButtonPaddingTB_LostFocus" />
 
-                            <TextBlock  Grid.Column="0" Grid.Row="2" Text="List Item Padding" VerticalAlignment="Center" Margin="5"
+                            <TextBlock  Grid.Column="0" Grid.Row="2" Text="List Padding" VerticalAlignment="Center" Margin="5"
                                            ToolTip="Controls the space around any dropdown list items" />
                             <TextBox x:Name="ListPaddingTB" Grid.Column="1" Grid.Row="2" Margin="5" PreviewTextInput="ListPaddingTB_PreviewTextInput"
                                         Text="{Binding Source={x:Static properties:Settings.Default},Path=AppListPadding}"
                                      LostFocus="ListPaddingTB_LostFocus" />
 
-                            <CheckBox Grid.Column="1" Grid.Row="3" Content="Dark Theme" Margin="5"
+                            <TextBlock  Grid.Column="0" Grid.Row="3" Text="Calendar Size" VerticalAlignment="Center" Margin="5"
+                                         ToolTip="The width and height of any calendar popups." />
+                            <TextBox x:Name="CalendarSizeTB" Grid.Column="1" Grid.Row="3" Margin="5" PreviewTextInput="CalendarSizeTB_PreviewTextInput"
+                                      Text="{Binding Source={x:Static properties:Settings.Default},Path=AppCalendarSize}"
+                                     LostFocus="CalendarSizeTB_LostFocus" />
+
+                            <CheckBox Grid.Column="1" Grid.Row="4" Content="Dark Theme" Margin="5"
                                       IsChecked="{Binding Source={x:Static properties:Settings.Default},Path=AppDarkMode}"
                                       Command="{Binding ToggleDarkModeCommand}" />
                         </Grid>
@@ -213,6 +221,42 @@
                             </Grid>
                         </StackPanel>
                     </GroupBox>
+
+                    <GroupBox Grid.Row="2" Header="Operational"  VerticalAlignment="Top" Margin="0,10,0,0">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="auto" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="auto" />
+                                <RowDefinition Height="auto" />
+                                <RowDefinition Height="auto" />
+                                <RowDefinition Height="auto" />
+                                <RowDefinition Height="auto" />
+                            </Grid.RowDefinitions>
+
+                            <TextBlock  Grid.Column="0" Grid.Row="0" Text="Image Extensions" VerticalAlignment="Center" Margin="5"
+                                           ToolTip="Permitted image file extensions separated by a comma. Defaults: jpeg,jpg,png" />
+                            <TextBox x:Name="ImageExtsTB" Grid.Column="1" Grid.Row="0" Margin="5" PreviewTextInput="ImageExtsTB_PreviewTextInput"
+                                        Text="{Binding Source={x:Static properties:Settings.Default},Path=AppPermittedImageExts}" />
+
+                            <TextBlock  Grid.Column="0" Grid.Row="1" Text="Video Extensions" VerticalAlignment="Center" Margin="5"
+                                           ToolTip="Permitted video file extensions separated by a comma. Defaults: mp4,wmv,avi,mkv" />
+                            <TextBox x:Name="VideoExtsTB" Grid.Column="1" Grid.Row="1" Margin="5" PreviewTextInput="VideoExtsTB_PreviewTextInput"
+                                        Text="{Binding Source={x:Static properties:Settings.Default},Path=AppPermittedVideoExts}" />
+
+                            <TextBlock  Grid.Column="0" Grid.Row="2" Text="Manual Extensions" VerticalAlignment="Center" Margin="5"
+                                           ToolTip="Permitted manual file extensions separated by a comma. Defaults: pdf,doc,docx,txt,rtf" />
+                            <TextBox x:Name="ManualExtsTB" Grid.Column="1" Grid.Row="2" Margin="5" PreviewTextInput="ManualExtsTB_PreviewTextInput"
+                                        Text="{Binding Source={x:Static properties:Settings.Default},Path=AppPermittedManualExts}" />
+
+                            <TextBlock  Grid.Column="0" Grid.Row="3" Text="Music Extensions" VerticalAlignment="Center" Margin="5"
+                                         ToolTip="Permitted music file extensions separated by a comma. Defaults: mp3,wav" />
+                            <TextBox x:Name="MusicExtsTB" Grid.Column="1" Grid.Row="3" Margin="5" PreviewTextInput="MusicExtsTB_PreviewTextInput"
+                                      Text="{Binding Source={x:Static properties:Settings.Default},Path=AppPermittedMusicExts}" />
+                        </Grid>
+                    </GroupBox>
                 </Grid>
             </TabItem>
 
@@ -231,7 +275,7 @@
                     <TextBlock Grid.Row="1" FontFamily="Arial Narrow" Text="Unibox" FontSize="24" FontWeight="Bold"  HorizontalAlignment="Center" />
                     <TextBlock Grid.Row="2" HorizontalAlignment="Center" Text="by stigzler" FontFamily="Agency FB" FontSize="20" FontWeight="Bold"
                                Margin="0,10,0,4" />
-                    <Image Grid.Row="3" Source="/Resources/Images/WillyRound.png" Height="24" />
+                    <Image Grid.Row="3" Source="/Resources/Images/WillyRound.png" Height="24" MouseDown="Image_MouseDown" />
                     <TextBlock Grid.Row="4" Text="{Binding AssemblyVersion}" HorizontalAlignment="Center" />
                     <!--<GroupBox Grid.Row="4" Header="Debug">
                         <Button Content="Test" Command="{Binding TestCommand}" />

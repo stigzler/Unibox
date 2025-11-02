@@ -10,7 +10,7 @@
              mc:Ignorable="d" Cursor="{Binding Cursor}"
              d:DataContext="{d:DesignInstance Type=vm:InstallationsVM, IsDesignTimeCreatable=True}"
              FontSize="{Binding Source={x:Static properties:Settings.Default},Path=AppFontSize}"
-             d:Height="445" d:Width="751">
+             d:Height="445" d:Width="751" d:DesignHeight="579" d:DesignWidth="745">
 
     <UserControl.Resources>
         <ResourceDictionary>
@@ -79,7 +79,11 @@
                 <Button Content="Lock"  Command="{Binding TogglePlatformLocksCommand}" MinWidth="100" Margin="5" Padding="{Binding Source={x:Static properties:Settings.Default},Path=AppButtonPadding}"
                         CommandParameter="{Binding ElementName=PlatformsLV, Path=SelectedItems}"
                         IsEnabled="{Binding SelectedPlatform, Converter={StaticResource NullToBoolConverter}}"
-                        ToolTip="Lock the PLatform settings from change during the automatic processes in Update." />
+                        ToolTip="Lock the Platform settings from change during the automatic processes in Update." />
+
+                <Button Content="Edit"  Command="{Binding EditPlatformCommand}" MinWidth="100" Margin="5" Padding="{Binding Source={x:Static properties:Settings.Default},Path=AppButtonPadding}"
+                        IsEnabled="{Binding SelectedPlatform, Converter={StaticResource NullToBoolConverter}}"
+                        ToolTip="Edit the Platform settings." />
             </WrapPanel>
             <Border Grid.Row="1" Grid.Column="0" BorderBrush="gray" BorderThickness="1" Margin="5">
                 <ListView  x:Name="PlatformsLV"  ItemsSource="{Binding Platforms}" SelectedItem="{Binding SelectedPlatform}"
