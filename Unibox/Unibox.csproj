@@ -106,9 +106,13 @@
 		<None Remove="Resources\Images\arrowRight.png" />
 		<None Remove="Resources\Images\arrowTop.png" />
 		<None Remove="Resources\Images\arrowUp.png" />
+		<None Remove="Resources\Images\background.png" />
 		<None Remove="Resources\Images\box-3d.png" />
+		<None Remove="Resources\Images\box-back.png" />
 		<None Remove="Resources\Images\box-front.png" />
+		<None Remove="Resources\Images\casette.png" />
 		<None Remove="Resources\Images\clock.png" />
+		<None Remove="Resources\Images\disc.png" />
 		<None Remove="Resources\Images\document-text.png" />
 		<None Remove="Resources\Images\eraser.png" />
 		<None Remove="Resources\Images\exclamation.png" />
@@ -121,8 +125,10 @@
 		<None Remove="Resources\Images\lock.png" />
 		<None Remove="Resources\Images\logo.png" />
 		<None Remove="Resources\Images\manual.png" />
+		<None Remove="Resources\Images\manualMedia.png" />
 		<None Remove="Resources\Images\minus-circle.png" />
 		<None Remove="Resources\Images\music.png" />
+		<None Remove="Resources\Images\musicMedia.png" />
 		<None Remove="Resources\Images\noMedia.png" />
 		<None Remove="Resources\Images\pencil.png" />
 		<None Remove="Resources\Images\Platform.png" />
@@ -132,6 +138,7 @@
 		<None Remove="Resources\Images\Settings.png" />
 		<None Remove="Resources\Images\UniboxLogo.png" />
 		<None Remove="Resources\Images\video.png" />
+		<None Remove="Resources\Images\videoMedia.png" />
 		<None Remove="Resources\Images\WillyRound.png" />
 	</ItemGroup>
 
@@ -142,9 +149,13 @@
 		<Resource Include="Resources\Images\arrowRight.png" />
 		<Resource Include="Resources\Images\arrowTop.png" />
 		<Resource Include="Resources\Images\arrowUp.png" />
+		<Resource Include="Resources\Images\background.png" />
 		<Resource Include="Resources\Images\box-3d.png" />
+		<Resource Include="Resources\Images\box-back.png" />
 		<Resource Include="Resources\Images\box-front.png" />
+		<Resource Include="Resources\Images\casette.png" />
 		<Resource Include="Resources\Images\clock.png" />
+		<Resource Include="Resources\Images\disc.png" />
 		<Resource Include="Resources\Images\document-text.png" />
 		<Resource Include="Resources\Images\eraser.png" />
 		<Resource Include="Resources\Images\exclamation.png" />
@@ -180,8 +191,10 @@
 		<Resource Include="Resources\Images\lock.png" />
 		<Resource Include="Resources\Images\logo.png" />
 		<Resource Include="Resources\Images\manual.png" />
+		<Resource Include="Resources\Images\manualMedia.png" />
 		<Resource Include="Resources\Images\minus-circle.png" />
 		<Resource Include="Resources\Images\music.png" />
+		<Resource Include="Resources\Images\musicMedia.png" />
 		<Resource Include="Resources\Images\noMedia.png" />
 		<Resource Include="Resources\Images\pencil.png" />
 		<Resource Include="Resources\Images\Platform.png" />
@@ -191,6 +204,7 @@
 		<Resource Include="Resources\Images\Settings.png" />
 		<Resource Include="Resources\Images\UniboxLogo.png" />
 		<Resource Include="Resources\Images\video.png" />
+		<Resource Include="Resources\Images\videoMedia.png" />
 		<Resource Include="Resources\Images\WillyRound.png" />
 	</ItemGroup>
 

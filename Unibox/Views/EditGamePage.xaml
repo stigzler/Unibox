@@ -17,6 +17,9 @@
                 <ResourceDictionary Source="/Resources/Dictionaries/Styles.xaml" />
             </ResourceDictionary.MergedDictionaries>
             <converters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter" />
+            <converters:CountToBoolConverter x:Key="CountToBoolConverter" />
+            <converters:FilenameFromFullPath x:Key="FilenameFromFullPath" />
+            <converters:MediaAvailabilityToVisibility x:Key="MediaAvailabilityToVisibility" />
         </ResourceDictionary>
     </UserControl.Resources>
 
@@ -32,21 +35,27 @@
 
         <!-- Page Title -->
         <StackPanel Grid.Row="0">
-            <TextBlock  Text="Edit Game" Style="{DynamicResource PageHeader}" />
+            <TextBlock  Text="{Binding PageTitle}" Style="{DynamicResource PageHeader}" />
         </StackPanel>
 
         <!-- Alert Message -->
         <StackPanel Grid.Row="1" DockPanel.Dock="Top">
-            <TextBlock  Margin="5" Padding="5" TextWrapping="Wrap" FontWeight="Bold" Foreground="White"
+            <!--<TextBlock  Margin="5" Padding="10" TextWrapping="Wrap" FontWeight="Bold" Foreground="White"
                         Text="{Binding AlertText}" d:Text="This is an alert message."
                         Background="{Binding AlertColor}" d:Background="Red"
                         Visibility="{Binding AlertVisible, Converter={StaticResource BoolToVisibilityConverter}}"
-                        d:Visibility="Visible" />
+                        d:Visibility="Visible" />-->
         </StackPanel>
 
         <!-- Metadata Edit -->
-        <GroupBox Grid.Row="2" DockPanel.Dock="Top" Header="Metadata (Updates on Save)" Margin="5">
-            <Grid>
+        <GroupBox Grid.Row="2" DockPanel.Dock="Top"  Margin="5">
+            <GroupBox.Header>
+                <DockPanel LastChildFill="True">
+                    <ToggleButton x:Name="ToggleMetadataBtn" DockPanel.Dock="Right" Content="Show/Hide" IsChecked="True" />
+                    <TextBlock Text="Metadata (updates on save)" />
+                </DockPanel>
+            </GroupBox.Header>
+            <Grid Visibility="{Binding IsChecked, ElementName=ToggleMetadataBtn, Converter={StaticResource BoolToVisibilityConverter}}">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="auto" />
                     <ColumnDefinition Width="*" />
@@ -83,7 +92,7 @@
         </GroupBox>
 
         <!-- Media Edit-->
-        <GroupBox Grid.Row="3" Header="Media (Updates on change)" Margin="5">
+        <GroupBox Grid.Row="3" Header="Media (updates on change)" Margin="5">
             <Grid>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto" />
@@ -104,36 +113,38 @@
 
                     <ComboBox Grid.Column="0" Margin="5" ItemsSource="{Binding MediaTypes}"
                               SelectedItem="{Binding SelectedMediaType}">
-                        <i:Interaction.Triggers>
+                        <!--<i:Interaction.Triggers>
                             <i:EventTrigger EventName="SelectionChanged">
                                 <i:InvokeCommandAction
                                     Command="{Binding CheckForMediaCommand}"
                                     CommandParameter="{Binding SelectedItem, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type ComboBox}}}" />
                             </i:EventTrigger>
-                        </i:Interaction.Triggers>
+                        </i:Interaction.Triggers>-->
                     </ComboBox>
 
                     <Button Grid.Column="1" Margin="5"  ToolTip="Search for media on internet"
-                            Command="{Binding OpenPlatformUrlCommand}"
+                            Command="{Binding SearchInternetCommand}"
                             Padding="{Binding Source={x:Static properties:Settings.Default},Path=AppButtonPadding}">
                         <Image Source="/Resources/Images/globe-green.png"  HorizontalAlignment="Center" Width="32" />
                     </Button>
 
                     <Button Grid.Column="2" Margin="5"  ToolTip="Add/replace default media item (0)"
-                             Command="{Binding OpenPlatformUrlCommand}"
+                             Command="{Binding UpdatePrimaryMediaItemCommand}"
                              Padding="{Binding Source={x:Static properties:Settings.Default},Path=AppButtonPadding}">
                         <Image Source="/Resources/Images/plus.png"  HorizontalAlignment="Center" Width="32" />
                     </Button>
 
                     <Button Grid.Column="3" Margin="5"  ToolTip="Open media item folder"
-                            Command="{Binding OpenPlatformUrlCommand}"
+                            IsEnabled="{Binding MediaList.Count, Converter={StaticResource CountToBoolConverter}, ConverterParameter=1}"
+                            Command="{Binding OpenMediaDirectoryCommand}"
                             Padding="{Binding Source={x:Static properties:Settings.Default},Path=AppButtonPadding}">
                         <Image Source="/Resources/Images/folder-horizontal-open.png"  HorizontalAlignment="Center" Width="32" />
                     </Button>
 
                     <Button Grid.Column="4" Margin="5"  ToolTip="Show next media item"
-                             Command="{Binding OpenPlatformUrlCommand}"
-                             Padding="{Binding Source={x:Static properties:Settings.Default},Path=AppButtonPadding}">
+                            IsEnabled="{Binding MediaList.Count, Converter={StaticResource CountToBoolConverter}, ConverterParameter=2}"
+                            Padding="{Binding Source={x:Static properties:Settings.Default},Path=AppButtonPadding}"
+                            Command="{Binding ProcessNextMediaItemCommand}">
                         <Image Source="/Resources/Images/arrowRight.png"  HorizontalAlignment="Center" Width="32" />
                     </Button>
                 </Grid>
@@ -144,53 +155,181 @@
                         <ColumnDefinition Width="*" />
                         <ColumnDefinition Width="auto" />
                     </Grid.ColumnDefinitions>
-                    <Border Grid.Column="0" BorderThickness="1" BorderBrush="Gray">
-                        <Image  Source="{Binding ImageSource}" Stretch="Uniform" />
+                    <Border Grid.Column="0" BorderThickness="1" BorderBrush="Gray" Padding="10" Background="Transparent"
+                             Focusable="True">
+                        <Border.InputBindings>
+                            <MouseBinding Gesture="LeftDoubleClick"
+                                     Command="{Binding OpenMediaCommand}" />
+                        </Border.InputBindings>
+                        <Image  Source="{Binding ImageSource}" Stretch="Uniform" Cursor="Hand">
+                        </Image>
                     </Border>
                     <!-- Media present indicators -->
-                    <StackPanel Grid.Column="1" Orientation="Vertical" Margin="5">
-                        <Image Source="/Resources/Images/box-3d.png"  Margin="2" ToolTip="Box 3D"
+                    <ScrollViewer Grid.Column="1">
+                        <StackPanel Grid.Column="1" Orientation="Vertical" Margin="5">
+
+                            <Image Source="/Resources/Images/logo.png"  Margin="5" ToolTip="Logo"
+                              Width="{Binding Source={x:Static properties:Settings.Default},Path=AppMediaIndicatorSize}"
+                              Height="{Binding Source={x:Static properties:Settings.Default},Path=AppMediaIndicatorSize}"
+                          Visibility="{Binding MediaAvailable, Converter={StaticResource MediaAvailabilityToVisibility},
+                          ConverterParameter=Clear Logo}" d:Visibility="Visible">
+                                <Image.InputBindings>
+                                    <MouseBinding Gesture="LeftClick"
+                               Command="{Binding LoadMediaCommand}" CommandParameter="Clear Logo" />
+                                </Image.InputBindings>
+                            </Image>
+
+                            <Image Source="/Resources/Images/box-3d.png"  Margin="5" ToolTip="Box 3D"
+                                Width="{Binding Source={x:Static properties:Settings.Default},Path=AppMediaIndicatorSize}"
+                                Height="{Binding Source={x:Static properties:Settings.Default},Path=AppMediaIndicatorSize}"
+                                Visibility="{Binding MediaAvailable, Converter={StaticResource MediaAvailabilityToVisibility},
+                                ConverterParameter=Box - 3D}" d:Visibility="Visible">
+                                <Image.InputBindings>
+                                    <MouseBinding Gesture="LeftClick"
+                                     Command="{Binding LoadMediaCommand}" CommandParameter="Box - 3D" />
+                                </Image.InputBindings>
+                            </Image>
+
+                            <Image Source="/Resources/Images/box-front.png" Margin="5" ToolTip="Box Front"
+                                Width="{Binding Source={x:Static properties:Settings.Default},Path=AppMediaIndicatorSize}"
+                                Height="{Binding Source={x:Static properties:Settings.Default},Path=AppMediaIndicatorSize}"
+                                 Visibility="{Binding MediaAvailable, Converter={StaticResource MediaAvailabilityToVisibility},
+                                ConverterParameter=Box - Front}" d:Visibility="Visible">
+                                <Image.InputBindings>
+                                    <MouseBinding Gesture="LeftClick"
+                                     Command="{Binding LoadMediaCommand}" CommandParameter="Box - Front" />
+                                </Image.InputBindings>
+                            </Image>
+
+                            <Image Source="/Resources/Images/box-back.png" Margin="5" ToolTip="Box Front"
+                               Width="{Binding Source={x:Static properties:Settings.Default},Path=AppMediaIndicatorSize}"
+                               Height="{Binding Source={x:Static properties:Settings.Default},Path=AppMediaIndicatorSize}"
+                                Visibility="{Binding MediaAvailable, Converter={StaticResource MediaAvailabilityToVisibility},
+                               ConverterParameter=Box - Back}" d:Visibility="Visible">
+                                <Image.InputBindings>
+                                    <MouseBinding Gesture="LeftClick"
+                                    Command="{Binding LoadMediaCommand}" CommandParameter="Box - Back" />
+                                </Image.InputBindings>
+                            </Image>
+
+                            <Image Source="/Resources/Images/screen-ingame.png"  Margin="5" ToolTip="Gameplay Screenshot"
+                       Width="{Binding Source={x:Static properties:Settings.Default},Path=AppMediaIndicatorSize}"
+                       Height="{Binding Source={x:Static properties:Settings.Default},Path=AppMediaIndicatorSize}"
+                   Visibility="{Binding MediaAvailable, Converter={StaticResource MediaAvailabilityToVisibility},
+                   ConverterParameter=Screenshot - Gameplay}" d:Visibility="Visible">
+                                <Image.InputBindings>
+                                    <MouseBinding Gesture="LeftClick"
+                                    Command="{Binding LoadMediaCommand}" CommandParameter="Screenshot - Gameplay" />
+                                </Image.InputBindings>
+                            </Image>
+
+                            <Image Source="/Resources/Images/screen-title.png" Margin="5" ToolTip="Title Screen"
+                                Width="{Binding Source={x:Static properties:Settings.Default},Path=AppMediaIndicatorSize}"
+                                Height="{Binding Source={x:Static properties:Settings.Default},Path=AppMediaIndicatorSize}"
+                                Visibility="{Binding MediaAvailable, Converter={StaticResource MediaAvailabilityToVisibility},
+                                ConverterParameter=Screenshot - Game Title}" d:Visibility="Visible">
+                                <Image.InputBindings>
+                                    <MouseBinding Gesture="LeftClick" Command="{Binding LoadMediaCommand}"
+                                                  CommandParameter="Screenshot - Game Title" />
+                                </Image.InputBindings>
+                            </Image>
+
+                            <Image Source="/Resources/Images/casette.png" Margin="5" ToolTip="Cart Front"
+                            Width="{Binding Source={x:Static properties:Settings.Default},Path=AppMediaIndicatorSize}"
+                            Height="{Binding Source={x:Static properties:Settings.Default},Path=AppMediaIndicatorSize}"
+                            Visibility="{Binding MediaAvailable, Converter={StaticResource MediaAvailabilityToVisibility},
+                            ConverterParameter=Cart - Front}" d:Visibility="Visible">
+                                <Image.InputBindings>
+                                    <MouseBinding Gesture="LeftClick" Command="{Binding LoadMediaCommand}"
+                                              CommandParameter="Cart - Front" />
+                                </Image.InputBindings>
+                            </Image>
+
+                            <Image Source="/Resources/Images/disc.png" Margin="5" ToolTip="Disc"
+                           Width="{Binding Source={x:Static properties:Settings.Default},Path=AppMediaIndicatorSize}"
+                           Height="{Binding Source={x:Static properties:Settings.Default},Path=AppMediaIndicatorSize}"
+                           Visibility="{Binding MediaAvailable, Converter={StaticResource MediaAvailabilityToVisibility},
+                           ConverterParameter=Disc}" d:Visibility="Visible">
+                                <Image.InputBindings>
+                                    <MouseBinding Gesture="LeftClick" Command="{Binding LoadMediaCommand}"
+                                     CommandParameter="Disc" />
+                                </Image.InputBindings>
+                            </Image>
+
+                            <Image Source="/Resources/Images/background.png" Margin="5" ToolTip="Background"
+                               Width="{Binding Source={x:Static properties:Settings.Default},Path=AppMediaIndicatorSize}"
+                               Height="{Binding Source={x:Static properties:Settings.Default},Path=AppMediaIndicatorSize}"
+                               Visibility="{Binding MediaAvailable, Converter={StaticResource MediaAvailabilityToVisibility},
+                               ConverterParameter=Fanart - Background}" d:Visibility="Visible">
+                                <Image.InputBindings>
+                                    <MouseBinding Gesture="LeftClick" Command="{Binding LoadMediaCommand}"
+                                     CommandParameter="Fanart - Background" />
+                                </Image.InputBindings>
+                            </Image>
+
+                            <Image Source="/Resources/Images/music.png"  Margin="5" ToolTip="Music"
                         Width="{Binding Source={x:Static properties:Settings.Default},Path=AppMediaIndicatorSize}"
-                        Height="{Binding Source={x:Static properties:Settings.Default},Path=AppMediaIndicatorSize}" />
-                        <Image Source="/Resources/Images/box-front.png" Margin="2" ToolTip="Box Front"
+                        Height="{Binding Source={x:Static properties:Settings.Default},Path=AppMediaIndicatorSize}"
+                                Visibility="{Binding MediaAvailable, Converter={StaticResource MediaAvailabilityToVisibility},
+                                ConverterParameter=Music}" d:Visibility="Visible">
+                                <Image.InputBindings>
+                                    <MouseBinding Gesture="LeftClick"
+                                     Command="{Binding LoadMediaCommand}" CommandParameter="Music" />
+                                </Image.InputBindings>
+                            </Image>
+
+                            <Image Source="/Resources/Images/manual.png" Margin="5" ToolTip="Manual"
                         Width="{Binding Source={x:Static properties:Settings.Default},Path=AppMediaIndicatorSize}"
-                        Height="{Binding Source={x:Static properties:Settings.Default},Path=AppMediaIndicatorSize}" />
-                        <Image Source="/Resources/Images/music.png"  Margin="2" ToolTip="Music"
+                        Height="{Binding Source={x:Static properties:Settings.Default},Path=AppMediaIndicatorSize}"
+                                 Visibility="{Binding MediaAvailable, Converter={StaticResource MediaAvailabilityToVisibility},
+                                ConverterParameter=Manual}" d:Visibility="Visible">
+                                <Image.InputBindings>
+                                    <MouseBinding Gesture="LeftClick"
+                                     Command="{Binding LoadMediaCommand}" CommandParameter="Manual" />
+                                </Image.InputBindings>
+                            </Image>
+
+                            <Image Source="/Resources/Images/video.png"  Margin="5" ToolTip="Video"
                         Width="{Binding Source={x:Static properties:Settings.Default},Path=AppMediaIndicatorSize}"
-                        Height="{Binding Source={x:Static properties:Settings.Default},Path=AppMediaIndicatorSize}" />
-                        <Image Source="/Resources/Images/manual.png" Margin="2" ToolTip="Manual"
-                        Width="{Binding Source={x:Static properties:Settings.Default},Path=AppMediaIndicatorSize}"
-                        Height="{Binding Source={x:Static properties:Settings.Default},Path=AppMediaIndicatorSize}" />
-                        <Image Source="/Resources/Images/video.png"  Margin="2" ToolTip="Video"
-                        Width="{Binding Source={x:Static properties:Settings.Default},Path=AppMediaIndicatorSize}"
-                        Height="{Binding Source={x:Static properties:Settings.Default},Path=AppMediaIndicatorSize}" />
-                        <Image Source="/Resources/Images/screen-ingame.png"  Margin="2" ToolTip="Gameplay Screenshot"
-                        Width="{Binding Source={x:Static properties:Settings.Default},Path=AppMediaIndicatorSize}"
-                        Height="{Binding Source={x:Static properties:Settings.Default},Path=AppMediaIndicatorSize}" />
-                        <Image Source="/Resources/Images/screen-title.png" Margin="2" ToolTip="Title Screen"
-                        Width="{Binding Source={x:Static properties:Settings.Default},Path=AppMediaIndicatorSize}"
-                        Height="{Binding Source={x:Static properties:Settings.Default},Path=AppMediaIndicatorSize}" />
-                        <Image Source="/Resources/Images/logo.png"  Margin="2" ToolTip="Logo"
-                        Width="{Binding Source={x:Static properties:Settings.Default},Path=AppMediaIndicatorSize}"
-                        Height="{Binding Source={x:Static properties:Settings.Default},Path=AppMediaIndicatorSize}" />
-                    </StackPanel>
+                        Height="{Binding Source={x:Static properties:Settings.Default},Path=AppMediaIndicatorSize}"
+                                 Visibility="{Binding MediaAvailable, Converter={StaticResource MediaAvailabilityToVisibility},
+                                ConverterParameter=Video}" d:Visibility="Visible">
+                                <Image.InputBindings>
+                                    <MouseBinding Gesture="LeftClick"
+                                     Command="{Binding LoadMediaCommand}" CommandParameter="Video" />
+                                </Image.InputBindings>
+                            </Image>
+                        </StackPanel>
+                    </ScrollViewer>
                 </Grid>
 
                 <!-- Media Details -->
                 <DockPanel Grid.Row="3" Margin="5" LastChildFill="True">
-                    <TextBlock DockPanel.Dock="Right" Text="0/0" />
-                    <TextBlock Text="Amidar-01.png" />
+                    <TextBlock DockPanel.Dock="Right" Text="{Binding MediaItemCounter}" />
+                    <TextBlock Text="{Binding SelectedMediaItem, Converter={StaticResource FilenameFromFullPath}}" FontWeight="Bold" />
                 </DockPanel>
             </Grid>
         </GroupBox>
 
         <!-- Nav Buttons -->
-        <StackPanel Grid.Row="4" DockPanel.Dock="Bottom" Orientation="Horizontal" HorizontalAlignment="Right">
-            <Button Content="Back" Margin="5" MinWidth="100" Command="{Binding NavigateToGamesCommand}"
+        <Grid Grid.Row="4" DockPanel.Dock="Bottom">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="auto" />
+                <ColumnDefinition Width="auto" />
+            </Grid.ColumnDefinitions>
+
+            <TextBlock Grid.Column="0" Margin="5" Padding="10" TextWrapping="Wrap" FontWeight="Bold" Foreground="White"
+                        Text="{Binding AlertText}" d:Text="This is an alert message."
+                        Background="{Binding AlertColor}" d:Background="Red"
+                        Visibility="{Binding AlertVisible, Converter={StaticResource BoolToVisibilityConverter}}"
+                        d:Visibility="Visible" />
+
+            <Button Grid.Column="1" Content="Back" Margin="5" MinWidth="100" Command="{Binding NavigateToGamesCommand}"
                     Padding="{Binding Source={x:Static properties:Settings.Default},Path=AppButtonPadding}" />
-            <Button Content="Save" Margin="5" MinWidth="100" Command="{Binding SaveGameEditCommand}"
+            <Button Grid.Column="2" Content="Save" Margin="5" MinWidth="100" Command="{Binding SaveGameEditCommand}"
                     IsEnabled="{Binding IsValid, Mode=OneWay, ValidatesOnDataErrors=True}"
                     Padding="{Binding Source={x:Static properties:Settings.Default},Path=AppButtonPadding}" />
-        </StackPanel>
+        </Grid>
     </Grid>
 </UserControl>

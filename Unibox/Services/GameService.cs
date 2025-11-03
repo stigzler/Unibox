@@ -94,7 +94,7 @@ namespace Unibox.Services
 
             string nameRegexPattern = $"^{Regex.Escape(gameName)}(-\\d{{2}})?\\.*$";
 
-            var matches = Directory.GetFiles(platformFolder.ResolvedMediaPath)
+            var matches = Directory.GetFiles(platformFolder.ResolvedMediaPath, "*.*", SearchOption.AllDirectories)
                 .Where(f => Regex.IsMatch(Path.GetFileNameWithoutExtension(f), romRegexPattern, RegexOptions.IgnoreCase) ||
                             Regex.IsMatch(Path.GetFileNameWithoutExtension(f), nameRegexPattern, RegexOptions.IgnoreCase));
 
@@ -448,7 +448,7 @@ namespace Unibox.Services
             }
             else
             {
-                outcome.Outcome = $"Could not Edit game. Messaging Error: {editGameResponse.TextResult}";
+                outcome.Outcome = $"Messaging Error: {editGameResponse.TextResult}";
                 loggingService.WriteLine(outcome.Outcome);
             }
             return outcome;

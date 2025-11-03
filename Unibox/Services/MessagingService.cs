@@ -124,7 +124,7 @@ namespace Unibox.Services
             if (!successful)
             {
                 response.IsSuccessful = false;
-                response.TextResult = "Failed to connect to Unibox plugin server.";
+                response.TextResult = "Failed to connect to Unibox plugin server. Ensure Launchbox or Bigbox running.";
             }
             else
             {

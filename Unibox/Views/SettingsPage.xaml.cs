@@ -108,7 +108,8 @@ namespace Unibox.Views
 
         private void Image_MouseDown(object sender, MouseButtonEventArgs e)
         {
-            throw new Exception("Test Exception");
+            // put tests in here
+            // throw new Exception("Test Exception");
         }
 
         private void CalendarSizeTB_PreviewTextInput(object sender, TextCompositionEventArgs e)
