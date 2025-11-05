@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+using Unibox.Plugin.Services;
 
 namespace Unibox.Plugin.ViewModels
 {
@@ -18,10 +19,13 @@ namespace Unibox.Plugin.ViewModels
         [ObservableProperty]
         private bool isValid = true;
 
+        private MessagingService messagingService;
+
         private static readonly string[] ValidatedProperties = { nameof(Port) };
 
-        public MainWindowVM()
+        internal MainWindowVM(MessagingService messagingService)
         {
+            this.messagingService = messagingService;
         }
 
         string IDataErrorInfo.this[string propertyName]
@@ -76,6 +80,12 @@ namespace Unibox.Plugin.ViewModels
                 Properties.Settings.Default.Save();
                 if (window != null) window.Close();
             }
+        }
+
+        [RelayCommand]
+        private void Test()
+        {
+            messagingService.
         }
     }
 }

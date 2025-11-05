@@ -1,5 +1,6 @@
 ﻿using NetMessage;
 using NetMessage.Base;
+using stigzler.ScreenscraperWrapper.Data.Entities.Screenscraper;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -11,6 +12,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Unibox.Helpers;
 using Unibox.Messaging.DTOs;
+using Unibox.Messaging.Messages;
 using Unibox.Messaging.Requests;
 using Unibox.Messaging.Responses;
 
@@ -27,15 +29,22 @@ namespace Unibox.Services
             client.OnError += Client_OnError;
             client.Connected += OnConnected;
             client.Disconnected += OnDisconnected;
+
+            client.AddMessageHandler<GameChangedMessage>(GameChanged);
         }
 
         private void OnDisconnected(NetMessageClient client, SessionClosedArgs args)
         {
             loggingService.WriteLine($"Client disconnected from server. Reason: [{args.Reason}] | Any socket exception: [{args?.SocketException}]");
+            // server.AddRequestHandler<AddGameRequest, AddGameResponse>(AddGameRequestHandler);
+        }
+
+        private void GameChanged(NetMessageClient client, GameChangedMessage message)
+        {
+            Debug.WriteLine("Yeah baby");
         }
 
         private void OnConnected(NetMessageClient client)
-
         {
             loggingService.WriteLine($"Client connected to server successfully.");
         }

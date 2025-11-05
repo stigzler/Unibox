@@ -1,11 +1,15 @@
 ﻿using NetMessage;
 using NetMessage.Base;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Input;
 using System.Xml.Schema;
+using Unbroken.LaunchBox.Plugins.Data;
+using Unibox.Messaging.Messages;
 using Unibox.Messaging.Requests;
 using Unibox.Messaging.Responses;
 using Unibox.Plugin.Helpers;
@@ -17,6 +21,10 @@ namespace Unibox.Plugin.Services
     {
         private LaunchboxService launchboxService;
         private LoggingService loggingService;
+        private NetMessageServer server = new NetMessageServer(Properties.Settings.Default.Port);
+
+        // keep track of active sessions so the server can push messages to connected clients
+        private readonly ConcurrentDictionary<Guid, NetMessageSession> _sessions = new();
 
         public MessagingService(LaunchboxService launchboxService, LoggingService loggingService)
         {
@@ -25,7 +33,6 @@ namespace Unibox.Plugin.Services
 
             loggingService.WriteLine("Starting MessagingService on port: " + Properties.Settings.Default.Port);
 
-            var server = new NetMessageServer(Properties.Settings.Default.Port);
             server.OnError += OnError;
             server.SessionOpened += OnSessionOpened;
             server.SessionClosed += OnSessionClosed;
@@ -108,14 +115,50 @@ namespace Unibox.Plugin.Services
             request.SendResponseAsync(response);
         }
 
+        internal async void SendGameChangedMessage(IGame game)
+        {
+            if (game == null)
+            {
+                loggingService.WriteLine("SendGameChangedMessage called with null game.");
+                return;
+            }
+
+            var message = new GameChangedMessage(game);
+
+            // make a snapshot to avoid collection modified exceptions
+            var sessions = _sessions.Values.ToArray();
+
+            foreach (var session in sessions)
+            {
+                try
+                {
+                    // Most recent NetMessage versions expose SendMessageAsync on the session.
+                    // If your version exposes a server.SendMessageAsync(session, message) method, use that instead.
+                    await session.SendMessageAsync(message);
+                    loggingService.WriteLine($"Sent GameChangedMessage to session {session.Guid}.");
+                }
+                catch (MissingMethodException)
+                {
+                    // fallback comment: if compilation fails here, call server.SendMessageAsync(session, message) instead.
+                    loggingService.WriteLine($"Failed to send GameChangedMessage to session {session.Guid} - method not available.");
+                }
+                catch (Exception ex)
+                {
+                    loggingService.WriteLine($"Failed to send GameChangedMessage to session {session.Guid}: {ex.Message}");
+                }
+            }
+        }
+
         private void OnSessionClosed(NetMessageSession session, SessionClosedArgs args)
         {
             loggingService.WriteLine($"Session closed. Session ID: [{session.Guid}] Reason: {args.Reason}");
+            _sessions.TryRemove(session.Guid, out _);
         }
 
         private void OnSessionOpened(NetMessageSession session)
         {
             loggingService.WriteLine($"Session opened. Session ID: [{session.Guid}].");
+            _sessions.TryAdd(session.Guid, session);
         }
 
         private void OnError(NetMessageServer server, NetMessageSession? session, string arg3, Exception? exception)

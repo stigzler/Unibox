@@ -15,4 +15,10 @@
 		<PackageReference Include="NetMessage" Version="1.0.0" />
 	</ItemGroup>
 
+	<ItemGroup>
+	  <Reference Include="Unbroken.LaunchBox.Plugins">
+	    <HintPath>..\..\..\..\..\..\..\LaunchBox\Core\Unbroken.LaunchBox.Plugins.dll</HintPath>
+	  </Reference>
+	</ItemGroup>
+
 </Project>

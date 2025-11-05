@@ -46,7 +46,7 @@ namespace Unibox.Services
         /// <returns></returns>
         internal async Task<AddGameOutcome> AddRoms(string xmlFilepath, string romFolder, string romFilePath, PlatformModel platformModel, InstallationModel installationModel)
         {
-            // Please note - I don't knwo what happened to me here. I started coding like it was 10 years ago
+            // Please note - I don't know what happened to me here. I started coding like it was 10 years ago
             // but life's too short, I aint got much time left so if it is so, the it's
             // NESTED IFS FOR THE WIN BABY! YEAH!
             AddGameOutcome outcome = new AddGameOutcome();

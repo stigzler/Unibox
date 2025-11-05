@@ -2,6 +2,7 @@
 using Microsoft.Extensions.DependencyInjection;
 using System.IO;
 using Unibox.Plugin.Services;
+using Unibox.Plugin.ViewModels;
 
 namespace Unibox.Plugin
 {
@@ -35,6 +36,9 @@ namespace Unibox.Plugin
             services.AddSingleton<LaunchboxService>(); // Register the LaunchboxService
             services.AddSingleton<LoggingService>(); // Register the LoggingService
             services.AddSingleton<MessagingService>(); // Register the messageService
+
+            // Register ViewModels
+            services.AddTransient<MainWindowVM>();
 
             // Add other necessary services here
             // e.g., services.AddSingleton<IDataService, DataService>();
