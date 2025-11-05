@@ -7,16 +7,17 @@
             xmlns:vm="clr-namespace:Unibox.ViewModels"
             xmlns:converters="clr-namespace:Unibox.Converters"
             xmlns:properties="clr-namespace:Unibox.Properties"
-             xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
+            xmlns:icon="clr-namespace:FluentIcons.Wpf;assembly=FluentIcons.Wpf"
             d:DataContext="{d:DesignInstance Type=vm:EditGameVM, IsDesignTimeCreatable=True}"
              mc:Ignorable="d"
-             d:DesignHeight="800" d:DesignWidth="400" d:Foreground="#e0e0e0">
+             d:DesignHeight="800" d:DesignWidth="543" d:Foreground="#e0e0e0">
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="/Resources/Dictionaries/Styles.xaml" />
             </ResourceDictionary.MergedDictionaries>
             <converters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter" />
+            <converters:BoolToInverseVisibilityConverter x:Key="BoolToInverseVisibilityConverter" />
             <converters:CountToBoolConverter x:Key="CountToBoolConverter" />
             <converters:FilenameFromFullPath x:Key="FilenameFromFullPath" />
             <converters:MediaAvailabilityToVisibility x:Key="MediaAvailabilityToVisibility" />
@@ -31,6 +32,7 @@
             <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
             <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
 
         <!-- Page Title -->
@@ -38,20 +40,17 @@
             <TextBlock  Text="{Binding PageTitle}" Style="{DynamicResource PageHeader}" />
         </StackPanel>
 
-        <!-- Alert Message -->
+        <!-- Unused -->
         <StackPanel Grid.Row="1" DockPanel.Dock="Top">
-            <!--<TextBlock  Margin="5" Padding="10" TextWrapping="Wrap" FontWeight="Bold" Foreground="White"
-                        Text="{Binding AlertText}" d:Text="This is an alert message."
-                        Background="{Binding AlertColor}" d:Background="Red"
-                        Visibility="{Binding AlertVisible, Converter={StaticResource BoolToVisibilityConverter}}"
-                        d:Visibility="Visible" />-->
         </StackPanel>
 
         <!-- Metadata Edit -->
-        <GroupBox Grid.Row="2" DockPanel.Dock="Top"  Margin="5">
+        <GroupBox Grid.Row="2" DockPanel.Dock="Top"  Margin="5" IsEnabled="{Binding DialogTextUnfocussed}">
             <GroupBox.Header>
                 <DockPanel LastChildFill="True">
-                    <ToggleButton x:Name="ToggleMetadataBtn" DockPanel.Dock="Right" Content="Show/Hide" IsChecked="True" />
+                    <ToggleButton x:Name="ToggleMetadataBtn" DockPanel.Dock="Right" Width="36" Height="36"  IsChecked="True">
+                        <icon:FluentIcon Icon="TextExpand" IconSize="Resizable" />
+                    </ToggleButton>
                     <TextBlock Text="Metadata (updates on save)" />
                 </DockPanel>
             </GroupBox.Header>
@@ -92,7 +91,7 @@
         </GroupBox>
 
         <!-- Media Edit-->
-        <GroupBox Grid.Row="3" Header="Media (updates on change)" Margin="5">
+        <GroupBox Grid.Row="3" Header="Media (updates on change)" Margin="5" IsEnabled="{Binding DialogTextUnfocussed}">
             <Grid>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto" />
@@ -113,39 +112,32 @@
 
                     <ComboBox Grid.Column="0" Margin="5" ItemsSource="{Binding MediaTypes}"
                               SelectedItem="{Binding SelectedMediaType}">
-                        <!--<i:Interaction.Triggers>
-                            <i:EventTrigger EventName="SelectionChanged">
-                                <i:InvokeCommandAction
-                                    Command="{Binding CheckForMediaCommand}"
-                                    CommandParameter="{Binding SelectedItem, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type ComboBox}}}" />
-                            </i:EventTrigger>
-                        </i:Interaction.Triggers>-->
                     </ComboBox>
 
-                    <Button Grid.Column="1" Margin="5"  ToolTip="Search for media on internet"
+                    <Button Grid.Column="1" Margin="5" ToolTip="Search for media on internet"
                             Command="{Binding SearchInternetCommand}"
                             Padding="{Binding Source={x:Static properties:Settings.Default},Path=AppButtonPadding}">
-                        <Image Source="/Resources/Images/globe-green.png"  HorizontalAlignment="Center" Width="32" />
+                        <icon:FluentIcon Icon="Globe" FontSize="32" HorizontalAlignment="Center" MinWidth="32" MinHeight="32" />
                     </Button>
 
                     <Button Grid.Column="2" Margin="5"  ToolTip="Add/replace default media item (0)"
                              Command="{Binding UpdatePrimaryMediaItemCommand}"
                              Padding="{Binding Source={x:Static properties:Settings.Default},Path=AppButtonPadding}">
-                        <Image Source="/Resources/Images/plus.png"  HorizontalAlignment="Center" Width="32" />
+                        <icon:FluentIcon Icon="ImageAdd" FontSize="32" HorizontalAlignment="Center" MinWidth="32" MinHeight="32" />
                     </Button>
 
                     <Button Grid.Column="3" Margin="5"  ToolTip="Open media item folder"
                             IsEnabled="{Binding MediaList.Count, Converter={StaticResource CountToBoolConverter}, ConverterParameter=1}"
                             Command="{Binding OpenMediaDirectoryCommand}"
                             Padding="{Binding Source={x:Static properties:Settings.Default},Path=AppButtonPadding}">
-                        <Image Source="/Resources/Images/folder-horizontal-open.png"  HorizontalAlignment="Center" Width="32" />
+                        <icon:FluentIcon Icon="FolderOpen" FontSize="32" HorizontalAlignment="Center" MinWidth="32" MinHeight="32" />
                     </Button>
 
                     <Button Grid.Column="4" Margin="5"  ToolTip="Show next media item"
                             IsEnabled="{Binding MediaList.Count, Converter={StaticResource CountToBoolConverter}, ConverterParameter=2}"
                             Padding="{Binding Source={x:Static properties:Settings.Default},Path=AppButtonPadding}"
                             Command="{Binding ProcessNextMediaItemCommand}">
-                        <Image Source="/Resources/Images/arrowRight.png"  HorizontalAlignment="Center" Width="32" />
+                        <icon:FluentIcon Icon="ChevronCircleRight" FontSize="32" HorizontalAlignment="Center" MinWidth="32" MinHeight="32" />
                     </Button>
                 </Grid>
 
@@ -312,9 +304,13 @@
         </GroupBox>
 
         <!-- Nav Buttons -->
-        <Grid Grid.Row="4" DockPanel.Dock="Bottom">
+        <Grid Grid.Row="4" DockPanel.Dock="Bottom"
+                Visibility="{Binding DialogButtonsVisible, Converter={StaticResource BoolToInverseVisibilityConverter}}"
+              d:Visibility="Visible" d:Grid.Row="4">
+
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="auto" />
                 <ColumnDefinition Width="auto" />
                 <ColumnDefinition Width="auto" />
             </Grid.ColumnDefinitions>
@@ -325,9 +321,37 @@
                         Visibility="{Binding AlertVisible, Converter={StaticResource BoolToVisibilityConverter}}"
                         d:Visibility="Visible" />
 
-            <Button Grid.Column="1" Content="Back" Margin="5" MinWidth="100" Command="{Binding NavigateToGamesCommand}"
+            <Button Grid.Column="3" Content="Back" Margin="5" MinWidth="100" Command="{Binding NavigateToGamesCommand}"
                     Padding="{Binding Source={x:Static properties:Settings.Default},Path=AppButtonPadding}" />
+
             <Button Grid.Column="2" Content="Save" Margin="5" MinWidth="100" Command="{Binding SaveGameEditCommand}"
+                    IsEnabled="{Binding NotSaving}"
+                    Padding="{Binding Source={x:Static properties:Settings.Default},Path=AppButtonPadding}" />
+
+            <Button Grid.Column="1" Content="Delete" Margin="5" MinWidth="100" Command="{Binding DeleteGameCommand}"
+                    IsEnabled="{Binding NotSaving}"
+                  Padding="{Binding Source={x:Static properties:Settings.Default},Path=AppButtonPadding}" />
+        </Grid>
+
+        <!-- Dialog Buttons -->
+        <Grid Grid.Row="4"  DockPanel.Dock="Bottom"
+              Visibility="{Binding DialogButtonsVisible, Converter={StaticResource BoolToVisibilityConverter}}"
+              d:Visibility="Visible" d:Grid.Row="5" IsEnabled="{Binding DialogTextUnfocussed}">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="auto" />
+                <ColumnDefinition Width="auto" />
+            </Grid.ColumnDefinitions>
+
+            <TextBlock Grid.Column="0" Margin="5" Padding="10" TextWrapping="Wrap" FontWeight="Bold" Foreground="White"
+                        Text="{Binding AlertText}" d:Text="[Dialog Text]"
+                        Background="{Binding AlertColor}" d:Background="#c86400"
+                        d:Visibility="Visible" />
+
+            <Button Grid.Column="1" Content="Delete" Margin="5" MinWidth="100" Command="{Binding DeleteGameCommand}" CommandParameter="Delete"
+                  Padding="{Binding Source={x:Static properties:Settings.Default},Path=AppButtonPadding}" />
+
+            <Button Grid.Column="2" Content="Cancel" Margin="5" MinWidth="100" Command="{Binding DeleteGameCommand}" CommandParameter="Cancel"
                     IsEnabled="{Binding IsValid, Mode=OneWay, ValidatesOnDataErrors=True}"
                     Padding="{Binding Source={x:Static properties:Settings.Default},Path=AppButtonPadding}" />
         </Grid>

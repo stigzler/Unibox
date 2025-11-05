@@ -25,5 +25,15 @@ namespace Unibox.Views
             else
                 PlatformNotesPN.Visibility = System.Windows.Visibility.Visible;
         }
+
+        private void ListViewItem_MouseDoubleClick(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        {
+            // Make sure we have a valid ListViewItem
+            if (sender is ListViewItem item)
+            {
+                // Execute the command, passing the selected item's data context as the parameter
+                ViewModel.EditGameCommand?.Execute(item.DataContext);
+            }
+        }
     }
 }

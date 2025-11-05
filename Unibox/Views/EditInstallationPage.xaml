@@ -9,6 +9,7 @@
             xmlns:vm="clr-namespace:Unibox.ViewModels"
             xmlns:properties="clr-namespace:Unibox.Properties"
             xmlns:converters="clr-namespace:Unibox.Converters"
+            xmlns:icon="clr-namespace:FluentIcons.Wpf;assembly=FluentIcons.Wpf"
             mc:Ignorable="d"
             FontSize="{Binding Source={x:Static properties:Settings.Default},Path=AppFontSize}"
             d:DataContext="{d:DesignInstance Type=vm:EditInstallationVM, IsDesignTimeCreatable=True}"
@@ -31,13 +32,14 @@
         </StackPanel>
 
         <StackPanel Orientation="Horizontal" DockPanel.Dock="Bottom" HorizontalAlignment="Right">
-            <Button Content="Back" Margin="5" MinWidth="100"
-                    Command="{Binding GoBackCommand}"
-                    Padding="{Binding Source={x:Static properties:Settings.Default},Path=AppButtonPadding}" />
             <Button Content="Save" Margin="5" MinWidth="100"
                     Command="{Binding SaveChangesCommand}" CommandParameter="{Binding RelativeSource={RelativeSource AncestorType=Window}}"
                     IsEnabled="{Binding IsValid, Mode=OneWay, ValidatesOnDataErrors=True}"
                                         Padding="{Binding Source={x:Static properties:Settings.Default},Path=AppButtonPadding}" />
+
+            <Button Content="Back" Margin="5" MinWidth="100"
+                    Command="{Binding GoBackCommand}"
+                    Padding="{Binding Source={x:Static properties:Settings.Default},Path=AppButtonPadding}" />
         </StackPanel>
 
         <StackPanel Orientation="Vertical">
@@ -93,7 +95,8 @@
                     </DockPanel>
                 </GroupBox.Header>
 
-                <Grid Visibility="{Binding OnRemoteMachine, Converter={StaticResource BoolToVisibilityConverter}}">
+                <Grid Visibility="{Binding OnRemoteMachine, Converter={StaticResource BoolToVisibilityConverter}}"
+                      d:Visibility="Visible">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="auto" />
                         <ColumnDefinition />
@@ -128,12 +131,12 @@
                     <Button Grid.Column="3" Grid.Row="2" Margin="5" Command="{Binding BrowseForRemapToCommand}"
                             CommandParameter="Roms" ToolTip="Browse for folder"
                             Padding="{Binding Source={x:Static properties:Settings.Default},Path=AppButtonPadding}">
-                        <Image Source="/Resources/Images/folder-horizontal-open.png" />
+                        <icon:FluentIcon Icon="FolderOpen" FontSize="32" HorizontalAlignment="Center" MinWidth="32" MinHeight="32" />
                     </Button>
                     <Button Grid.Column="4" Grid.Row="2" Margin="5" Command="{Binding ClearTextCommand}"
                             CommandParameter="Roms" ToolTip="Clear"
                             Padding="{Binding Source={x:Static properties:Settings.Default},Path=AppButtonPadding}">
-                        <Image Source="/Resources/Images/eraser.png" />
+                        <icon:FluentIcon Icon="Eraser" FontSize="32" HorizontalAlignment="Center" MinWidth="32" MinHeight="32" />
                     </Button>
 
                     <TextBlock Grid.Column="0" Grid.Row="3" Grid.ColumnSpan="4" Text="Platform Media Paths:"
@@ -154,12 +157,12 @@
                     <Button Grid.Column="3" Grid.Row="5" Margin="5" Command="{Binding BrowseForRemapToCommand}"
                        CommandParameter="Media" ToolTip="Browse for folder"
                             Padding="{Binding Source={x:Static properties:Settings.Default},Path=AppButtonPadding}">
-                        <Image Source="/Resources/Images/folder-horizontal-open.png" />
+                        <icon:FluentIcon Icon="FolderOpen" FontSize="32" HorizontalAlignment="Center" MinWidth="32" MinHeight="32" />
                     </Button>
                     <Button Grid.Column="4" Grid.Row="5" Margin="5" Command="{Binding ClearTextCommand}"
                        CommandParameter="Media" ToolTip="Clear"
                             Padding="{Binding Source={x:Static properties:Settings.Default},Path=AppButtonPadding}">
-                        <Image Source="/Resources/Images/eraser.png" />
+                        <icon:FluentIcon Icon="Eraser" FontSize="32" HorizontalAlignment="Center" MinWidth="32" MinHeight="32" />
                     </Button>
                 </Grid>
             </GroupBox>

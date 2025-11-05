@@ -6,11 +6,13 @@ using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.IO;
 using System.Web;
+using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Xps.Serialization;
 using Unibox.Data.Models;
 using Unibox.Messages;
+using Unibox.Messages.MessageDetails;
 using Unibox.Properties;
 using Unibox.Services;
 
@@ -19,6 +21,9 @@ namespace Unibox.ViewModels
     internal partial class EditGameVM : ObservableObject
     {
         [ObservableProperty]
+        private bool dialogTextUnfocussed = true;
+
+        [ObservableProperty]
         private SolidColorBrush alertColor;
 
         [ObservableProperty]
@@ -26,6 +31,9 @@ namespace Unibox.ViewModels
 
         [ObservableProperty]
         private bool alertVisible;
+
+        [ObservableProperty]
+        private bool dialogButtonsVisible = false;
 
         [ObservableProperty]
         private GameModel game;
@@ -38,6 +46,23 @@ namespace Unibox.ViewModels
 
         [ObservableProperty]
         private InstallationModel installation;
+
+        [ObservableProperty]
+        private Dictionary<string, bool> mediaAvailable = new Dictionary<string, bool>()
+              {
+                { "Box - 3D", false },
+                { "Box - Front", false},
+                { "Box - Back", false},
+                { "Music", false},
+                { "Manual", false},
+                { "Video", false},
+                { "Screenshot - Gameplay", false},
+                { "Screenshot - Game Title", false},
+                { "Clear Logo", false},
+                { "Cart - Front", false},
+                { "Disc", false},
+                { "Fanart - Background", false},
+            };
 
         private Dictionary<string, List<string>> mediaExtensionsDCT = new Dictionary<string, List<string>>();
 
@@ -65,23 +90,6 @@ namespace Unibox.ViewModels
         [ObservableProperty]
         private string selectedMediaType;
 
-        [ObservableProperty]
-        private Dictionary<string, bool> mediaAvailable = new Dictionary<string, bool>()
-              {
-                { "Box - 3D", false },
-                { "Box - Front", false},
-                { "Box - Back", false},
-                { "Music", false},
-                { "Manual", false},
-                { "Video", false},
-                { "Screenshot - Gameplay", false},
-                { "Screenshot - Game Title", false},
-                { "Clear Logo", false},
-                { "Cart - Front", false},
-                { "Disc", false},
-                { "Fanart - Background", false},
-            };
-
         public EditGameVM(GameService gameService)
         {
             this.gameService = gameService;
@@ -97,18 +105,6 @@ namespace Unibox.ViewModels
 
         public EditGameVM()
         {
-        }
-
-        partial void OnSelectedMediaTypeChanged(string value)
-        {
-            CheckForMedia(value);
-        }
-
-        [RelayCommand]
-        private void LoadMedia(string mediaType)
-        {
-            //CheckForMedia(mediaType);
-            SelectedMediaType = mediaType;
         }
 
         [RelayCommand]
@@ -141,6 +137,61 @@ namespace Unibox.ViewModels
             UpdateMediaItem(mediaType);
         }
 
+        private void Default_PropertyChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            // picks up on permitable media extension changes in settings
+            //Debug.WriteLine("here");
+            if (e.PropertyName == "AppPermittedVideoExts" || e.PropertyName == "AppPermittedMusicExts" ||
+                e.PropertyName == "AppPermittedManualExts" || e.PropertyName == "AppPermittedImageExts")
+            {
+                SetMediaExtensions();
+            }
+        }
+
+        [RelayCommand]
+        private async void DeleteGame(string command = "Indeterminate")
+        {
+            // Below logic attached to View system where Dialog Buttons panel overlays the normal Nav
+            // buttons with the Delete button on. First press shows the dialog buttons, second press confirms deletion.
+            if (!DialogButtonsVisible)
+            {
+                AlertText = $"Delete Game?";
+                AlertColor = new SolidColorBrush(System.Windows.Media.Color.FromRgb(200, 100, 0));
+                DialogButtonsVisible = true;
+                return;
+            }
+            //DialogButtonsVisible = false;
+
+            if (command == "Cancel")
+            {
+                DialogButtonsVisible = false;
+                return;
+            }
+
+            var deleteGameOutcome = await gameService.DeleteGame(Game, Installation);
+
+            DialogTextUnfocussed = false;
+
+            if (deleteGameOutcome.GameDeleted)
+            {
+                AlertText = $"Game Deletion successful";
+                AlertColor = new SolidColorBrush(System.Windows.Media.Color.FromRgb(0, 128, 0));
+                await ShowAlertAsync();
+            }
+            else
+            {
+                AlertText = $"Delete Errors: {deleteGameOutcome.Outcome}";
+                AlertColor = new SolidColorBrush(System.Windows.Media.Color.FromRgb(128, 0, 0));
+                await ShowAlertAsync(5000);
+            }
+
+            WeakReferenceMessenger.Default.Send(new PageChangeMessage(new PageChangeMessageArgs()
+            {
+                RequestType = Data.Enums.PageRequestType.Games,
+                Data = new GamesPageMessageDetails() { GamesUpdateRequired = true }
+            }));
+        }
+
         private List<string> GetFilteredMediaList(string mediaType)
         {
             List<string> candidateMedia = gameService.GetGameMediaPaths(Game, mediaType);
@@ -158,15 +209,11 @@ namespace Unibox.ViewModels
             return candidateMedia;
         }
 
-        private void Default_PropertyChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs e)
+        [RelayCommand]
+        private void LoadMedia(string mediaType)
         {
-            // picks up on permitable media extension changes in settings
-            //Debug.WriteLine("here");
-            if (e.PropertyName == "AppPermittedVideoExts" || e.PropertyName == "AppPermittedMusicExts" ||
-                e.PropertyName == "AppPermittedManualExts" || e.PropertyName == "AppPermittedImageExts")
-            {
-                SetMediaExtensions();
-            }
+            //CheckForMedia(mediaType);
+            SelectedMediaType = mediaType;
         }
 
         [RelayCommand(CanExecute = nameof(NotSaving))]
@@ -180,22 +227,21 @@ namespace Unibox.ViewModels
 
         partial void OnGameChanged(GameModel? oldValue, GameModel newValue)
         {
+            Mouse.OverrideCursor = System.Windows.Input.Cursors.Wait;
             PageTitle = $"Edit Game ({newValue.Platform.Name})";
             SelectedMediaType = "Clear Logo";
             AlertVisible = false;
+            DialogButtonsVisible = false;
+            DialogTextUnfocussed = true;
             // SetMediaExtensions(); // this done here in case user changes extensions in settings.
             UpdateMediaAvailability();
             CheckForMedia("Clear Logo");
+            Mouse.OverrideCursor = System.Windows.Input.Cursors.Arrow;
         }
 
-        private void UpdateMediaAvailability()
+        partial void OnSelectedMediaTypeChanged(string value)
         {
-            foreach (string mediaType in MediaAvailable.Keys.ToList())
-            {
-                List<string> candidateMedia = GetFilteredMediaList(mediaType);
-                MediaAvailable[mediaType] = candidateMedia.Count > 0;
-            }
-            OnPropertyChanged("MediaAvailable");
+            CheckForMedia(value);
         }
 
         [RelayCommand]
@@ -261,7 +307,7 @@ namespace Unibox.ViewModels
             }
             else
             {
-                AlertText = $"Metadata update Unsuccessful:\r\n{addGameOutcome.Outcome}";
+                AlertText = $"Update Unsuccessful:{addGameOutcome.Outcome}";
                 AlertColor = new SolidColorBrush(System.Windows.Media.Color.FromRgb(128, 0, 0));
                 await ShowAlertAsync(5000);
             }
@@ -313,6 +359,16 @@ namespace Unibox.ViewModels
             AlertVisible = true;
             await Task.Delay(showFor);
             AlertVisible = false;
+        }
+
+        private void UpdateMediaAvailability()
+        {
+            foreach (string mediaType in MediaAvailable.Keys.ToList())
+            {
+                List<string> candidateMedia = GetFilteredMediaList(mediaType);
+                MediaAvailable[mediaType] = candidateMedia.Count > 0;
+            }
+            OnPropertyChanged("MediaAvailable");
         }
 
         /// <summary>
@@ -383,6 +439,8 @@ namespace Unibox.ViewModels
             }
 
             openFileDialog.ShowDialog();
+
+            if (string.IsNullOrEmpty(openFileDialog.FileName)) return;
 
             PlatformFolderModel platformFolder = Game.Platform.PlatformFolders
                                                 .Where(pf => pf.MediaType.ToString() == SelectedMediaType).FirstOrDefault();

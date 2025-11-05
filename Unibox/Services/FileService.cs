@@ -45,7 +45,7 @@ namespace Unibox.Services
                 if ((now - lastReportTime).TotalMilliseconds >= 500 || totalRead == totalBytes)
                 {
                     double percent = totalBytes > 0 ? (totalRead * 100.0 / totalBytes) : 100.0;
-                    progress?.Invoke($"{percent:F2}%");
+                    progress?.Invoke($"{percent:F1}%");
                     lastReportTime = now;
                 }
             }

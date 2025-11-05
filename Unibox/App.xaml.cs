@@ -3,6 +3,7 @@ using System.Configuration;
 using System.Data;
 using System.IO;
 using System.Windows;
+using System.Windows.Input;
 using Unibox.Properties;
 using Unibox.Services;
 using Unibox.ViewModels;
@@ -39,9 +40,10 @@ namespace Unibox
 
             string errorMessage = string.Format("An unhandled exception occurred. See logs for more details and berate the author. Exception: \r\n\r\n{0}", e.Exception.Message);
 
+            Mouse.OverrideCursor = System.Windows.Input.Cursors.Arrow; // this here in case cursor set to wait in crashed process
+
             MessageBox.Show(errorMessage, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-            // OR whatever you want like logging etc. MessageBox it's just example
-            // for quick debugging etc.
+
             e.Handled = true;
         }
 

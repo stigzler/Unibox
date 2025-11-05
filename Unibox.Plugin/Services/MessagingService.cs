@@ -31,6 +31,7 @@ namespace Unibox.Plugin.Services
             server.SessionClosed += OnSessionClosed;
             server.AddRequestHandler<AddGameRequest, AddGameResponse>(AddGameRequestHandler);
             server.AddRequestHandler<EditGameRequest, EditGameResponse>(EditGameRequestHandler);
+            server.AddRequestHandler<DeleteGameRequest, DeleteGameResponse>(DeleteGameRequestHandler);
 
             server.Start();
 
@@ -59,6 +60,26 @@ namespace Unibox.Plugin.Services
                 response.IsSuccessful = true;
             }
 
+            request.SendResponseAsync(response);
+        }
+
+        private void DeleteGameRequestHandler(NetMessageSession session, TypedRequest<DeleteGameRequest, DeleteGameResponse> request)
+        {
+            loggingService.WriteLine($"Received DeleteGameRequest for game: {request.Request.Game.Title} ({request.Request.Game.Platform})");
+            loggingService.WriteLine("Attempting Game Deletion");
+            Exception anyException = launchboxService.DeleteGame(request.Request.Game);
+            var response = new DeleteGameResponse();
+            if (anyException != null)
+            {
+                loggingService.WriteLine($"Error deleting game: {anyException.Message}");
+                response.TextResult = $"Exception: {anyException.Message}";
+            }
+            else
+            {
+                loggingService.WriteLine($"Game [{request.Request.Game.Title}] deleted successfully!");
+                response.TextResult = $"Game [{request.Request.Game.Title}] deleted successfully from Launchbox Database.";
+                response.IsSuccessful = true;
+            }
             request.SendResponseAsync(response);
         }
 

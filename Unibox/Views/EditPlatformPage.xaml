@@ -6,6 +6,7 @@
              xmlns:local="clr-namespace:Unibox.Views"
              xmlns:vm="clr-namespace:Unibox.ViewModels"
              xmlns:properties="clr-namespace:Unibox.Properties"
+            xmlns:icon="clr-namespace:FluentIcons.Wpf;assembly=FluentIcons.Wpf"
              mc:Ignorable="d"
              d:DataContext="{d:DesignInstance Type=vm:EditPlatformVM, IsDesignTimeCreatable=True}"
              d:DesignHeight="321" d:DesignWidth="578" d:Foreground="#c0c0c0">
@@ -47,11 +48,11 @@
                     <Button Grid.Column="2" Grid.Row="0"  Margin="2" Command="{Binding ClearAppPathCommand}"
                             Padding="{Binding Source={x:Static properties:Settings.Default},Path=AppButtonPadding}"
                             Width="{Binding ActualWidth, ElementName=ApplicationBrowseBT}">
-                        <Image Source="/Resources/Images/eraser.png" />
+                        <icon:FluentIcon Icon="Eraser" FontSize="32" HorizontalAlignment="Center" MinWidth="32" MinHeight="32" />
                     </Button>
                     <Button x:Name="ApplicationBrowseBT" Grid.Column="3" Grid.Row="0"  Margin="2" Command="{Binding GetAppPathCommand}"
                             Padding="{Binding Source={x:Static properties:Settings.Default},Path=AppButtonPadding}">
-                        <Image Source="/Resources/Images/folder-horizontal-open.png" />
+                        <icon:FluentIcon Icon="FolderOpen" FontSize="32" HorizontalAlignment="Center" MinWidth="32" MinHeight="32" />
                     </Button>
 
                     <TextBlock  Grid.Column="0" Grid.Row="1" Text="URL" VerticalAlignment="Center" Margin="5"
@@ -67,10 +68,11 @@
             </GroupBox>
         </Grid>
         <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right">
-            <Button Content="Back" Margin="5" MinWidth="100" Command="{Binding NavigateToInstallationsCommand}"
-                    Padding="{Binding Source={x:Static properties:Settings.Default},Path=AppButtonPadding}" />
             <Button Content="Save" Margin="5" MinWidth="100" Command="{Binding SavePlatformCommand}"
                     IsEnabled="{Binding IsValid, Mode=OneWay, ValidatesOnDataErrors=True}"
+                    Padding="{Binding Source={x:Static properties:Settings.Default},Path=AppButtonPadding}" />
+
+            <Button Content="Back" Margin="5" MinWidth="100" Command="{Binding NavigateToInstallationsCommand}"
                     Padding="{Binding Source={x:Static properties:Settings.Default},Path=AppButtonPadding}" />
         </StackPanel>
     </Grid>

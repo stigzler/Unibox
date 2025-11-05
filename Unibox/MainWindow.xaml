@@ -63,7 +63,7 @@
                                 Padding="{Binding Source={x:Static properties:Settings.Default},Path=AppButtonPadding}">
                         <Image Source="/Resources/Images/UniboxLogo.png" MaxWidth="32"  Margin="4,0,4,0" />
                     </Button>
-                    <TextBlock Text="{Binding LogoText}" Margin="10" FontWeight="Bold" VerticalAlignment="Center" FontFamily="Arial Narrow"
+                    <TextBlock Text="{Binding LogoText}" Margin="10" FontWeight="ExtraBlack" VerticalAlignment="Center" FontFamily="Bahnschrift"
                                Visibility="{Binding IsMenuOpen, Converter={StaticResource BoolToVisibilityConverter}}" />
                 </StackPanel>
 

@@ -22,10 +22,10 @@ namespace Unibox.Services
     internal class GameService
     {
         private DatabaseService databaseService;
-        private ScreenscraperService screenscraperService;
         private FileService fileService;
-        private MessagingService messagingService;
         private LoggingService loggingService;
+        private MessagingService messagingService;
+        private ScreenscraperService screenscraperService;
 
         public GameService(DatabaseService databaseService, ScreenscraperService screenscraperService, FileService fileService,
             MessagingService messagingService, LoggingService loggingService)
@@ -35,73 +35,6 @@ namespace Unibox.Services
             this.fileService = fileService;
             this.messagingService = messagingService;
             this.loggingService = loggingService;
-        }
-
-        internal ObservableCollection<GameModel> GetGamesFromXml(string xmlFilepath)
-        {
-            ObservableCollection<GameModel> lbGames = new ObservableCollection<GameModel>();
-
-            System.Xml.Linq.XDocument doc = System.Xml.Linq.XDocument.Load(xmlFilepath);
-
-            foreach (var platformElement in doc.Root.Elements("Game"))
-            {
-                GameModel lbGame = new GameModel
-                {
-                    Title = platformElement.Element("Title")?.Value,
-                    ApplicationPath = platformElement.Element("ApplicationPath")?.Value,
-                    Developer = platformElement.Element("Developer")?.Value,
-                    Publisher = platformElement.Element("Publisher")?.Value,
-                    ReleaseDate = DateTime.TryParse(platformElement.Element("ReleaseDate")?.Value, out DateTime releaseDate) ? releaseDate : DateTime.MinValue,
-                    Notes = platformElement.Element("Notes")?.Value,
-                    LaunchboxID = platformElement.Element("ID")?.Value
-                };
-                lbGames.Add(lbGame);
-            }
-            return lbGames;
-        }
-
-        internal string GetEmulatorIdForPlatform(string platformName, string launchboxRootPath)
-        {
-            string emulatorXmlFilepath = Path.Combine(launchboxRootPath, Paths.LaunchboxRelDataDir, Paths.LaunchboxEmulatorsXmlFile);
-            System.Xml.Linq.XDocument doc = System.Xml.Linq.XDocument.Load(emulatorXmlFilepath);
-            var platformElement = doc.Root.Elements("EmulatorPlatform").FirstOrDefault(p => p.Element("Platform")?.Value == platformName);
-            if (platformElement != null)
-            {
-                return platformElement.Element("Emulator")?.Value;
-            }
-            return string.Empty;
-        }
-
-        /// <summary>
-        ///
-        /// </summary>
-        /// <param name="game"></param>
-        /// <returns>Null if none found</returns>
-        internal List<string> GetGameMediaPaths(GameModel game, string mediaName)
-        {
-            List<string> mediaSources = new List<string>();
-
-            PlatformFolderModel platformFolder = game.Platform.PlatformFolders.
-                Where(pf => pf.MediaType.Name == mediaName).FirstOrDefault();
-
-            if (platformFolder == null) return null;
-
-            string romPath = game.ApplicationPath;
-            string gameName = game.Title;
-
-            // Get matches on  romName (e.g. Aliens (USA)-00.png)
-            string romRegexPattern = $"^{Regex.Escape(Path.GetFileNameWithoutExtension(romPath))}(-\\d{{2}})?\\.*$";
-
-            string nameRegexPattern = $"^{Regex.Escape(gameName)}(-\\d{{2}})?\\.*$";
-
-            var matches = Directory.GetFiles(platformFolder.ResolvedMediaPath, "*.*", SearchOption.AllDirectories)
-                .Where(f => Regex.IsMatch(Path.GetFileNameWithoutExtension(f), romRegexPattern, RegexOptions.IgnoreCase) ||
-                            Regex.IsMatch(Path.GetFileNameWithoutExtension(f), nameRegexPattern, RegexOptions.IgnoreCase));
-
-            if (matches != null)
-                mediaSources = matches.ToList<string>();
-
-            return mediaSources;
         }
 
         /// <summary>
@@ -422,6 +355,47 @@ namespace Unibox.Services
             return outcome;
         }
 
+        internal async Task<DeleteGameOutcome> DeleteGame(GameModel game, InstallationModel installationModel)
+        {
+            DeleteGameOutcome outcome = new DeleteGameOutcome();
+
+            GameDTO gameDTO = new GameDTO
+            {
+                Title = game.Title,
+                //ApplicationPath = game.ApplicationPath,
+                Developer = game.Developer,
+                Publisher = game.Publisher,
+                ReleaseDate = game.ReleaseDate,
+                Notes = game.Notes,
+                LaunchboxID = game.LaunchboxID
+            };
+
+            DeleteGameResponse deleteGameResponse = await messagingService.SendDeleteGameRequest(installationModel.InstallationPath, gameDTO);
+            outcome.GameDeleted = deleteGameResponse.IsSuccessful;
+            if (deleteGameResponse.IsSuccessful)
+            {
+                try
+                {
+                    // if (!File.Exists(game.ApplicationPath)) throw new Exception("File does not exist:");
+
+                    File.Delete(game.ApplicationPath);
+                    outcome.Outcome = $"Game metadata and file deleted successfully.";
+                }
+                catch (Exception e)
+                {
+                    outcome.GameDeleted = false;
+                    outcome.Outcome = $"Deleted LB data but not Game file: {e.Message}";
+                }
+                loggingService.WriteLine(outcome.Outcome);
+            }
+            else
+            {
+                outcome.Outcome = $"Error: {deleteGameResponse.TextResult}";
+                loggingService.WriteLine(outcome.Outcome);
+            }
+            return outcome;
+        }
+
         internal async Task<EditGameOutcome> EditGame(GameModel game, InstallationModel installationModel)
         {
             EditGameOutcome outcome = new EditGameOutcome();
@@ -452,6 +426,73 @@ namespace Unibox.Services
                 loggingService.WriteLine(outcome.Outcome);
             }
             return outcome;
+        }
+
+        internal string GetEmulatorIdForPlatform(string platformName, string launchboxRootPath)
+        {
+            string emulatorXmlFilepath = Path.Combine(launchboxRootPath, Paths.LaunchboxRelDataDir, Paths.LaunchboxEmulatorsXmlFile);
+            System.Xml.Linq.XDocument doc = System.Xml.Linq.XDocument.Load(emulatorXmlFilepath);
+            var platformElement = doc.Root.Elements("EmulatorPlatform").FirstOrDefault(p => p.Element("Platform")?.Value == platformName);
+            if (platformElement != null)
+            {
+                return platformElement.Element("Emulator")?.Value;
+            }
+            return string.Empty;
+        }
+
+        /// <summary>
+        ///
+        /// </summary>
+        /// <param name="game"></param>
+        /// <returns>Null if none found</returns>
+        internal List<string> GetGameMediaPaths(GameModel game, string mediaName)
+        {
+            List<string> mediaSources = new List<string>();
+
+            PlatformFolderModel platformFolder = game.Platform.PlatformFolders.
+                Where(pf => pf.MediaType.Name == mediaName).FirstOrDefault();
+
+            if (platformFolder == null) return null;
+
+            string romPath = game.ApplicationPath;
+            string gameName = game.Title;
+
+            // Get matches on  romName (e.g. Aliens (USA)-00.png)
+            string romRegexPattern = $"^{Regex.Escape(Path.GetFileNameWithoutExtension(romPath))}(-\\d{{2}})?\\.*$";
+
+            string nameRegexPattern = $"^{Regex.Escape(gameName)}(-\\d{{2}})?\\.*$";
+
+            var matches = Directory.GetFiles(platformFolder.ResolvedMediaPath, "*.*", SearchOption.AllDirectories)
+                .Where(f => Regex.IsMatch(Path.GetFileNameWithoutExtension(f), romRegexPattern, RegexOptions.IgnoreCase) ||
+                            Regex.IsMatch(Path.GetFileNameWithoutExtension(f), nameRegexPattern, RegexOptions.IgnoreCase));
+
+            if (matches != null)
+                mediaSources = matches.ToList<string>();
+
+            return mediaSources;
+        }
+
+        internal ObservableCollection<GameModel> GetGamesFromXml(string xmlFilepath)
+        {
+            ObservableCollection<GameModel> lbGames = new ObservableCollection<GameModel>();
+
+            System.Xml.Linq.XDocument doc = System.Xml.Linq.XDocument.Load(xmlFilepath);
+
+            foreach (var platformElement in doc.Root.Elements("Game"))
+            {
+                GameModel lbGame = new GameModel
+                {
+                    Title = platformElement.Element("Title")?.Value,
+                    ApplicationPath = platformElement.Element("ApplicationPath")?.Value,
+                    Developer = platformElement.Element("Developer")?.Value,
+                    Publisher = platformElement.Element("Publisher")?.Value,
+                    ReleaseDate = DateTime.TryParse(platformElement.Element("ReleaseDate")?.Value, out DateTime releaseDate) ? releaseDate : DateTime.MinValue,
+                    Notes = platformElement.Element("Notes")?.Value,
+                    LaunchboxID = platformElement.Element("ID")?.Value
+                };
+                lbGames.Add(lbGame);
+            }
+            return lbGames;
         }
     }
 }

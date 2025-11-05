@@ -24,12 +24,12 @@
                 <TextBlock Text="Platforms: " Margin="5,0,0,0" VerticalAlignment="Center" />
                 <TextBlock Text="{Binding Platforms.Count}" VerticalAlignment="Center" d:Text="0"></TextBlock>
             </StackPanel>
-            <Button Content="Back" Margin="5" MinWidth="100"
-                    Command="{Binding GoBackCommand}" CommandParameter="{Binding RelativeSource={RelativeSource AncestorType=Window}}"
-                    Padding="{Binding Source={x:Static properties:Settings.Default},Path=AppButtonPadding}" />
             <Button Content="Use Paths" ToolTip="Populates 'Replace Text' with the selected Rom and Media Paths for editing."
                     Margin="5" MinWidth="100"
                     Command="{Binding UsePathCommand}" CommandParameter="{Binding RelativeSource={RelativeSource AncestorType=Window}}"
+                    Padding="{Binding Source={x:Static properties:Settings.Default},Path=AppButtonPadding}" />
+            <Button Content="Back" Margin="5" MinWidth="100"
+                    Command="{Binding GoBackCommand}" CommandParameter="{Binding RelativeSource={RelativeSource AncestorType=Window}}"
                     Padding="{Binding Source={x:Static properties:Settings.Default},Path=AppButtonPadding}" />
         </StackPanel>
 

@@ -34,7 +34,7 @@
 
         <!-- INSTALLATIONS LIST -->
         <DockPanel Grid.Row="0" Margin="2">
-            <TextBlock Text="Installations" FontWeight="Bold" DockPanel.Dock="Top" Style ="{DynamicResource PageHeader}" />
+            <!--<TextBlock Text="Installations" FontWeight="Bold" DockPanel.Dock="Top" Style ="{DynamicResource PageHeader}" />-->
             <WrapPanel DockPanel.Dock="Right" Orientation="Vertical" HorizontalAlignment="Right">
                 <Button Content="Add" Command="{Binding AddNewInstallationCommand}" MinWidth="100" Margin="5" Padding="{Binding Source={x:Static properties:Settings.Default},Path=AppButtonPadding}"
                         ToolTip="Add new Installation." />

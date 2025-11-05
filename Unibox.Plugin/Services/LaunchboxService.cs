@@ -76,5 +76,34 @@ namespace Unibox.Plugin.Services
             }
             return null;
         }
+
+        internal Exception DeleteGame(GameDTO gameDTO)
+        {
+            try
+            {
+                var existingGame = PluginHelper.DataManager.GetGameById(gameDTO.LaunchboxID);
+                if (existingGame == null)
+                {
+                    return new Exception($"Game with ID {gameDTO.LaunchboxID} not found in LaunchBox database.");
+                }
+                bool successful = PluginHelper.DataManager.TryRemoveGame(existingGame);
+
+                if (!successful)
+                {
+                    return new Exception($"Launchbox returned it could not delete game with ID {gameDTO}.");
+                }
+
+                PluginHelper.DataManager.Save();
+                if (!PluginHelper.StateManager.IsBigBox)
+                {
+                    PluginHelper.LaunchBoxMainViewModel.RefreshData();
+                }
+            }
+            catch (Exception ex)
+            {
+                return ex;
+            }
+            return null;
+        }
     }
 }

@@ -134,5 +134,41 @@ namespace Unibox.Services
             client.Disconnect();
             return response;
         }
+
+        internal async Task<DeleteGameResponse> SendDeleteGameRequest(string installationPath, GameDTO gameDTO)
+        {
+            loggingService.WriteLine($"SendDeleteGame request made of MessageService. InstallationPath: [{installationPath}] | Game: [{gameDTO.Title}]");
+
+            DeleteGameResponse response = new DeleteGameResponse();
+
+            if (string.IsNullOrWhiteSpace(installationPath) || gameDTO is null || string.IsNullOrWhiteSpace(gameDTO.LaunchboxID))
+            {
+                loggingService.WriteLine("SendEditGameRequest: Invalid parameters provided.");
+                response.IsSuccessful = false;
+                response.TextResult = "Could not continue. Either Game, InstallationPath or game ID is null.";
+                return response;
+            }
+
+            string ipAddress = UncPathToIP(installationPath);
+
+            loggingService.WriteLine("IP Address discerned from UNC path: " + ipAddress);
+
+            loggingService.WriteLine("Attempting to connect to Unibox plugin server at: " + ipAddress + ":" + Properties.Settings.Default.MessagingPort);
+
+            bool successful = await client.ConnectAsync(ipAddress, Properties.Settings.Default.MessagingPort);
+
+            if (!successful)
+            {
+                response.IsSuccessful = false;
+                response.TextResult = "Failed to connect to Unibox plugin server. Ensure Launchbox or Bigbox running.";
+            }
+            else
+            {
+                response = await client.SendRequestAsync(new Messaging.Requests.DeleteGameRequest { Game = gameDTO });
+            }
+
+            client.Disconnect();
+            return response;
+        }
     }
 }
