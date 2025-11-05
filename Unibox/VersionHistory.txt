@@ -1,0 +1,17 @@
+﻿V1.0.0.0
+New Feature:
+- Can now delete games (deletes both the rom file and launchbox database entry). Deleted games now moved to recycle bin via Microsoft.VisualBasic.FileIO.FileSystem.DeleteFile (keeping it old skool)
+Improvements: 
+- Changed icons to Fluent style and various UI improvements.
+- Database now resides in AppData folder instead of program folder to avoid permission issues alongside re-installation of app etc (auto-moves any existing dbs in app root folder)
+- Added links to Forum post and github repo on About page
+- Double Click games list row to edit
+
+V0.9.13
+New Features:
+- Edit Game metadata and media on the fly without needing to spark up launchbox. Changes apply immediately in both Launchbox and BigBox
+- Shows all present media for a game and allows you to edit or upload a primary file for each media type (images, videos, music, manuals). 
+- One click for automatic websearch on Platform, game name and media type. 
+
+V0.9.9 and lower
+See file history at https://forums.launchbox-app.com/files/file/5494-unibox

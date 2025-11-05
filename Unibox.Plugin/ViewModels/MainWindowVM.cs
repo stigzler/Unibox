@@ -19,13 +19,10 @@ namespace Unibox.Plugin.ViewModels
         [ObservableProperty]
         private bool isValid = true;
 
-        private MessagingService messagingService;
-
         private static readonly string[] ValidatedProperties = { nameof(Port) };
 
-        internal MainWindowVM(MessagingService messagingService)
+        internal MainWindowVM()
         {
-            this.messagingService = messagingService;
         }
 
         string IDataErrorInfo.this[string propertyName]
@@ -85,7 +82,7 @@ namespace Unibox.Plugin.ViewModels
         [RelayCommand]
         private void Test()
         {
-            messagingService.
+            // messagingService.
         }
     }
 }

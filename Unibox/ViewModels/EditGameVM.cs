@@ -110,6 +110,8 @@ namespace Unibox.ViewModels
         [RelayCommand]
         private void CheckForMedia(string mediaType)
         {
+            Mouse.OverrideCursor = Cursors.Wait;
+
             List<string> candidateMedia = GetFilteredMediaList(mediaType);
 
             if (candidateMedia == null || candidateMedia.Count == 0)
@@ -135,6 +137,7 @@ namespace Unibox.ViewModels
             MediaList = new ObservableCollection<string>(candidateMedia);
             mediaListIndex = 0;
             UpdateMediaItem(mediaType);
+            Mouse.OverrideCursor = Cursors.Arrow;
         }
 
         private void Default_PropertyChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs e)
@@ -295,9 +298,12 @@ namespace Unibox.ViewModels
         [RelayCommand]
         private async Task SaveGameEdit()
         {
+            Mouse.OverrideCursor = Cursors.Wait;
             NotSaving = false;
 
             var addGameOutcome = await gameService.EditGame(Game, Installation);
+
+            Mouse.OverrideCursor = Cursors.Arrow;
 
             if (addGameOutcome.GameEdited)
             {

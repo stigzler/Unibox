@@ -15,6 +15,7 @@
     <None Include="$(MSBuildThisFileDirectory)Pages\DesignSpec.md" />
     <None Include="$(MSBuildThisFileDirectory)Pages\Processes.md" />
     <None Include="$(MSBuildThisFileDirectory)Pages\UserGuideSketch.md" />
+    <None Include="$(MSBuildThisFileDirectory)Pages\V2.md" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="$(MSBuildThisFileDirectory)Pages\TutorialVidScript.md" />

@@ -19,7 +19,7 @@ namespace Unibox.Services
             ConnectionParameters connectionParameters = new ConnectionParameters
             {
                 ConnectionType = ConnectionType.Shared,
-                Filename = "Unibox.ldb",
+                Filename = Path.Combine(Data.Constants.Paths.LocalAppDataDir, "Unibox.ldb"),
                 ReadOnly = false
             };
 

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -14,6 +15,8 @@ namespace Unibox.Data.Constants
         public const string LaunchboxRelGamesDir = @"Games";
         public const string LaunchboxRelGamesXmlDir = @"Data\Platforms";
         public const string LaunchboxUniboxPluginDll = @"Plugins\Unibox\Unibox.Plugin.dll";
+
+        public static string LocalAppDataDir = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Unibox");
 
         // Files
         public const string LaunchboxPlatformsXmlFile = @"Platforms.xml";

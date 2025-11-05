@@ -30,6 +30,27 @@ namespace Unibox
             loggingService = Services.GetService<LoggingService>();
 
             this.Dispatcher.UnhandledException += OnDispatcherUnhandledException;
+
+            HandleUserDataSetup();
+        }
+
+        private void HandleUserDataSetup()
+        {
+            // ensure AppData folder exists
+            if (!Directory.Exists(Data.Constants.Paths.LocalAppDataDir))
+            {
+                Directory.CreateDirectory(Data.Constants.Paths.LocalAppDataDir);
+            }
+
+            // This handles upgrading form 0.9.x to 1.0.0 where the litedb file moved from the app root
+            // to the AppData folder - moves existing file if found
+
+            if (File.Exists(Path.Combine(AppContext.BaseDirectory, "Unibox.ldb")) &&
+                !File.Exists(Path.Combine(Data.Constants.Paths.LocalAppDataDir, "Unibox.ldb")))
+            {
+                File.Move(Path.Combine(AppContext.BaseDirectory, "Unibox.ldb"),
+                    Path.Combine(Data.Constants.Paths.LocalAppDataDir, "Unibox.ldb"));
+            }
         }
 
         void OnDispatcherUnhandledException(object sender, System.Windows.Threading.DispatcherUnhandledExceptionEventArgs e)
@@ -99,8 +120,6 @@ namespace Unibox
             services.AddTransient<EditPlatformVM>();
             services.AddTransient<EditGameVM>();
 
-            // Add other necessary services here
-            // e.g., services.AddSingleton<IDataService, DataService>();
             return services.BuildServiceProvider();
         }
 

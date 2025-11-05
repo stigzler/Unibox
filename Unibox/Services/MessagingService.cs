@@ -29,19 +29,12 @@ namespace Unibox.Services
             client.OnError += Client_OnError;
             client.Connected += OnConnected;
             client.Disconnected += OnDisconnected;
-
-            client.AddMessageHandler<GameChangedMessage>(GameChanged);
         }
 
         private void OnDisconnected(NetMessageClient client, SessionClosedArgs args)
         {
             loggingService.WriteLine($"Client disconnected from server. Reason: [{args.Reason}] | Any socket exception: [{args?.SocketException}]");
             // server.AddRequestHandler<AddGameRequest, AddGameResponse>(AddGameRequestHandler);
-        }
-
-        private void GameChanged(NetMessageClient client, GameChangedMessage message)
-        {
-            Debug.WriteLine("Yeah baby");
         }
 
         private void OnConnected(NetMessageClient client)

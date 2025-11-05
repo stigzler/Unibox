@@ -282,14 +282,29 @@
                         <RowDefinition Height="auto" />
                         <RowDefinition Height="auto" />
                         <RowDefinition Height="auto" />
+                        <RowDefinition Height="auto" />
                     </Grid.RowDefinitions>
 
                     <Image Grid.Row="0" Source="/Resources/Images/UniboxLogo.png" Width="128" Margin="0,50,0,0" />
                     <TextBlock Grid.Row="1" FontFamily="Arial Narrow" Text="Unibox" FontSize="24" FontWeight="Bold"  HorizontalAlignment="Center" />
                     <TextBlock Grid.Row="2" HorizontalAlignment="Center" Text="by stigzler" FontFamily="Agency FB" FontSize="20" FontWeight="Bold"
                                Margin="0,10,0,4" />
-                    <Image Grid.Row="3" Source="/Resources/Images/WillyRound.png" Height="24" MouseDown="Image_MouseDown" />
+                    <Image Grid.Row="3" Source="/Resources/Images/WillyRound.png" Height="48" MouseDown="Image_MouseDown" />
                     <TextBlock Grid.Row="4" Text="{Binding AssemblyVersion}" HorizontalAlignment="Center" />
+                    <StackPanel Grid.Row="5" Orientation="Horizontal" HorizontalAlignment="Center">
+                        <TextBlock Margin="3" Cursor="Hand">
+                            <Hyperlink NavigateUri="https://forums.launchbox-app.com/topic/91516-unibox" RequestNavigate="Hyperlink_RequestNavigate" Foreground="Gray">
+                                Forum
+                            </Hyperlink>
+                        </TextBlock>
+                        <TextBlock Text="|" Margin="3" Foreground="Gray" />
+                        <TextBlock Margin="3" Cursor="Hand">
+                            <Hyperlink NavigateUri="https://github.com/stigzler/Unibox" RequestNavigate="Hyperlink_RequestNavigate"
+                                       Foreground="Gray">
+                                Github
+                            </Hyperlink>
+                        </TextBlock>
+                    </StackPanel>
                     <!--<GroupBox Grid.Row="4" Header="Debug">
                         <Button Content="Test" Command="{Binding TestCommand}" />
                     </GroupBox>-->

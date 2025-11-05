@@ -377,8 +377,10 @@ namespace Unibox.Services
                 try
                 {
                     // if (!File.Exists(game.ApplicationPath)) throw new Exception("File does not exist:");
-
-                    File.Delete(game.ApplicationPath);
+                    Microsoft.VisualBasic.FileIO.FileSystem.DeleteFile(game.ApplicationPath,
+                        Microsoft.VisualBasic.FileIO.UIOption.OnlyErrorDialogs,
+                        Microsoft.VisualBasic.FileIO.RecycleOption.SendToRecycleBin);
+                    //File.Delete(game.ApplicationPath);
                     outcome.Outcome = $"Game metadata and file deleted successfully.";
                 }
                 catch (Exception e)
