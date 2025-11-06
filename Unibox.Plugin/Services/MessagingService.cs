@@ -19,8 +19,8 @@ namespace Unibox.Plugin.Services
 {
     internal class MessagingService
     {
-        private LaunchboxService launchboxService;
-        private LoggingService loggingService;
+        private LaunchboxService _launchboxService;
+        private LoggingService _loggingService;
         private NetMessageServer server = new NetMessageServer(Properties.Settings.Default.Port);
 
         // keep track of active sessions so the server can push messages to connected clients
@@ -28,8 +28,8 @@ namespace Unibox.Plugin.Services
 
         public MessagingService(LaunchboxService launchboxService, LoggingService loggingService)
         {
-            this.launchboxService = launchboxService;
-            this.loggingService = loggingService;
+            this._launchboxService = launchboxService;
+            this._loggingService = loggingService;
 
             loggingService.WriteLine("Starting MessagingService on port: " + Properties.Settings.Default.Port);
 
@@ -47,22 +47,22 @@ namespace Unibox.Plugin.Services
 
         private void EditGameRequestHandler(NetMessageSession session, TypedRequest<EditGameRequest, EditGameResponse> request)
         {
-            loggingService.WriteLine($"Received EditGameRequest for game: {request.Request.Game.Title} ({request.Request.Game.Platform})");
+            _loggingService.WriteLine($"Received EditGameRequest for game: {request.Request.Game.Title} ({request.Request.Game.Platform})");
 
-            loggingService.WriteLine("Attempting Game Edit");
+            _loggingService.WriteLine("Attempting Game Edit");
 
-            Exception anyException = launchboxService.EditGame(request.Request.Game);
+            Exception anyException = _launchboxService.EditGame(request.Request.Game);
 
             var response = new EditGameResponse();
 
             if (anyException != null)
             {
-                loggingService.WriteLine($"Error editing game: {anyException.Message}");
+                _loggingService.WriteLine($"Error editing game: {anyException.Message}");
                 response.TextResult = $"Error whilst editing game in Launchbox Database: '{anyException.Message}'";
             }
             else
             {
-                loggingService.WriteLine($"Game [{request.Request.Game.Title}] edited successfully!");
+                _loggingService.WriteLine($"Game [{request.Request.Game.Title}] edited successfully!");
                 response.TextResult = $"Game [{request.Request.Game.Title}] edited successfully in Launchbox Database.";
                 response.IsSuccessful = true;
             }
@@ -72,18 +72,18 @@ namespace Unibox.Plugin.Services
 
         private void DeleteGameRequestHandler(NetMessageSession session, TypedRequest<DeleteGameRequest, DeleteGameResponse> request)
         {
-            loggingService.WriteLine($"Received DeleteGameRequest for game: {request.Request.Game.Title} ({request.Request.Game.Platform})");
-            loggingService.WriteLine("Attempting Game Deletion");
-            Exception anyException = launchboxService.DeleteGame(request.Request.Game);
+            _loggingService.WriteLine($"Received DeleteGameRequest for game: {request.Request.Game.Title} ({request.Request.Game.Platform})");
+            _loggingService.WriteLine("Attempting Game Deletion");
+            Exception anyException = _launchboxService.DeleteGame(request.Request.Game);
             var response = new DeleteGameResponse();
             if (anyException != null)
             {
-                loggingService.WriteLine($"Error deleting game: {anyException.Message}");
+                _loggingService.WriteLine($"Error deleting game: {anyException.Message}");
                 response.TextResult = $"Exception: {anyException.Message}";
             }
             else
             {
-                loggingService.WriteLine($"Game [{request.Request.Game.Title}] deleted successfully!");
+                _loggingService.WriteLine($"Game [{request.Request.Game.Title}] deleted successfully!");
                 response.TextResult = $"Game [{request.Request.Game.Title}] deleted successfully from Launchbox Database.";
                 response.IsSuccessful = true;
             }
@@ -92,22 +92,22 @@ namespace Unibox.Plugin.Services
 
         private void AddGameRequestHandler(NetMessageSession session, TypedRequest<AddGameRequest, AddGameResponse> request)
         {
-            loggingService.WriteLine($"Received AddGameRequest for game: {request.Request.Game.Title} ({request.Request.Game.Platform})");
+            _loggingService.WriteLine($"Received AddGameRequest for game: {request.Request.Game.Title} ({request.Request.Game.Platform})");
 
-            loggingService.WriteLine("Attempting add to Launchbox Database");
+            _loggingService.WriteLine("Attempting add to Launchbox Database");
 
-            Exception anyException = launchboxService.AddGame(request.Request.Game);
+            Exception anyException = _launchboxService.AddGame(request.Request.Game);
 
             var response = new AddGameResponse();
 
             if (anyException != null)
             {
-                loggingService.WriteLine($"Error adding game: {anyException.Message}");
+                _loggingService.WriteLine($"Error adding game: {anyException.Message}");
                 response.TextResult = $"Error whilst adding game to Launchbox Database: '{anyException.Message}'";
             }
             else
             {
-                loggingService.WriteLine($"Game [{request.Request.Game.Title}] added successfully!");
+                _loggingService.WriteLine($"Game [{request.Request.Game.Title}] added successfully!");
                 response.TextResult = $"Game [{request.Request.Game.Title}] added successfully to Launchbox Database.";
                 response.IsSuccessful = true;
             }
@@ -119,7 +119,7 @@ namespace Unibox.Plugin.Services
         {
             if (game == null)
             {
-                loggingService.WriteLine("SendGameChangedMessage called with null game.");
+                _loggingService.WriteLine("SendGameChangedMessage called with null game.");
                 return;
             }
 
@@ -135,35 +135,35 @@ namespace Unibox.Plugin.Services
                     // Most recent NetMessage versions expose SendMessageAsync on the session.
                     // If your version exposes a server.SendMessageAsync(session, message) method, use that instead.
                     await session.SendMessageAsync(message);
-                    loggingService.WriteLine($"Sent GameChangedMessage to session {session.Guid}.");
+                    _loggingService.WriteLine($"Sent GameChangedMessage to session {session.Guid}.");
                 }
                 catch (MissingMethodException)
                 {
                     // fallback comment: if compilation fails here, call server.SendMessageAsync(session, message) instead.
-                    loggingService.WriteLine($"Failed to send GameChangedMessage to session {session.Guid} - method not available.");
+                    _loggingService.WriteLine($"Failed to send GameChangedMessage to session {session.Guid} - method not available.");
                 }
                 catch (Exception ex)
                 {
-                    loggingService.WriteLine($"Failed to send GameChangedMessage to session {session.Guid}: {ex.Message}");
+                    _loggingService.WriteLine($"Failed to send GameChangedMessage to session {session.Guid}: {ex.Message}");
                 }
             }
         }
 
         private void OnSessionClosed(NetMessageSession session, SessionClosedArgs args)
         {
-            loggingService.WriteLine($"Session closed. Session ID: [{session.Guid}] Reason: {args.Reason}");
+            _loggingService.WriteLine($"Session closed. Session ID: [{session.Guid}] Reason: {args.Reason}");
             _sessions.TryRemove(session.Guid, out _);
         }
 
         private void OnSessionOpened(NetMessageSession session)
         {
-            loggingService.WriteLine($"Session opened. Session ID: [{session.Guid}].");
+            _loggingService.WriteLine($"Session opened. Session ID: [{session.Guid}].");
             _sessions.TryAdd(session.Guid, session);
         }
 
         private void OnError(NetMessageServer server, NetMessageSession? session, string arg3, Exception? exception)
         {
-            loggingService.WriteLine($"Error occurred in MessagingService. Session ID: [{session?.Guid}]. Error: {arg3}. Exception: {exception?.Message}");
+            _loggingService.WriteLine($"Error occurred in MessagingService. Session ID: [{session?.Guid}]. Error: {arg3}. Exception: {exception?.Message}");
         }
     }
 }

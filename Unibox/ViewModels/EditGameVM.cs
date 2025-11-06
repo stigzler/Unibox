@@ -404,7 +404,7 @@ namespace Unibox.ViewModels
         /// This is messy, but remedial as lost will to live
         /// </summary>
         /// <param name="mediaType"></param>
-        private void UpdateMediaItem(string mediaType = null)
+        private async void UpdateMediaItem(string mediaType = null)
         {
             SelectedMediaItem = MediaList[mediaListIndex];
             MediaItemCounter = $"{mediaListIndex + 1}/{MediaList.Count}";
@@ -431,13 +431,25 @@ namespace Unibox.ViewModels
                 default:
                     try
                     {
-                        ImageSource = Helpers.Image.UnlockedImageCopy(SelectedMediaItem);
+                        //ImageSource = Helpers.Image.UnlockedImageCopy(SelectedMediaItem);
+                        var newImage = Helpers.Image.UnlockedImageCopy(SelectedMediaItem);
+                        if (newImage != null)
+                        {
+                            if (System.Windows.Application.Current?.Dispatcher?.CheckAccess() == true)
+                            {
+                                ImageSource = newImage;
+                            }
+                            else
+                            {
+                                System.Windows.Application.Current?.Dispatcher?.Invoke(() => ImageSource = newImage);
+                            }
+                        }
                     }
                     catch (Exception e)
                     {
                         AlertText = $"Could not open game image. Exception: {e.Message}";
                         AlertColor = new SolidColorBrush(System.Windows.Media.Color.FromRgb(128, 0, 0));
-                        ShowAlertAsync(5000);
+                        await ShowAlertAsync(5000);
                         ImageSource = new BitmapImage(
                             new Uri("pack://application:,,,/Unibox;component/Resources/Images/noMedia.png"));
                     }

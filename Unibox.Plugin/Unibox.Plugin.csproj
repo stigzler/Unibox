@@ -138,4 +138,8 @@
 		</None>
 	</ItemGroup>
 
+	<Target Name="PostBuild" AfterTargets="PostBuildEvent">
+	  <Exec Command="call $(ProjectDir)\..\build\buildScripts\postBuild-Plugin.bat &quot;$(ConfigurationName)&quot; &quot;$(SolutionDir)&quot;" />
+	</Target>
+
 </Project>

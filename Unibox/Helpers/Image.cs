@@ -1,38 +1,36 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.IO;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 
 namespace Unibox.Helpers
 {
-    internal static class Image
+    public static class Image
     {
-        internal static ImageSource UnlockedImageCopy(string filePath)
+        // Loads an image from disk into memory and closes the file so it can be replaced.
+        // Uses OnLoad and freezes the BitmapImage.
+        public static ImageSource UnlockedImageCopy(string filePath)
         {
-            // 1. Create a BitmapImage instance
-            BitmapImage bitmap = new BitmapImage();
+            if (string.IsNullOrWhiteSpace(filePath) || !File.Exists(filePath))
+                return null;
 
-            // 2. Begin initialization sequence
-            bitmap.BeginInit();
-
-            // 3. Set the CacheOption to OnLoad
-            // This tells WPF to immediately load the entire image into memory
-            // and close the underlying file stream, preventing the file lock.
-            bitmap.CacheOption = BitmapCacheOption.OnLoad;
-
-            // 4. Set the URI source
-            bitmap.UriSource = new Uri(filePath, UriKind.Absolute);
-
-            // 5. End initialization sequence
-            bitmap.EndInit();
-
-            // 6. Freeze the object for efficiency (optional, but recommended in WPF)
-            bitmap.Freeze();
-
-            return bitmap;
+            try
+            {
+                byte[] bytes = File.ReadAllBytes(filePath);
+                using var ms = new MemoryStream(bytes);
+                var bmp = new BitmapImage();
+                bmp.BeginInit();
+                bmp.CacheOption = BitmapCacheOption.OnLoad; // loads into memory so stream can be closed
+                // DO NOT set CreateOptions = BitmapCreateOptions.IgnoreImageCache when using StreamSource
+                bmp.StreamSource = ms;
+                bmp.EndInit();
+                bmp.Freeze(); // safe to share across threads
+                return bmp;
+            }
+            catch
+            {
+                return null;
+            }
         }
     }
 }

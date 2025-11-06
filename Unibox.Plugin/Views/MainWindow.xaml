@@ -71,9 +71,9 @@
 
         <StackPanel Grid.Row="2" Margin="5" Orientation="Horizontal" HorizontalAlignment="Right">
 
-            <Button Content="Test" Width="100" Height="30" HorizontalAlignment="Right" Margin="5"
+            <!--<Button Content="Test" Width="100" Height="30" HorizontalAlignment="Right" Margin="5"
                     IsEnabled="{Binding IsValid}"
-                    Command="{Binding TBD}" />
+                    Command="{Binding TBD}" />-->
 
             <Button Content="Save" Width="100" Height="30" HorizontalAlignment="Right" Margin="5"
                     IsEnabled="{Binding IsValid}"

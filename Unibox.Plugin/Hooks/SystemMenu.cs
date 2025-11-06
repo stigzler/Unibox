@@ -28,10 +28,13 @@ namespace Unibox.Plugin.Hooks
 
         public void OnSelected()
         {
-            MainWindowVM mainWindowVM = new MainWindowVM();
-            MainWindow mainWindow = new MainWindow(mainWindowVM);
+            PluginController.Instance.ShowMainWindow();
+            //Main main = new Main();
 
-            mainWindow.ShowDialog();
+            //MainWindowVM mainWindowVM = main.Services.GetService(typeof(MainWindowVM)) as MainWindowVM;
+            //MainWindow mainWindow = new MainWindow(mainWindowVM);
+
+            //mainWindow.ShowDialog();
         }
     }
 }

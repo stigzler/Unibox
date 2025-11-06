@@ -16,8 +16,6 @@ namespace Unibox.Plugin
             PortableSettingsProvider.ApplyProvider(Properties.Settings.Default);
 
             Services = ConfigureServices();
-
-            MessagingService messageService = (MessagingService)Services.GetService(typeof(MessagingService));
         }
 
         /// <summary>

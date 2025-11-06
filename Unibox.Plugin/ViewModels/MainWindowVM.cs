@@ -82,7 +82,7 @@ namespace Unibox.Plugin.ViewModels
         [RelayCommand]
         private void Test()
         {
-            // messagingService.
+            // _messagingService.
         }
     }
 }

@@ -10,6 +10,13 @@ namespace Unibox.Plugin.Services
 {
     internal class LaunchboxService
     {
+        private LoggingService _loggingService;
+
+        public LaunchboxService(LoggingService loggingService)
+        {
+            _loggingService = loggingService;
+        }
+
         internal Exception AddGame(GameDTO gameDTO)
         {
             // soz for the try/catch - but LB doesn't return anything to indicate whether adding successful.

@@ -1,4 +1,8 @@
-﻿V1.1.0
+﻿V1.2.0
+Improvements: 
+Automated build process
+
+V1.1.0
 New Feature: 
 - Game notes: added paste from clipboard option and separate edit page for Notes. 
 

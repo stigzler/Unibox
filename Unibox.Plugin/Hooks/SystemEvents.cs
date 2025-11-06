@@ -15,7 +15,7 @@ namespace Unibox.Plugin.Hooks
             {
                 case SystemEventTypes.PluginInitialized:
                     // Handle LaunchBox startup event
-                    Main main = new Main();
+                    PluginController.Instance.ProcessSystemEvent(eventType);
                     break;
             }
         }
