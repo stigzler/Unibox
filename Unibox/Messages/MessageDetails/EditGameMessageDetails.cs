@@ -11,5 +11,7 @@ namespace Unibox.Messages.MessageDetails
     {
         public GameModel Game { get; set; }
         public InstallationModel Installation { get; set; }
+        public bool DoNotChangeGameAndInstallation { get; set; } = false;
+        public bool RefreshGame { get; set; } = false;
     }
 }

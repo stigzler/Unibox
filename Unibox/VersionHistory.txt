@@ -1,4 +1,8 @@
-﻿V1.0.0.0
+﻿V1.1.0
+New Feature: 
+- Game notes: added paste from clipboard option and separate edit page for Notes. 
+
+V1.0.0.0
 New Feature:
 - Can now delete games (deletes both the rom file and launchbox database entry). Deleted games now moved to recycle bin via Microsoft.VisualBasic.FileIO.FileSystem.DeleteFile (keeping it old skool)
 Improvements: 
@@ -15,3 +19,4 @@ New Features:
 
 V0.9.9 and lower
 See file history at https://forums.launchbox-app.com/files/file/5494-unibox
+ 

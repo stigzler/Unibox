@@ -85,8 +85,25 @@
                 <TextBox Grid.Row="4" Grid.Column="1" Margin="5" Text="{Binding Game.ApplicationPath}" IsEnabled="False" />
 
                 <TextBlock Grid.Row="5" Grid.Column="0" Text="Notes:" VerticalAlignment="Center" />
-                <TextBox Grid.Row="5" Grid.Column="1" Margin="5" Text="{Binding Game.Notes}"
-                         TextWrapping="Wrap"  VerticalScrollBarVisibility="Visible" Height="100" />
+
+                <Grid Grid.Row="5" Grid.Column="1">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="auto" />
+                    </Grid.ColumnDefinitions>
+                    <TextBox Grid.Column="0" Margin="5" Text="{Binding Game.Notes}" AcceptsReturn="True"
+                       TextWrapping="Wrap"  VerticalScrollBarVisibility="Auto" Height="100" VerticalContentAlignment="Top" />
+                    <StackPanel Grid.Column="1">
+                        <Button DockPanel.Dock="Right" Width="36" Height="36" Margin="5" ToolTip="Paste Clipboard"
+                                Command="{Binding PasteClipboardToNotesCommand}">
+                            <icon:FluentIcon Icon="ClipboardPaste" IconSize="Resizable" />
+                        </Button>
+                        <Button DockPanel.Dock="Right" Width="36" Height="36" ToolTip="Edit in large window"
+                                Command="{Binding NavigateToEditGameNotesCommand}">
+                            <icon:FluentIcon Icon="OpenOff" IconSize="Resizable" />
+                        </Button>
+                    </StackPanel>
+                </Grid>
             </Grid>
         </GroupBox>
 

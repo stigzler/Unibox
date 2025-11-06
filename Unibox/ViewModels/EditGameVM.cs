@@ -6,6 +6,7 @@ using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.IO;
 using System.Web;
+using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
@@ -195,6 +196,13 @@ namespace Unibox.ViewModels
             }));
         }
 
+        [RelayCommand]
+        private void PasteClipboardToNotes()
+        {
+            Game.Notes = Clipboard.GetText();
+            OnPropertyChanged("Game");
+        }
+
         private List<string> GetFilteredMediaList(string mediaType)
         {
             List<string> candidateMedia = gameService.GetGameMediaPaths(Game, mediaType);
@@ -226,6 +234,21 @@ namespace Unibox.ViewModels
             {
                 RequestType = Data.Enums.PageRequestType.Games
             }));
+        }
+
+        [RelayCommand]
+        private void NavigateToEditGameNotes()
+        {
+            WeakReferenceMessenger.Default.Send(new PageChangeMessage(new PageChangeMessageArgs()
+            {
+                RequestType = Data.Enums.PageRequestType.EditGameNotes,
+                Data = Game = this.Game
+            }));
+        }
+
+        internal void RefreshGame()
+        {
+            OnPropertyChanged("Game");
         }
 
         partial void OnGameChanged(GameModel? oldValue, GameModel newValue)

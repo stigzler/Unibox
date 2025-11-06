@@ -69,6 +69,7 @@ namespace Unibox.ViewModels
         private UpdatePlatformsResultsPage updatePlatformsResultsPage = new UpdatePlatformsResultsPage();
         private EditPlatformPage editPlatformPage = new EditPlatformPage();
         private EditGamePage editGamePage = new EditGamePage();
+        private EditGameNotesPage EditGameNotesPage = new EditGameNotesPage();
 
         private LoggingService loggingService;
 
@@ -218,9 +219,22 @@ namespace Unibox.ViewModels
                     break;
 
                 case Data.Enums.PageRequestType.EditGame:
+                    if (!((EditGameMessageDetails)args.Data).DoNotChangeGameAndInstallation)
+                    {
+                        editGamePage.ViewModel.Game = ((EditGameMessageDetails)args.Data).Game;
+                        editGamePage.ViewModel.Installation = ((EditGameMessageDetails)args.Data).Installation;
+                    }
+                    if (((EditGameMessageDetails)args.Data).RefreshGame)
+                    {
+                        editGamePage.ViewModel.RefreshGame();
+                    }
                     CurrentPage = editGamePage;
-                    editGamePage.ViewModel.Game = ((EditGameMessageDetails)args.Data).Game;
-                    editGamePage.ViewModel.Installation = ((EditGameMessageDetails)args.Data).Installation;
+                    break;
+
+                case Data.Enums.PageRequestType.EditGameNotes:
+                    // EditGameNotesPage.ViewModel.Game = (GameModel)args.Data;
+                    EditGameNotesPage.ViewModel.SetGame((GameModel)args.Data);
+                    CurrentPage = EditGameNotesPage;
                     break;
             }
         }

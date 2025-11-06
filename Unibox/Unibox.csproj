@@ -140,6 +140,7 @@
 		<None Remove="Resources\Images\video.png" />
 		<None Remove="Resources\Images\videoMedia.png" />
 		<None Remove="Resources\Images\WillyRound.png" />
+		<None Remove="VersionHistory.txt" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -186,6 +187,9 @@
 		</Content>
 		<Content Include="Data\SsSystemList.dat">
 			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</Content>
+		<Content Include="VersionHistory.txt">
+		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		</Content>
 		<Resource Include="Resources\Images\LaunchboxIcon.png" />
 		<Resource Include="Resources\Images\lock.png" />
@@ -234,6 +238,9 @@
 			<DesignTimeSharedInput>True</DesignTimeSharedInput>
 			<AutoGen>True</AutoGen>
 			<DependentUpon>Settings.settings</DependentUpon>
+		</Compile>
+		<Compile Update="Views\EditGameNotesPage.xaml.cs">
+		  <SubType>Code</SubType>
 		</Compile>
 	</ItemGroup>
 

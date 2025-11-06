@@ -119,6 +119,7 @@ namespace Unibox
             services.AddTransient<UpdatePlatformsResultsVM>();
             services.AddTransient<EditPlatformVM>();
             services.AddTransient<EditGameVM>();
+            services.AddTransient<EditGameNotesVM>();
 
             return services.BuildServiceProvider();
         }
