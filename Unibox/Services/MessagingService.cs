@@ -10,6 +10,7 @@ using System.Net;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
+using Unbroken.LaunchBox.Plugins.Data;
 using Unibox.Helpers;
 using Unibox.Messaging.DTOs;
 using Unibox.Messaging.Messages;
@@ -53,7 +54,7 @@ namespace Unibox.Services
             Debug.WriteLine(Path.GetPathRoot(uncPath));
             if (Helpers.FileSystem.IsNetworkPath(uncPath))
             {
-                string root = Path.GetPathRoot(uncPath); // e.g., "\\ATARI-1280\Users"
+                string root = Path.GetPathRoot(uncPath); // e.g., "\\ATARI-1280\\Users"
                 string server = root.TrimStart('\\').Split('\\')[0]; // "ATARI-1280"
                 IPHostEntry entry = Dns.GetHostEntry(server);
                 foreach (var ip in entry.AddressList)
@@ -66,6 +67,28 @@ namespace Unibox.Services
                 }
             }
             return ipAddress;
+        }
+
+        internal async Task<GameDTO> GetCurrentGameRequest(string installationPath)
+        {
+            GetCurrentGameResponse response = new GetCurrentGameResponse();
+
+            string ipAddress = UncPathToIP(installationPath);
+            bool successful = await client.ConnectAsync(ipAddress, Properties.Settings.Default.MessagingPort).ConfigureAwait(false);
+
+            if (!successful)
+            {
+                return null;
+            }
+            else
+            {
+                response = await client.SendRequestAsync(new Messaging.Requests.GetCurrentGameRequest()).ConfigureAwait(false);
+            }
+
+            GameDTO gameDTO = response.Game;
+
+            client.Disconnect();
+            return gameDTO;
         }
 
         internal async Task<AddGameResponse> SendAddGameRequest(string installationPath, GameDTO gameDTO)
@@ -84,7 +107,7 @@ namespace Unibox.Services
 
             loggingService.WriteLine("Attempting to connect to Unibox plugin server at: " + ipAddress + ":" + Properties.Settings.Default.MessagingPort);
 
-            bool successful = await client.ConnectAsync(ipAddress, Properties.Settings.Default.MessagingPort);
+            bool successful = await client.ConnectAsync(ipAddress, Properties.Settings.Default.MessagingPort).ConfigureAwait(false);
 
             AddGameResponse response = new AddGameResponse();
             if (!successful)
@@ -94,7 +117,7 @@ namespace Unibox.Services
             }
             else
             {
-                response = await client.SendRequestAsync(new Messaging.Requests.AddGameRequest { Game = gameDTO });
+                response = await client.SendRequestAsync(new Messaging.Requests.AddGameRequest { Game = gameDTO }).ConfigureAwait(false);
             }
 
             client.Disconnect();
@@ -121,7 +144,7 @@ namespace Unibox.Services
 
             loggingService.WriteLine("Attempting to connect to Unibox plugin server at: " + ipAddress + ":" + Properties.Settings.Default.MessagingPort);
 
-            bool successful = await client.ConnectAsync(ipAddress, Properties.Settings.Default.MessagingPort);
+            bool successful = await client.ConnectAsync(ipAddress, Properties.Settings.Default.MessagingPort).ConfigureAwait(false);
 
             if (!successful)
             {
@@ -130,7 +153,7 @@ namespace Unibox.Services
             }
             else
             {
-                response = await client.SendRequestAsync(new Messaging.Requests.EditGameRequest { Game = gameDTO });
+                response = await client.SendRequestAsync(new Messaging.Requests.EditGameRequest { Game = gameDTO }).ConfigureAwait(false);
             }
 
             client.Disconnect();
@@ -157,7 +180,7 @@ namespace Unibox.Services
 
             loggingService.WriteLine("Attempting to connect to Unibox plugin server at: " + ipAddress + ":" + Properties.Settings.Default.MessagingPort);
 
-            bool successful = await client.ConnectAsync(ipAddress, Properties.Settings.Default.MessagingPort);
+            bool successful = await client.ConnectAsync(ipAddress, Properties.Settings.Default.MessagingPort).ConfigureAwait(false);
 
             if (!successful)
             {
@@ -166,7 +189,7 @@ namespace Unibox.Services
             }
             else
             {
-                response = await client.SendRequestAsync(new Messaging.Requests.DeleteGameRequest { Game = gameDTO });
+                response = await client.SendRequestAsync(new Messaging.Requests.DeleteGameRequest { Game = gameDTO }).ConfigureAwait(false);
             }
 
             client.Disconnect();

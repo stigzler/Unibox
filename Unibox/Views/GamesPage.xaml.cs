@@ -32,8 +32,12 @@ namespace Unibox.Views
             if (sender is ListViewItem item)
             {
                 // Execute the command, passing the selected item's data context as the parameter
-                ViewModel.EditGameCommand?.Execute(item.DataContext);
+                ViewModel.EditSelectedGameCommand?.Execute(item.DataContext);
             }
+        }
+
+        private void ComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
         }
     }
 }

@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using System.Windows.Input;
 using System.Xml.Schema;
 using Unbroken.LaunchBox.Plugins.Data;
+using Unibox.Messaging.DTOs;
 using Unibox.Messaging.Messages;
 using Unibox.Messaging.Requests;
 using Unibox.Messaging.Responses;
@@ -21,6 +22,7 @@ namespace Unibox.Plugin.Services
     {
         private LaunchboxService _launchboxService;
         private LoggingService _loggingService;
+
         private NetMessageServer server = new NetMessageServer(Properties.Settings.Default.Port);
 
         // keep track of active sessions so the server can push messages to connected clients
@@ -39,10 +41,25 @@ namespace Unibox.Plugin.Services
             server.AddRequestHandler<AddGameRequest, AddGameResponse>(AddGameRequestHandler);
             server.AddRequestHandler<EditGameRequest, EditGameResponse>(EditGameRequestHandler);
             server.AddRequestHandler<DeleteGameRequest, DeleteGameResponse>(DeleteGameRequestHandler);
+            server.AddRequestHandler<GetCurrentGameRequest, GetCurrentGameResponse>(GetCurrentGameRequestHandler);
 
             server.Start();
 
             loggingService.WriteLine("MessagingService started successfully.");
+        }
+
+        private void GetCurrentGameRequestHandler(NetMessageSession session, TypedRequest<GetCurrentGameRequest, GetCurrentGameResponse> request)
+        {
+            //_loggingService.WriteLine($"Received GetCurrentGameRequest");
+
+            IGame game = _launchboxService.GetCurrentGame();
+
+            var response = new GetCurrentGameResponse
+            {
+                Game = new GameDTO(game)
+            };
+
+            request.SendResponseAsync(response);
         }
 
         private void EditGameRequestHandler(NetMessageSession session, TypedRequest<EditGameRequest, EditGameResponse> request)

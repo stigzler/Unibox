@@ -1,4 +1,5 @@
 ﻿using CommunityToolkit.Mvvm.Messaging;
+using NetMessage;
 using stigzler.ScreenscraperWrapper.Data.Entities.Screenscraper;
 using stigzler.ScreenscraperWrapper.Data.Entities.Supplemental;
 using stigzler.ScreenscraperWrapper.DTOs;
@@ -396,6 +397,12 @@ namespace Unibox.Services
                 loggingService.WriteLine(outcome.Outcome);
             }
             return outcome;
+        }
+
+        internal async Task<GameDTO> GetCurrentGame(InstallationModel installationModel)
+        {
+            GameDTO currentGame = await messagingService.GetCurrentGameRequest(installationModel.InstallationPath);
+            return currentGame;
         }
 
         internal async Task<EditGameOutcome> EditGame(GameModel game, InstallationModel installationModel)

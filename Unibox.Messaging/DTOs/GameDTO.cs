@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Unbroken.LaunchBox.Plugins.Data;
 
 namespace Unibox.Messaging.DTOs
 {
@@ -26,6 +27,19 @@ namespace Unibox.Messaging.DTOs
 
         public GameDTO()
         {
+        }
+
+        public GameDTO(IGame game)
+        {
+            LaunchboxID = game.Id.ToString();
+            Title = game.Title;
+            Platform = game.Platform ?? string.Empty;
+            Notes = game.Notes;
+            Publisher = game.Publisher;
+            Developer = game.Developer;
+            ApplicationPath = game.ApplicationPath;
+            ReleaseDate = game.ReleaseDate;
+            DateAdded = game.DateAdded;
         }
     }
 }

@@ -5,16 +5,19 @@ using System.Text;
 using System.Threading.Tasks;
 using Unibox.Messaging.DTOs;
 using Unbroken.LaunchBox.Plugins;
+using Unbroken.LaunchBox.Plugins.Data;
 
 namespace Unibox.Plugin.Services
 {
     internal class LaunchboxService
     {
         private LoggingService _loggingService;
+        public GameMonitoringService _gameMonitoringService;
 
-        public LaunchboxService(LoggingService loggingService)
+        public LaunchboxService(LoggingService loggingService, GameMonitoringService gameMonitoringService)
         {
             _loggingService = loggingService;
+            _gameMonitoringService = gameMonitoringService;
         }
 
         internal Exception AddGame(GameDTO gameDTO)
@@ -111,6 +114,11 @@ namespace Unibox.Plugin.Services
                 return ex;
             }
             return null;
+        }
+
+        internal IGame GetCurrentGame()
+        {
+            return _gameMonitoringService.LastGameDetails.Game;
         }
     }
 }

@@ -34,13 +34,12 @@
     <Grid Margin="5">
         <Grid.RowDefinitions>
             <RowDefinition Height="auto" />
-            <RowDefinition Height="auto" />
             <RowDefinition Height="*" />
+            <RowDefinition Height="auto" />
         </Grid.RowDefinitions>
 
-        <!--<TextBlock Grid.Row="0" Text="Games" FontWeight="Bold" DockPanel.Dock="Top" Style ="{DynamicResource PageHeader}" />-->
-
-        <Grid Grid.Row="1">
+        <!-- Top Bar and notes row -->
+        <Grid Grid.Row="0">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*" />
                 <ColumnDefinition Width="*" />
@@ -77,7 +76,7 @@
                       SelectedItem="{Binding SelectedPlatform}" d:Visibility="Visible"
                       Visibility="{Binding InstallationAvailable, Converter={StaticResource BoolToVisibilityConverter}}"
                       ItemContainerStyle="{StaticResource ComboBoxItemPaddingStyle}"
-                    MaxDropDownHeight="{Binding ActualHeight, ElementName=GamesPageControl, Converter={StaticResource EightyPercentConverter}}" />
+                    MaxDropDownHeight="{Binding ActualHeight, ElementName=GamesPageControl, Converter={StaticResource EightyPercentConverter}}" SelectionChanged="ComboBox_SelectionChanged" />
                 </Grid>
 
                 <Grid Visibility="{Binding InstallationAvailable, Converter={StaticResource BoolToInverseVisibilityConverter}}">
@@ -138,6 +137,7 @@
                     </StackPanel>
                 </Button>
             </StackPanel>
+
             <Grid Grid.Row="1" Grid.ColumnSpan="3" Margin="0"
                 Visibility="{Binding SelectedPlatform.Notes, Converter={StaticResource NullToVisibilityConverter}}">
 
@@ -149,17 +149,18 @@
             </Grid>
         </Grid>
 
-        <!-- Games Toolbar and List -->
-        <Grid Grid.Row="2" VerticalAlignment="Stretch"
+        <!-- Search and List -->
+        <Grid Grid.Row="1" VerticalAlignment="Stretch"
               Visibility="{Binding SelectedPlatform, Converter={StaticResource NullToVisibilityConverter}}"
               d:Visibility="Visible">
 
             <Grid.RowDefinitions>
                 <RowDefinition Height="auto" />
                 <RowDefinition Height="*" />
+                <RowDefinition Height="auto" />
             </Grid.RowDefinitions>
 
-            <Grid Grid.Row="0" DockPanel.Dock="Top"  d:Visibility="Visible">
+            <Grid Grid.Row="0"  d:Visibility="Visible">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="auto" />
                     <ColumnDefinition Width="*" />
@@ -167,17 +168,6 @@
                 </Grid.ColumnDefinitions>
                 <TextBlock Grid.Column="0" Text="Search: " FontWeight="Bold" VerticalAlignment="Center" Margin="5" />
                 <TextBox Grid.Column="1"  Text="{Binding SearchTerm,UpdateSourceTrigger=PropertyChanged}" Margin="5" />
-                <Button x:Name="EditGameBT" Grid.Column="2" DockPanel.Dock="Right"  Margin="5" MinWidth="140"
-                        Width="{Binding ElementName=AddRomBT, Path=ActualWidth, Mode=OneWay}"
-                        IsEnabled="{Binding CanAddRoms}" Padding="{Binding Source={x:Static properties:Settings.Default},Path=AppButtonPadding}"
-                        Command="{Binding EditGameCommand}">
-                    <StackPanel Orientation="Horizontal">
-                        <icon:FluentIcon Icon="Edit" FontSize="32" HorizontalAlignment="Center" MinWidth="32" MinHeight="32" />
-
-                        <!--<Image Source="/Resources/Images/Pencil.png" Height="28" />-->
-                        <TextBlock Text="Edit Game" VerticalAlignment="Center" Margin="5,0,0,0" />
-                    </StackPanel>
-                </Button>
             </Grid>
 
             <Border Grid.Row="1" BorderThickness="1" BorderBrush="Gray" Margin="5" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
@@ -203,6 +193,28 @@
                 </ListView>
             </Border>
         </Grid>
+
+        <!-- Bottom Buttons -->
+        <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right">
+
+            <Button Margin="5" Visibility="Hidden"
+                      IsEnabled="{Binding CanAddRoms}" Padding="{Binding Source={x:Static properties:Settings.Default},Path=AppButtonPadding}"
+                      Command="{Binding EditPlayingGameCommand}">
+                <StackPanel Orientation="Horizontal">
+                    <icon:FluentIcon Icon="Edit" FontSize="32" HorizontalAlignment="Center" MinWidth="32" MinHeight="32" />
+                    <TextBlock Text="Edit Playing Game" VerticalAlignment="Center" Margin="5,0,0,0" />
+                </StackPanel>
+            </Button>
+
+            <Button x:Name="EditGameBT" Margin="5"
+                      IsEnabled="{Binding CanAddRoms}" Padding="{Binding Source={x:Static properties:Settings.Default},Path=AppButtonPadding}"
+                      Command="{Binding EditSelectedGameCommand}">
+                <StackPanel Orientation="Horizontal">
+                    <icon:FluentIcon Icon="Edit" FontSize="32" HorizontalAlignment="Center" MinWidth="32" MinHeight="32" />
+                    <TextBlock Text="Edit Selected Game" VerticalAlignment="Center" Margin="5,0,0,0" />
+                </StackPanel>
+            </Button>
+        </StackPanel>
 
         <!--- BOTTOM BUTTONS -->
         <!--<StackPanel Grid.Row="2" Orientation="Horizontal" Margin="4">

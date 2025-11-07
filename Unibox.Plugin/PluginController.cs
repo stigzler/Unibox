@@ -5,6 +5,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Unbroken.LaunchBox.Plugins.Data;
 using Unibox.Plugin.Services;
 using Unibox.Plugin.ViewModels;
 using Unibox.Plugin.Views;
@@ -62,9 +63,10 @@ namespace Unibox.Plugin
         {
             //Services = ConfigureServices();
             _loggingService = new LoggingService();
-            _launchboxService = new LaunchboxService(_loggingService);
-            _messagingService = new MessagingService(_launchboxService, _loggingService);
             _gameMonitoringService = new GameMonitoringService();
+
+            _launchboxService = new LaunchboxService(_loggingService, _gameMonitoringService);
+            _messagingService = new MessagingService(_launchboxService, _loggingService);
         }
 
         internal void ProcessSystemEvent(string eventType)
@@ -82,6 +84,22 @@ namespace Unibox.Plugin
         {
             MainWindow mainWindow = new MainWindow(_mainWindowVM);
             mainWindow.ShowDialog();
+        }
+
+        internal void ProcessGameLaunched(IGame game, IAdditionalApplication app, IEmulator emulator)
+        {
+            _gameMonitoringService.LastGameDetails = new Data.Models.GameLaunchDetails
+            {
+                Game = game,
+                AdditionalApplication = app,
+                Emulator = emulator,
+            };
+            _gameMonitoringService.GameCurrentlyPlaying = true;
+        }
+
+        internal void ProcessGameExited()
+        {
+            _gameMonitoringService.GameCurrentlyPlaying = false;
         }
     }
 }

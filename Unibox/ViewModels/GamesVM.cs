@@ -15,10 +15,12 @@ using System.Windows;
 using System.Windows.Controls.Primitives;
 using System.Windows.Data;
 using System.Windows.Input;
+using Unbroken.LaunchBox.Plugins.Data;
 using Unibox.Data.Models;
 using Unibox.Data.ServiceOperationOutcomes;
 using Unibox.Messages;
 using Unibox.Messages.MessageDetails;
+using Unibox.Messaging.DTOs;
 using Unibox.Services;
 using Unibox.Views;
 
@@ -175,8 +177,6 @@ namespace Unibox.ViewModels
                 count += 1;
             }
 
-            //pleaseWaitWindow.CloseWindow();
-
             WeakReferenceMessenger.Default.Send(new PageChangeMessage(new PageChangeMessageArgs()
             {
                 RequestType = Data.Enums.PageRequestType.AddGameResults,
@@ -332,7 +332,7 @@ namespace Unibox.ViewModels
         }
 
         [RelayCommand]
-        private void EditGame()
+        private void EditSelectedGame()
         {
             if (SelectedGame == null) return;
 
@@ -344,6 +344,31 @@ namespace Unibox.ViewModels
                 Data = new EditGameMessageDetails()
                 {
                     Game = SelectedGame,
+                    Installation = SelectedInstallation
+                }
+            }));
+        }
+
+        [RelayCommand]
+        private void EditPlayingGame()
+        {
+            // Gave up on this - got frustrating freezes with no exception - likely threading BS or something to do with
+            // client.connect in MessagingService. Leaving the code here for reference/future attempts. Messageing rewrite
+            // with persisting connections may help??
+            GameDTO game = gameService.GetCurrentGame(SelectedInstallation).Result;
+
+            GameModel gameModel = new GameModel(game);
+
+            PlatformModel platform = platforms.Where(p => p.Name == game.Platform).FirstOrDefault();
+
+            gameModel.Platform = platform;
+
+            WeakReferenceMessenger.Default.Send(new PageChangeMessage(new PageChangeMessageArgs()
+            {
+                RequestType = Data.Enums.PageRequestType.EditGame,
+                Data = new EditGameMessageDetails()
+                {
+                    Game = gameModel,
                     Installation = SelectedInstallation
                 }
             }));

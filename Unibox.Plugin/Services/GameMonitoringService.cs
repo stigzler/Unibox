@@ -10,5 +10,6 @@ namespace Unibox.Plugin.Services
     internal class GameMonitoringService
     {
         public GameLaunchDetails LastGameDetails { get; set; } = null!;
+        public bool GameCurrentlyPlaying { get; set; } = false;
     }
 }

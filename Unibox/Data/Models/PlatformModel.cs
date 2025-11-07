@@ -6,6 +6,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Unbroken.LaunchBox.Plugins.Data;
 
 namespace Unibox.Data.Models
 {
@@ -21,6 +22,10 @@ namespace Unibox.Data.Models
         public string ApplicationPath { get; set; } = string.Empty;
         public string Url { get; set; } = string.Empty;
         public string Notes { get; set; } = string.Empty;
+
+        public PlatformModel()
+        {
+        }
 
         public override string ToString()
         {
